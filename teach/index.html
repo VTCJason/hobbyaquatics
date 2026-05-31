@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Teach Guide — Veritas 5th Sunday</title>
+  <style>
+    :root {
+      --bg: #0f1923;
+      --card: #1a2635;
+      --border: #2a3f55;
+      --gold: #c9a84c;
+      --gold-lt: #f0d98a;
+      --text: #e8edf2;
+      --muted: #8a9bb0;
+      --green: #4ade80;
+      --red: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 18px; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      line-height: 1.5;
+      padding: 0 0 4rem;
+    }
+
+    /* Header */
+    .hdr {
+      background: #0a1520;
+      border-bottom: 2px solid var(--gold);
+      padding: 0.9rem 1rem;
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .hdr-title { font-size: 0.95rem; font-weight: 700; color: var(--gold); }
+    .hdr-sub { font-size: 0.72rem; color: var(--muted); margin-top: 1px; }
+    .timer {
+      font-size: 1.4rem; font-weight: 800;
+      color: var(--gold-lt); font-variant-numeric: tabular-nums;
+      cursor: pointer;
+    }
+    .timer.warn { color: var(--red); }
+
+    /* Progress dots */
+    .progress {
+      display: flex; gap: 6px; padding: 0.6rem 1rem;
+      background: #0a1520; border-bottom: 1px solid var(--border);
+      overflow-x: auto; flex-wrap: nowrap;
+    }
+    .dot {
+      width: 28px; height: 8px; border-radius: 4px;
+      background: var(--border); flex-shrink: 0;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .dot.active { background: var(--gold); }
+    .dot.done { background: var(--green); }
+
+    /* Sections */
+    .section {
+      border-left: 3px solid var(--border);
+      margin: 1rem 0.75rem 0;
+      border-radius: 0 8px 8px 0;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .section.active { border-color: var(--gold); }
+    .section.done { border-color: var(--green); }
+
+    .sec-header {
+      background: var(--card);
+      padding: 0.85rem 1rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: space-between;
+      user-select: none; -webkit-user-select: none;
+    }
+    .sec-num {
+      font-size: 0.68rem; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.05em;
+      min-width: 1.8rem;
+    }
+    .sec-title { font-size: 1rem; font-weight: 700; flex: 1; padding: 0 0.5rem; }
+    .sec-time { font-size: 0.72rem; color: var(--muted); white-space: nowrap; }
+    .sec-arrow { color: var(--muted); font-size: 0.85rem; margin-left: 0.5rem; transition: transform 0.2s; }
+    .section.open .sec-arrow { transform: rotate(90deg); }
+
+    .sec-body {
+      display: none;
+      background: #141f2c;
+      padding: 0.75rem 1rem 1rem 1rem;
+    }
+    .section.open .sec-body { display: block; }
+
+    /* Bullets */
+    ul.bullets { list-style: none; padding: 0; }
+    ul.bullets li {
+      padding: 0.55rem 0 0.55rem 1.4rem;
+      position: relative;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.92rem;
+      line-height: 1.45;
+    }
+    ul.bullets li:last-child { border-bottom: none; }
+    ul.bullets li::before {
+      content: '▸';
+      position: absolute; left: 0;
+      color: var(--gold); font-size: 0.8rem;
+      top: 0.6rem;
+    }
+    ul.bullets li.cue::before { content: '💬'; font-size: 0.75rem; }
+    ul.bullets li.key::before { content: '★'; color: var(--gold-lt); }
+    ul.bullets li.warn::before { content: '⚠'; color: var(--red); }
+
+    .note {
+      margin-top: 0.75rem;
+      background: rgba(201,168,76,0.1);
+      border: 1px solid rgba(201,168,76,0.3);
+      border-radius: 6px;
+      padding: 0.6rem 0.8rem;
+      font-size: 0.8rem;
+      color: var(--gold-lt);
+    }
+
+    .sub-label {
+      font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--gold); font-weight: 700;
+      margin: 0.9rem 0 0.3rem;
+    }
+
+    /* Mark-done button */
+    .btn-done {
+      display: block; width: 100%; margin-top: 0.9rem;
+      padding: 0.65rem; border-radius: 6px;
+      background: rgba(74,222,128,0.12); border: 1px solid var(--green);
+      color: var(--green); font-size: 0.85rem; font-weight: 700;
+      cursor: pointer; text-align: center;
+    }
+    .section.done .btn-done { background: rgba(74,222,128,0.25); }
+  </style>
+</head>
+<body>
+
+<div class="hdr">
+  <div>
+    <div class="hdr-title">Veritas · 5th Sunday</div>
+    <div class="hdr-sub">AI for Real Life — Teaching Guide</div>
+  </div>
+  <div class="timer" id="timer" onclick="toggleTimer()" title="Tap to start/stop">15:00</div>
+</div>
+
+<div class="progress" id="progress"></div>
+
+<div id="sections-wrap"></div>
+
+<script>
+var sections = [
+  {
+    num: '00', title: 'Before You Start', time: '1 min',
+    bullets: [
+      {t: 'QR codes on tables — ask everyone to scan hobbyaquatics.com', cls: 'cue'},
+      {t: 'Site opens on their phone — they follow along from there'},
+      {t: 'No projector, no screen — phone is the medium'},
+      {t: 'Frame it: "This is a peer talking to peers — I\'m learning alongside you"', cls: 'key'},
+      {t: 'Establish tone: curious, not fearful — filtered through faith'},
+    ],
+    note: null
+  },
+  {
+    num: '01', title: 'See It First — Presidential AI Video', time: '2 min',
+    bullets: [
+      {t: 'Play the video — let it speak for itself before you explain anything', cls: 'cue'},
+      {t: 'Setting, voice, delivery — all AI-generated, available to anyone today'},
+      {t: '"That was made with tools you can try for free this week"'},
+      {t: 'Don\'t over-explain — let the reaction happen first', cls: 'key'},
+      {t: 'Transition: "Before we go further, let\'s understand what\'s actually happening under the hood"'},
+    ],
+    note: null
+  },
+  {
+    num: '02', title: 'Live Exercise — Token Inference', time: '1 min',
+    bullets: [
+      {t: 'Ask the group to finish the phrases out loud — don\'t overthink it', cls: 'cue'},
+      {t: '"Three Little ___" · "I Dream of ___" · "Peter Piper Picked a ___"'},
+      {t: '"The 12 ___" · "Good ___"'},
+      {t: 'Point: they didn\'t think — they predicted. That\'s exactly what AI does.', cls: 'key'},
+      {t: '"AI doesn\'t know the right answer — it knows what word usually comes next"'},
+    ],
+    note: 'Answers: Pigs · Jeannie · Peck of Pickled Peppers · Disciples / Apostles · Morning'
+  },
+  {
+    num: '03', title: 'How AI Works — Core Concepts', time: '3 min',
+    bullets: [
+      {t: 'Embeddings: GPS for meaning — "king minus man plus woman equals queen"'},
+      {t: 'Tokens: LEGO bricks of language — AI sees chunks, not letters'},
+      {t: 'Models: compressed pattern memory — trained, then frozen'},
+      {t: 'LLMs vs Diffusion: chat tools predict text / image tools paint from noise', cls: 'key'},
+      {t: 'Hallucinations: guessing is the job — sometimes it guesses wrong. Verify.', cls: 'warn'},
+      {t: 'Context: more isn\'t always better — relevant context beats long context'},
+      {t: 'Alignment vs. Obedience: it\'s trained to be helpful, not to be right'},
+    ],
+    note: null
+  },
+  {
+    num: '04', title: 'The Tools — What\'s Available', time: '2 min',
+    bullets: [
+      {t: 'Chat & Research: ChatGPT · Claude · Gemini · Grok — all free tiers available', cls: 'cue'},
+      {t: 'Images: ImageFX (free) · ChatGPT 4o Images · Adobe Firefly'},
+      {t: 'Video & Voice: ElevenLabs (voice) · HeyGen (avatar video)'},
+      {t: 'Meetings: Fireflies.ai — free transcription, searchable records', cls: 'key'},
+      {t: 'Automation: Zapier — connect apps without coding, 100 tasks/month free'},
+      {t: '"Which AI?" — point them to the comparison chart on the site'},
+    ],
+    note: 'IBM benchmark: Claude Opus 4.7 leads complex autonomous tasks at 46.7%'
+  },
+  {
+    num: '05', title: 'AI Characters — Dr. Dofleini', time: '2 min',
+    bullets: [
+      {t: 'Play the Dr. Enzocto Dofleini video', cls: 'cue'},
+      {t: 'One character — built once, deployed forever across any content'},
+      {t: 'Consistent voice, look, and presence without a camera or studio'},
+      {t: 'Real applications: ministry characters, education, recurring brand presence', cls: 'key'},
+      {t: '"Think about what your church or small group could do with this"'},
+    ],
+    note: null
+  },
+  {
+    num: '06', title: 'Prompt Library — Faith Cards', time: '2 min',
+    bullets: [
+      {t: 'Walk through 2–3 of the faith image cards — show the actual AI output', cls: 'cue'},
+      {t: 'Biblical Backpacks: one prompt → full brand concept with mockups'},
+      {t: 'New Testament slides: one prompt → polished 5-slide keynote deck'},
+      {t: 'The formula: Subject + Style + Composition + Lighting + Details + Constraints', cls: 'key'},
+      {t: '47 prompts in the accordion — they keep the site, use it at home'},
+    ],
+    note: null
+  },
+  {
+    num: '07', title: 'The Bigger Picture — What Research Says', time: '1 min',
+    bullets: [
+      {t: '300M jobs globally exposed to automation — not eliminated, reshaped', cls: 'warn'},
+      {t: 'AI task capability doubling every 7 months — for 6 years running'},
+      {t: '64% of Americans: AI will fundamentally change how they work (Pew, 2026)'},
+      {t: 'State of the Bible 2026: spiritual hunger is growing — AI can serve that', cls: 'key'},
+      {t: 'Your strengths AI can\'t replicate: relationship, discernment, lived faith'},
+    ],
+    note: 'Alignment distinction: AI is trained to be obedient, not righteous. Discernment still belongs to us.'
+  },
+  {
+    num: '08', title: 'Try This Week — Send Them Off', time: '1 min',
+    bullets: [
+      {t: 'Pick ONE tool — open ChatGPT or Gemini this week', cls: 'cue'},
+      {t: 'Try one prompt from the faith section — Mission Trips, Mind Map, Curriculum'},
+      {t: 'Teach someone else — the best test of whether you understood it', cls: 'key'},
+      {t: 'Keep hobbyaquatics.com bookmarked — it\'s their take-away reference'},
+      {t: '"The QR code stays live — share it with anyone who would benefit"'},
+    ],
+    note: null
+  }
+];
+
+// Build DOM
+var wrap = document.getElementById('sections-wrap');
+var prog = document.getElementById('progress');
+var state = sections.map(function() { return 'idle'; }); // idle | active | done
+
+function render() {
+  wrap.innerHTML = '';
+  prog.innerHTML = '';
+
+  sections.forEach(function(s, i) {
+    // dot
+    var dot = document.createElement('div');
+    dot.className = 'dot' + (state[i] === 'active' ? ' active' : '') + (state[i] === 'done' ? ' done' : '');
+    dot.title = s.title;
+    dot.onclick = function() { toggleSection(i); };
+    prog.appendChild(dot);
+
+    // section
+    var sec = document.createElement('div');
+    sec.className = 'section' + (state[i] === 'active' ? ' open active' : '') + (state[i] === 'done' ? ' done' : '');
+
+    var hdr = '<div class="sec-header" onclick="toggleSection(' + i + ')">' +
+      '<span class="sec-num">' + s.num + '</span>' +
+      '<span class="sec-title">' + s.title + '</span>' +
+      '<span class="sec-time">' + s.time + '</span>' +
+      '<span class="sec-arrow">▶</span>' +
+      '</div>';
+
+    var body = '<div class="sec-body"><ul class="bullets">';
+    s.bullets.forEach(function(b) {
+      body += '<li' + (b.cls ? ' class="' + b.cls + '"' : '') + '>' + b.t + '</li>';
+    });
+    body += '</ul>';
+
+    if (s.note) {
+      body += '<div class="note">📌 ' + s.note + '</div>';
+    }
+
+    body += '<button class="btn-done" onclick="markDone(' + i + ')">' +
+      (state[i] === 'done' ? '✓ Done' : '✓ Mark Complete') +
+      '</button></div>';
+
+    sec.innerHTML = hdr + body;
+    wrap.appendChild(sec);
+  });
+}
+
+function toggleSection(i) {
+  if (state[i] !== 'done') {
+    state[i] = state[i] === 'active' ? 'idle' : 'active';
+  } else {
+    // allow re-opening done sections
+    state[i] = state[i] === 'active' ? 'done' : 'active';
+    // toggle open class without changing done
+    render();
+    return;
+  }
+  // close others
+  state.forEach(function(s, j) {
+    if (j !== i && state[j] === 'active') state[j] = 'idle';
+  });
+  render();
+}
+
+function markDone(i) {
+  state[i] = 'done';
+  // auto-open next
+  var next = i + 1;
+  if (next < sections.length) {
+    state.forEach(function(s, j) { if (state[j] === 'active') state[j] = 'idle'; });
+    state[next] = 'active';
+  }
+  render();
+  // scroll next into view
+  setTimeout(function() {
+    var items = document.querySelectorAll('.section');
+    if (items[next]) items[next].scrollIntoView({behavior: 'smooth', block: 'start'});
+  }, 80);
+}
+
+render();
+
+// Timer
+var totalSecs = 15 * 60;
+var remaining = totalSecs;
+var running = false;
+var interval = null;
+
+function fmtTime(s) {
+  var m = Math.floor(s / 60);
+  var ss = s % 60;
+  return (m < 10 ? '0' : '') + m + ':' + (ss < 10 ? '0' : '') + ss;
+}
+
+function toggleTimer() {
+  if (running) {
+    clearInterval(interval);
+    running = false;
+  } else {
+    if (remaining <= 0) remaining = totalSecs;
+    running = true;
+    interval = setInterval(function() {
+      remaining--;
+      var el = document.getElementById('timer');
+      el.textContent = fmtTime(remaining);
+      el.className = 'timer' + (remaining <= 120 ? ' warn' : '');
+      if (remaining <= 0) { clearInterval(interval); running = false; }
+    }, 1000);
+  }
+}
+document.getElementById('timer').textContent = fmtTime(remaining);
+</script>
+
+</body>
+</html>
