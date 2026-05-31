@@ -1,0 +1,1922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI for Real Life — Veritas Life Group · May 2026</title>
+  <meta name="description" content="A practical guide to AI tools, how they work, and how to use them well. Prepared for the Veritas Life Group 5th Sunday presentation.">
+  <style>
+    /* ── DESIGN TOKENS ── */
+    :root {
+      --navy:   #1e3a5f;
+      --navy-dk:#0f2340;
+      --gold:   #c9a84c;
+      --gold-lt:#f0d98a;
+      --cream:  #f8f5ee;
+      --white:  #ffffff;
+      --text:   #1a1a2e;
+      --muted:  #6b7280;
+      --border: #e5e7eb;
+      --green:  #166534;
+      --blue:   #1d4ed8;
+      --shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
+
+    /* ── RESET ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      line-height: 1.7;
+      font-size: 16px;
+    }
+    img { max-width: 100%; height: auto; display: block; }
+    a { color: var(--blue); }
+    a:hover { text-decoration: underline; }
+
+    /* ── CONTAINER ── */
+    .container { max-width: 880px; margin: 0 auto; padding: 0 1.25rem; }
+
+    /* ── STICKY NAV ── */
+    .site-nav {
+      position: sticky; top: 0; z-index: 200;
+      background: var(--navy);
+      border-bottom: 3px solid var(--gold);
+    }
+    .nav-inner {
+      max-width: 880px; margin: 0 auto; padding: 0.6rem 1.25rem;
+      display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+    }
+    .nav-brand {
+      color: var(--gold); font-weight: 800; font-size: 0.9rem;
+      letter-spacing: 0.05em; text-decoration: none; margin-right: auto;
+    }
+    .nav-brand:hover { text-decoration: none; }
+    .nav-links { display: flex; gap: 0.15rem; flex-wrap: wrap; list-style: none; }
+    .nav-links a {
+      color: rgba(255,255,255,0.8); font-size: 0.75rem; font-weight: 500;
+      padding: 0.3rem 0.55rem; border-radius: 4px; text-decoration: none;
+      transition: background 0.15s, color 0.15s;
+    }
+    .nav-links a:hover { background: rgba(255,255,255,0.12); color: #fff; }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dk) 100%);
+      color: white; padding: 4rem 1.25rem 3.5rem; text-align: center;
+      border-bottom: 4px solid var(--gold);
+    }
+    .hero-eyebrow {
+      font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 1rem; font-weight: 700;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; line-height: 1.15;
+      margin-bottom: 1rem; letter-spacing: -0.01em;
+    }
+    .hero-sub {
+      font-size: 1.1rem; color: rgba(255,255,255,0.72); max-width: 580px;
+      margin: 0 auto 1.75rem; line-height: 1.65;
+    }
+    .hero-meta {
+      font-size: 0.78rem; color: rgba(255,255,255,0.45);
+      letter-spacing: 0.06em; margin-top: 1.5rem;
+    }
+    .hero-actions {
+      display: flex; justify-content: center; gap: 0.75rem; flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      padding: 0.6rem 1.2rem; border-radius: 6px; font-size: 0.88rem;
+      font-weight: 600; text-decoration: none; transition: all 0.15s; cursor: pointer;
+    }
+    .btn-gold { background: var(--gold); color: var(--navy); }
+    .btn-gold:hover { background: var(--gold-lt); text-decoration: none; transform: translateY(-1px); }
+    .btn-outline {
+      border: 1.5px solid rgba(255,255,255,0.35); color: rgba(255,255,255,0.88);
+      background: transparent;
+    }
+    .btn-outline:hover { border-color: white; background: rgba(255,255,255,0.08); text-decoration: none; }
+
+    /* ── SECTION WRAPPERS ── */
+    .section { padding: 4rem 0; }
+    .section-white { background: var(--white); }
+    .section-navy { background: var(--navy); color: white; }
+
+    .section-label {
+      font-size: 0.7rem; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--gold); font-weight: 700; margin-bottom: 0.4rem;
+    }
+    .section-navy .section-label { color: var(--gold-lt); }
+
+    .section-title {
+      font-size: clamp(1.5rem, 3.5vw, 2.1rem); font-weight: 800; color: var(--navy);
+      line-height: 1.2; margin-bottom: 0.65rem;
+    }
+    .section-navy .section-title { color: white; }
+
+    .section-intro {
+      font-size: 1rem; color: var(--muted); max-width: 680px;
+      line-height: 1.75; margin-bottom: 2.25rem;
+    }
+    .section-navy .section-intro { color: rgba(255,255,255,0.65); }
+
+    /* ── VIDEO ── */
+    .video-context {
+      background: var(--white); border: 1px solid var(--border); border-radius: 10px;
+      padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; box-shadow: var(--shadow);
+    }
+    .video-context p { font-size: 0.95rem; color: #374151; line-height: 1.65; }
+    .video-context strong { color: var(--navy); }
+
+    .video-shell {
+      border-radius: 12px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.22);
+      background: #000;
+    }
+    .ratio-16x9 { position: relative; padding-bottom: 56.25%; height: 0; }
+    .ratio-16x9 iframe { position: absolute; top:0; left:0; width:100%; height:100%; border:none; }
+
+    /* Shorts: max-width container then 9:16 inside */
+    .shorts-outer { display: flex; justify-content: center; }
+    .shorts-wrap { width: 100%; max-width: 340px; }
+    .ratio-9x16 { position: relative; padding-bottom: 177.78%; height: 0; }
+    .ratio-9x16 iframe { position: absolute; top:0; left:0; width:100%; height:100%; border:none; }
+
+    /* ── CALLOUT ── */
+    .callout {
+      border-left: 4px solid var(--gold); background: var(--white);
+      padding: 1.1rem 1.4rem; border-radius: 0 8px 8px 0; margin: 1.5rem 0;
+    }
+    .callout-label {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--gold); margin-bottom: 0.35rem;
+    }
+    .callout p { font-size: 0.93rem; color: #374151; line-height: 1.65; }
+    .callout-navy { border-left-color: var(--navy); }
+    .callout-navy .callout-label { color: var(--navy); }
+    .callout-green { border-left-color: var(--green); }
+    .callout-green .callout-label { color: var(--green); }
+
+    /* ── FILL-IN-THE-BLANK ── */
+    .blank-box {
+      background: var(--navy); color: white; border-radius: 12px;
+      padding: 2rem 1.5rem; margin: 1.75rem 0;
+    }
+    .blank-box-title {
+      font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--gold); font-weight: 700; margin-bottom: 1rem;
+    }
+    .blank-list { list-style: none; display: flex; flex-direction: column; gap: 0.65rem; }
+    .blank-list li {
+      display: flex; align-items: center; gap: 0.85rem;
+      font-size: 1rem; font-weight: 500; color: rgba(255,255,255,0.9);
+    }
+    .blank-num {
+      display: flex; align-items: center; justify-content: center;
+      width: 1.75rem; height: 1.75rem; background: var(--gold); color: var(--navy);
+      border-radius: 50%; font-size: 0.78rem; font-weight: 800; flex-shrink: 0;
+    }
+    .blank-line {
+      display: inline-block; width: 110px; border-bottom: 2px solid rgba(255,255,255,0.4);
+      margin-left: 0.2rem;
+    }
+    .blank-hint { font-size: 0.78rem; color: rgba(255,255,255,0.4); margin-top: 0.85rem; font-style: italic; }
+
+    /* ── CONCEPT CARDS ── */
+    .concept-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.1rem;
+    }
+    .concept-card {
+      background: var(--white); border: 1px solid var(--border); border-radius: 10px;
+      padding: 1.35rem; box-shadow: var(--shadow);
+    }
+    .concept-icon { font-size: 1.6rem; margin-bottom: 0.6rem; }
+    .concept-name { font-size: 0.95rem; font-weight: 700; color: var(--navy); margin-bottom: 0.35rem; }
+    .concept-body { font-size: 0.88rem; color: #374151; line-height: 1.65; }
+    .concept-quote {
+      font-size: 0.85rem; font-style: italic; color: var(--navy);
+      border-left: 3px solid var(--gold); padding-left: 0.75rem;
+      margin-top: 0.75rem; line-height: 1.5;
+    }
+
+    /* ── TOOL SECTION ── */
+    .tool-group { margin-bottom: 2.5rem; }
+    .tool-group-header {
+      display: flex; align-items: center; gap: 0.7rem;
+      border-bottom: 2px solid var(--border); padding-bottom: 0.75rem; margin-bottom: 1.1rem;
+    }
+    .tool-group-icon {
+      width: 2.25rem; height: 2.25rem; background: var(--navy); color: white;
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; flex-shrink: 0;
+    }
+    .tool-group-name { font-size: 1.1rem; font-weight: 700; color: var(--navy); }
+    .tool-group-desc { font-size: 0.82rem; color: var(--muted); }
+
+    .tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 0.9rem; }
+    .tool-card {
+      background: var(--white); border: 1px solid var(--border); border-radius: 8px;
+      padding: 1.1rem 1.2rem; box-shadow: var(--shadow);
+    }
+    .tool-name { font-weight: 700; font-size: 0.95rem; color: var(--navy); margin-bottom: 0.25rem; }
+    .tool-for { font-size: 0.78rem; color: var(--muted); margin-bottom: 0.5rem; }
+    .tool-body { font-size: 0.86rem; color: #374151; line-height: 1.6; }
+    .tool-tag {
+      display: inline-block; font-size: 0.67rem; font-weight: 700; letter-spacing: 0.06em;
+      text-transform: uppercase; padding: 0.18rem 0.5rem; border-radius: 20px; margin-top: 0.65rem;
+    }
+    .tag-free { background: #dcfce7; color: #166534; }
+    .tag-freemium { background: #dbeafe; color: #1e40af; }
+    .tag-paid { background: #fef3c7; color: #92400e; }
+
+    /* ── BENCHMARK ── */
+    .benchmark-wrap {
+      background: var(--white); border: 1px solid var(--border); border-radius: 10px;
+      padding: 1.25rem; box-shadow: var(--shadow); margin-top: 1.5rem;
+    }
+    .benchmark-cap {
+      font-size: 0.78rem; color: var(--muted); text-align: center;
+      margin-top: 0.65rem; font-style: italic; line-height: 1.5;
+    }
+
+    /* ── PROMPT ACCORDION ── */
+    .prompt-section-label {
+      font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase;
+      font-weight: 700; color: var(--muted); margin: 1.75rem 0 0.6rem; display: block;
+    }
+    details {
+      border: 1px solid var(--border); border-radius: 8px; margin-bottom: 0.6rem;
+      background: var(--white); overflow: hidden;
+    }
+    details[open] { border-color: var(--navy); }
+    summary {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.9rem 1.1rem; cursor: pointer; font-weight: 600; font-size: 0.92rem;
+      color: var(--navy); user-select: none; list-style: none; gap: 0.5rem;
+    }
+    summary::-webkit-details-marker { display: none; }
+    .summary-left { display: flex; align-items: center; gap: 0.6rem; }
+    .summary-arrow { color: var(--muted); font-size: 1.1rem; transition: transform 0.2s; flex-shrink: 0; }
+    details[open] .summary-arrow { transform: rotate(45deg); }
+    .faith-badge {
+      font-size: 0.62rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      background: #fffbeb; color: #92400e; border: 1px solid #fde68a;
+      padding: 0.15rem 0.5rem; border-radius: 20px; white-space: nowrap;
+    }
+    .acc-body { padding: 0 1.1rem 1.1rem; border-top: 1px solid var(--border); }
+    .prompt-desc { font-size: 0.88rem; color: var(--muted); margin: 0.75rem 0 0.6rem; }
+    .prompt-box {
+      background: #f3f4f6; border-left: 3px solid var(--gold); border-radius: 0 6px 6px 0;
+      padding: 0.85rem 1rem; font-size: 0.84rem; font-family: Georgia, serif;
+      line-height: 1.65; color: #374151; white-space: pre-wrap;
+    }
+    .prompt-tool { font-size: 0.75rem; color: var(--muted); margin-top: 0.5rem; }
+
+    /* ── QUOTE BLOCK ── */
+    .quote-block {
+      background: var(--navy); color: white; border-radius: 12px;
+      padding: 2.25rem 2rem; margin: 2rem 0; position: relative; overflow: hidden;
+    }
+    .quote-block::before {
+      content: '\201C'; position: absolute; top: -30px; left: 16px;
+      font-size: 9rem; color: rgba(201,168,76,0.13); font-family: Georgia, serif; line-height: 1;
+    }
+    .quote-text { font-size: 1.12rem; font-style: italic; line-height: 1.7; position: relative; }
+    .quote-attr { margin-top: 0.85rem; font-size: 0.78rem; color: var(--gold); letter-spacing: 0.05em; }
+
+    /* ── STAT STRIP ── */
+    .stat-strip {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    .stat-card {
+      background: var(--white); border: 1px solid var(--border); border-radius: 10px;
+      padding: 1.25rem; text-align: center; box-shadow: var(--shadow);
+    }
+    .stat-number { font-size: 2rem; font-weight: 800; color: var(--navy); line-height: 1; }
+    .stat-label { font-size: 0.8rem; color: var(--muted); line-height: 1.45; margin-top: 0.3rem; }
+    .stat-src { font-size: 0.66rem; color: #9ca3af; font-style: italic; margin-top: 0.3rem; }
+
+    /* ── TRY THIS WEEK ── */
+    .try-list { list-style: none; display: flex; flex-direction: column; gap: 1.1rem; }
+    .try-item {
+      display: grid; grid-template-columns: auto 1fr; gap: 1rem; align-items: start;
+      background: var(--white); border: 1px solid var(--border); border-radius: 10px;
+      padding: 1.25rem; box-shadow: var(--shadow);
+    }
+    .try-num {
+      width: 2.5rem; height: 2.5rem; background: var(--gold); color: var(--navy);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; font-weight: 800; flex-shrink: 0;
+    }
+    .try-title { font-weight: 700; font-size: 1rem; color: var(--navy); margin-bottom: 0.3rem; }
+    .try-body { font-size: 0.9rem; color: #374151; line-height: 1.65; }
+    .try-link { font-size: 0.82rem; color: var(--blue); margin-top: 0.3rem; }
+
+    /* ── RESOURCE LIST ── */
+    .resource-list { display: flex; flex-direction: column; gap: 0.7rem; }
+    .resource-item {
+      display: flex; align-items: center; gap: 1rem; background: var(--white);
+      border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.25rem;
+      text-decoration: none; transition: border-color 0.15s, box-shadow 0.15s; color: var(--text);
+    }
+    .resource-item:hover { border-color: var(--navy); box-shadow: 0 2px 12px rgba(30,58,95,0.1); text-decoration: none; }
+    .resource-icon { font-size: 1.5rem; flex-shrink: 0; }
+    .resource-title { font-weight: 700; font-size: 0.93rem; color: var(--navy); }
+    .resource-desc { font-size: 0.8rem; color: var(--muted); }
+
+    /* ── FOOTER ── */
+    .site-footer {
+      background: var(--navy-dk); color: rgba(255,255,255,0.5);
+      text-align: center; padding: 2.5rem 1.25rem; font-size: 0.8rem; line-height: 1.75;
+    }
+    .site-footer a { color: var(--gold); }
+
+    /* ── UTILITY ── */
+    .mt-sm { margin-top: 0.75rem; }
+    .mt-md { margin-top: 1.5rem; }
+    .mt-lg { margin-top: 2.5rem; }
+    .mb-sm { margin-bottom: 0.75rem; }
+    .mb-md { margin-bottom: 1.5rem; }
+    .text-center { text-align: center; }
+    .text-muted { color: var(--muted); font-size: 0.88rem; }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .nav-links { display: none; }
+      .concept-grid, .tool-grid { grid-template-columns: 1fr; }
+      .stat-strip { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 400px) {
+      .stat-strip { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     STICKY NAV
+═══════════════════════════════════════════ -->
+<nav class="site-nav" aria-label="Site navigation">
+  <div class="nav-inner">
+    <a class="nav-brand" href="#top">Veritas · AI 2026</a>
+    <ul class="nav-links">
+      <li><a href="#see-it">See It</a></li>
+      <li><a href="#how-it-works">How It Works</a></li>
+      <li><a href="#tools">The Tools</a></li>
+      <li><a href="#ai-characters">AI Characters</a></li>
+      <li><a href="#prompt-guide">Prompt Guide</a></li>
+      <li><a href="#bigger-picture">Bigger Picture</a></li>
+      <li><a href="#try-this-week">Try This Week</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════
+     HERO
+═══════════════════════════════════════════ -->
+<header class="hero" id="top">
+  <div class="hero-eyebrow">Veritas Life Group · 5th Sunday · May 2026</div>
+  <h1>AI for Real Life</h1>
+  <p class="hero-sub">
+    A practical guide to what AI is, how it works, and which tools are worth your time —
+    presented by a fellow Christian who loves this technology and wants to share it honestly.
+  </p>
+  <div class="hero-actions">
+    <a class="btn btn-gold" href="#see-it">▶ Start with the Video</a>
+    <a class="btn btn-outline" href="#try-this-week">Try This Week →</a>
+  </div>
+  <p class="hero-meta">www.hobbyaquatics.com &nbsp;·&nbsp; Scan the QR code to follow along on your phone</p>
+</header>
+
+
+<!-- ═══════════════════════════════════════════
+     SECTION 1 — SEE IT FIRST
+═══════════════════════════════════════════ -->
+<section class="section section-white" id="see-it">
+  <div class="container">
+    <div class="section-label">See It First</div>
+    <h2 class="section-title">Before We Explain It, Watch It</h2>
+    <p class="section-intro">
+      The video below was created entirely with AI tools available to anyone today. The setting,
+      the delivery, and the presence you see — all generated. This is not science fiction.
+      This is May 2026.
+    </p>
+
+    <div class="video-context">
+      <p><strong>Presidential State of AI Address</strong> — A demonstration of what AI-generated
+      video can produce today. What you're watching is an AI-created speaker in an AI-created
+      setting, delivering scripted content about artificial intelligence. No studio, no actor,
+      no film crew.</p>
+    </div>
+
+    <div class="shorts-outer">
+      <div class="shorts-wrap">
+        <div class="video-shell">
+          <div class="ratio-9x16">
+            <iframe
+              src="https://www.youtube.com/embed/kfMYHz5dBEc"
+              title="Presidential State of AI Address"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen>
+            </iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout mt-md">
+      <div class="callout-label">Why Start Here?</div>
+      <p>
+        Because most of us understand something better when we see it than when we read about it.
+        The tools that made this video exist right now, many of them free, and this presentation
+        will show you where to find them.
+      </p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     SECTION 2 — HOW AI ACTUALLY WORKS
+═══════════════════════════════════════════ -->
+<section class="section" id="how-it-works">
+  <div class="container">
+    <div class="section-label">Understanding AI</div>
+    <h2 class="section-title">How AI Actually Works</h2>
+    <p class="section-intro">
+      You don't need a computer science degree to understand what's happening under the hood.
+      Five concepts explain almost everything you'll encounter as a user of these tools.
+    </p>
+
+    <!-- FILL IN THE BLANK -->
+    <div class="blank-box">
+      <div class="blank-box-title">Live Exercise — Fill in the Blank</div>
+      <ul class="blank-list">
+        <li><span class="blank-num">1</span> Three Little <span class="blank-line"></span></li>
+        <li><span class="blank-num">2</span> I Dream of <span class="blank-line"></span></li>
+        <li><span class="blank-num">3</span> Peter Piper Picked a <span class="blank-line"></span></li>
+        <li><span class="blank-num">4</span> The 12 <span class="blank-line"></span></li>
+        <li><span class="blank-num">5</span> Good <span class="blank-line"></span></li>
+      </ul>
+      <p class="blank-hint">
+        Write your answers before the group shares. Notice which ones you filled in instantly —
+        and which ones you hesitated on. That hesitation is the entire story of how AI works.
+      </p>
+    </div>
+
+    <div class="callout callout-navy">
+      <div class="callout-label">The Insight</div>
+      <p>
+        Notice that #5 — "Good ___" — had several reasonable answers: <em>Good Night, Good Morning,
+        Good Day, Good enough.</em> Without more context, any of them could be right. That uncertainty
+        is exactly what an AI faces when your prompt doesn't give it enough to work with.
+        More context doesn't just help — <strong>the right context is what separates a useful AI
+        response from a generic one.</strong>
+      </p>
+    </div>
+
+    <!-- 5 CONCEPTS -->
+    <h3 class="mt-lg mb-sm" style="font-size:1.15rem; font-weight:700; color:var(--navy);">Five Things Worth Understanding</h3>
+
+    <div class="concept-grid">
+
+      <div class="concept-card">
+        <div class="concept-icon">📍</div>
+        <div class="concept-name">1. Embeddings — The Map of Meaning</div>
+        <div class="concept-body">
+          When you type a place into GPS, you think in words. Your phone thinks in coordinates.
+          The conversion — human name to machine numbers — is exactly what an embedding is.
+          AI converts words and sentences into numerical addresses on a map of meaning. Ideas
+          that mean similar things get similar coordinates. That's why AI can understand
+          "Why is the sky blue?" and "What makes the sky appear blue?" as the same question.
+        </div>
+        <div class="concept-quote">
+          "Embeddings are how computers turn ideas into addresses."
+        </div>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-icon">🧩</div>
+        <div class="concept-name">2. Tokens — The LEGO Bricks of Language</div>
+        <div class="concept-body">
+          AI doesn't read words. It reads <em>tokens</em> — chunks of language small enough to
+          be counted and measured. "Running" might split into "run" + "ning." Tokens are the
+          compromise between letters (too small to carry meaning) and whole words (too large
+          and unpredictable). Think of them as LEGO bricks: a limited set of pieces that can
+          build almost anything.
+        </div>
+        <div class="concept-quote">
+          "Tokens are how flowing human language becomes something a computer can step through,
+          one piece at a time."
+        </div>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-icon">🧠</div>
+        <div class="concept-name">3. Models — Compressed Pattern Memory</div>
+        <div class="concept-body">
+          A model is not a database. It's not a brain. It's a compressed memory of patterns
+          learned from billions of examples. Like learning to drive — you don't memorize every
+          road, you learn how roads usually work. Bigger models handle more complex patterns and
+          longer context. Smaller models are faster and better for specific tasks. Neither is
+          always better.
+        </div>
+        <div class="concept-quote">
+          "Models store what usually follows what."
+        </div>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-icon">🖼️</div>
+        <div class="concept-name">4. LLMs vs. Diffusion Models</div>
+        <div class="concept-body">
+          <strong>LLMs (language models)</strong> predict the next token. They build forward,
+          one piece at a time, using everything they've seen so far to choose what comes next.
+          ChatGPT, Claude, and Gemini are LLMs.<br><br>
+          <strong>Diffusion models</strong> start with noise and remove what doesn't belong —
+          like a sculpture emerging from stone. Midjourney, Firefly, and DALL·E are diffusion models.
+        </div>
+        <div class="concept-quote">
+          "Language models build forward. Diffusion models clean backward."
+        </div>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-icon">⚠️</div>
+        <div class="concept-name">5. Hallucinations — Guessing Is the Job</div>
+        <div class="concept-body">
+          AI "hallucinations" are not lies. They're confident wrong guesses — the same mechanism
+          that produces brilliant answers also occasionally produces plausible nonsense. The model
+          is always choosing the most statistically likely next token. Sometimes it guesses wrong.
+          It has no internal moment where it says "I don't know." It only says "this seems right."
+        </div>
+        <div class="concept-quote">
+          "AI doesn't hallucinate because it's broken. It hallucinates because it's guessing —
+          and guessing is the job. Verify anything that matters."
+        </div>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-icon">🎯</div>
+        <div class="concept-name">Context — Quality Beats Quantity</div>
+        <div class="concept-body">
+          Context is what the model can see right now: your prompt, earlier messages, documents
+          you've shared. More context helps — up to a point. Research shows that <em>too much
+          irrelevant context</em> can actually degrade performance, as the model must filter
+          out noise. The lesson: focused, relevant context outperforms long, rambling prompts.
+        </div>
+        <div class="concept-quote">
+          "Context is what lets AI stay on the same page instead of starting over."
+        </div>
+      </div>
+
+    </div><!-- end concept-grid -->
+
+    <!-- PROMPTING -->
+    <h3 class="mt-lg" style="font-size:1.15rem; font-weight:700; color:var(--navy); margin-bottom:0.6rem;">
+      The Skill That Multiplies Everything: Prompting
+    </h3>
+
+    <div class="callout callout-green">
+      <div class="callout-label">Bad Prompt vs. Good Prompt</div>
+      <p>
+        <strong>Bad:</strong> "Explain artificial intelligence."<br>
+        <em>Result: correct, generic, not useful to you specifically.</em><br><br>
+        <strong>Good:</strong> "Explain artificial intelligence to a non-technical adult audience
+        in a church Life Group. Avoid jargon. Use real-world analogies. Focus on what AI can and
+        cannot do today. Keep it under 3 minutes of reading time."<br>
+        <em>Result: the model didn't get smarter — the probability space got smaller.</em>
+      </p>
+    </div>
+
+    <p class="text-muted">
+      The four questions that make any prompt better: <strong>Who is this for? What do they
+      already know? What do they need it for? What does success look like?</strong> Add those
+      answers to your prompt, and the output improves dramatically.
+    </p>
+
+    <div class="quote-block mt-md">
+      <div class="quote-text">
+        AI is not intelligent like a person. It is competent like a system. It doesn't know
+        <em>why</em> a metaphor works. It knows <em>that</em> it works. That's enough to be useful.
+        It's not enough to be conscious.
+      </div>
+      <div class="quote-attr">— From a conversation on explaining AI to a non-technical audience</div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     SECTION 3 — THE TOOLS
+═══════════════════════════════════════════ -->
+<section class="section section-white" id="tools">
+  <div class="container">
+    <div class="section-label">AI Tools — May 2026</div>
+    <h2 class="section-title">What's Available, and What It's Good For</h2>
+    <p class="section-intro">
+      Organized by what you're trying to accomplish — not by brand or category. Every tool
+      listed here has a free tier you can start with today.
+    </p>
+
+    <!-- GROUP 1: CHAT -->
+    <div class="tool-group">
+      <div class="tool-group-header">
+        <div class="tool-group-icon">💬</div>
+        <div>
+          <div class="tool-group-name">Start Here — Conversation &amp; Research</div>
+          <div class="tool-group-desc">Ask anything. These are the tools most people mean when they say "AI."</div>
+        </div>
+      </div>
+      <div class="tool-grid">
+        <div class="tool-card">
+          <div class="tool-name">ChatGPT</div>
+          <div class="tool-for">OpenAI · The one everyone's heard of</div>
+          <div class="tool-body">Fast, multimodal assistant. Handles text, images, audio, code, and files.
+          The most intuitive interface and the broadest feature set. A great first stop.</div>
+          <span class="tool-tag tag-freemium">Free · $20/mo Plus</span>
+        </div>
+        <div class="tool-card">
+          <div class="tool-name">Google Gemini</div>
+          <div class="tool-for">Google · Lives inside your existing tools</div>
+          <div class="tool-body">Native integration across Gmail, Docs, Sheets, and Calendar.
+          If your digital life runs on Google, Gemini is the AI you want in your corner — no new
+          habits required.</div>
+          <span class="tool-tag tag-freemium">Free · Workspace subscription for full integration</span>
+        </div>
+        <div class="tool-card">
+          <div class="tool-name">Claude</div>
+          <div class="tool-for">Anthropic · Best for long-form writing and nuanced thinking</div>
+          <div class="tool-body">Exceptional for writing, reasoning, research, and long documents.
+          Built with a strong emphasis on honesty and careful responses. The free tier is generous
+          and highly capable.</div>
+          <span class="tool-tag tag-free">Free · $20/mo Pro</span>
+        </div>
+        <div class="tool-card">
+          <div class="tool-name">Grok</div>
+          <div class="tool-for">xAI · Real-time information and deep reasoning</div>
+          <div class="tool-body">Built for users who want more thinking and less fluff. Integrates
+          with live web search and the X platform. Grok 3 offers strong reasoning for complex analysis.</div>
+          <span class="tool-tag tag-free">Free version available</span>
+        </div>
+      </div>
+
+      <div class="benchmark-wrap mt-md">
+        <img src="resources/graphics/IBMBenchMarkAgenticCapability.jpeg"
+             alt="ITBench-AA Benchmark: AI model performance on complex autonomous tasks. Claude Opus 4.7 leads at 46.7%, GPT-4.5 at 45.8%."
+             loading="lazy">
+        <p class="benchmark-cap">
+          ITBench-AA Benchmark (Artificial Analysis, 2026) — Measures performance on complex,
+          autonomous SRE tasks. Claude Opus 4.7 leads at 46.7%, GPT-4.5 close behind at 45.8%.
+          For everyday use, the differences between top models are subtle. <strong>Try them and find
+          your preference.</strong>
+        </p>
+      </div>
+    </div>
+
+    <!-- GROUP 2: IMAGE -->
+    <div class="tool-group">
+      <div class="tool-group-header">
+        <div class="tool-group-icon">🎨</div>
+        <div>
+          <div class="tool-group-name">Create — Images</div>
+          <div class="tool-group-desc">Turn a description into a photograph, illustration, infographic, or design.</div>
+        </div>
+      </div>
+      <div class="tool-grid">
+        <div class="tool-card">
+          <div class="tool-name">Google ImageFX (Imagen 3)</div>
+          <div class="tool-for">Google · Fast, photorealistic, excellent free entry point</div>
+          <div class="tool-body">Strong balance of speed and image quality. Great for marketers and
+          designers who want photorealistic or stylized visuals without spending time fine-tuning prompts.
+          Try it free at ImageFX.</div>
+          <span class="tool-tag tag-free">Free at ImageFX</span>
+        </div>
+        <div class="tool-card">
+          <div class="tool-name">ChatGPT 4o Images</div>
+          <div class="tool-for">OpenAI · Image generation built into your conversations</div>
+          <div class="tool-body">If you already use ChatGPT, image generation is built in. Context-aware
+          visuals with just a few clicks — great for social media graphics, presentations, and mockups.</div>
+          <span class="tool-tag tag-freemium">Included with ChatGPT Plus</span>
+        </div>
+        <div class="tool-card">
+          <div class="tool-name">Adobe Firefly</div>
+          <div class="tool-for">Adobe · Commercial-safe images inside Creative Cloud</div>
+          <div class="tool-body">Deep integration with Photoshop and Illustrator. All generated images
+          are safe for commercial use. The choice for design professionals and agencies who need
+          AI output they can legally publish.</div>
+          <span class="tool-tag tag-paid">Included with Creative Cloud</span>
+        </div>
+      </div>
+
+      <div class="benchmark-wrap mt-md" style="padding:1rem;">
+        <img src="resources/graphics/Writing better AI Image Prompts.png"
+             alt="Writing Better AI Image Prompts cheat sheet: Subject + Style/Medium + Composition + Lighting/Mood + Key Details + Constraints"
+             loading="lazy">
+        <p class="benchmark-cap">
+          Keep this formula handy: <strong>Subject + Style/Medium + Composition + Lighting/Mood + Key Details + Constraints.</strong>
+          The full prompt library below has 47 ready-to-use examples.
+        </p>
+      </div>
+    </div>
+
+    <!-- GROUP 3: VIDEO & VOICE -->
+    <div class="tool-group">
+      <div class="tool-group-header">
+        <div class="tool-group-icon">🎬</div>
+        <div>
+          <div class="tool-group-name">Create — Video &amp; Voice</div>
+          <div class="tool-group-desc">Generate video clips, voiceovers, and AI-produced music.</div>
+        </div>
+      </div>
+      <div class="tool-grid">
+        <div class="tool-card">
+          <div class="tool-name">OpenAI Sora</div>
+          <div class="tool-for">OpenAI · Short AI-generated video clips</div>
+          <div class="tool-body">Generates short video and image clips from prompts. Built directly
+          into ChatGPT Plus. Excellent for B-roll, social content, and creative projects.</div>
+          <span class="tool-tag tag-freemium">Included with ChatGPT Plus</span>
+        </div>
+        <div class="tool-card">
+          <div class="tool-name">Descript</div>
+          <div class="tool-for">Podcasters, video editors, content creators</div>
+          <div class="tool-body">Edit audio and video the way you'd edit a text document. AI features
+          include filler-word removal and voice cloning. A significant time-saver for anyone
+          producing regular content.</div>
+          <span class="tool-tag tag-freemium">Free · 3 hrs transcription</span>
+        </div>
+        <div class="tool-card">
+          <div class="tool-name">ElevenLabs</div>
+          <div class="tool-for">Creators needing professional voiceovers</div>
+          <div class="tool-body">Ultra-realistic AI voice generation with cloning, multilingual
+          dubbing, and emotional control. A full creative suite for podcast-quality narration
+          without hiring voice talent.</div>
+          <span class="tool-tag tag-freemium">Free tier available</span>
+        </div>
+        <div class="tool-card">
+          <div class="tool-name">Suno AI</div>
+          <div class="tool-for">Anyone who wants to create music from a text prompt</div>
+          <div class="tool-body">Full songs — vocals, instruments, structure — from a single
+          description. Whether you need background music for a video or want to write an original
+          song, Suno makes it accessible.</div>
+          <span class="tool-tag tag-freemium">Free tier available</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- GROUP 4: NOTES & MEETINGS -->
+    <div class="tool-group">
+      <div class="tool-group-header">
+        <div class="tool-group-icon">📋</div>
+        <div>
+          <div class="tool-group-name">Organize — Meetings &amp; Notes</div>
+          <div class="tool-group-desc">Never lose what was said in a meeting again.</div>
+        </div>
+      </div>
+      <div class="tool-grid">
+        <div class="tool-card">
+          <div class="tool-name">Fireflies.ai</div>
+          <div class="tool-for">Teams with regular meetings</div>
+          <div class="tool-body">Joins calls, records, transcribes, and turns conversations into
+          searchable summaries with action items. Supports 100+ languages. Free tier includes
+          unlimited transcription.</div>
+          <span class="tool-tag tag-free">Free tier · unlimited transcription</span>
+        </div>
+        <div class="tool-card">
+          <div class="tool-name">Jamie</div>
+          <div class="tool-for">Founders, managers, and anyone who leads meetings</div>
+          <div class="tool-body">Captures meetings quietly without bots or browser extensions.
+          Instant, structured summaries with tasks and key takeaways. Privacy-focused and
+          remarkably accurate.</div>
+          <span class="tool-tag tag-free">Free · 10 meetings/month</span>
+        </div>
+        <div class="tool-card">
+          <div class="tool-name">Notion AI</div>
+          <div class="tool-for">Notion users who want AI built into their workspace</div>
+          <div class="tool-body">AI assistance — writing, summarizing, task generation, database
+          queries — directly inside your Notion workspace. Connects to GPT-4 and Claude without
+          separate subscriptions.</div>
+          <span class="tool-tag tag-freemium">Free trial in all accounts</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- GROUP 5: WRITE -->
+    <div class="tool-group">
+      <div class="tool-group-header">
+        <div class="tool-group-icon">✍️</div>
+        <div>
+          <div class="tool-group-name">Write &amp; Polish</div>
+          <div class="tool-group-desc">From quick grammar fixes to long-form creative collaboration.</div>
+        </div>
+      </div>
+      <div class="tool-grid">
+        <div class="tool-card">
+          <div class="tool-name">Grammarly</div>
+          <div class="tool-for">Anyone who writes and publishes content regularly</div>
+          <div class="tool-body">Grammar, tone, rewriting, and AI/human authorship checks inside
+          your favorite apps. The free tier includes 100 AI prompts/month and a browser extension
+          that works almost everywhere.</div>
+          <span class="tool-tag tag-free">Free · 100 prompts/month</span>
+        </div>
+        <div class="tool-card">
+          <div class="tool-name">Claude</div>
+          <div class="tool-for">Writers who want a long-form collaborator</div>
+          <div class="tool-body">Claude excels at brainstorming, outlining, rewriting, and matching
+          your voice. Use it for research, drafting sermons, writing letters, or polishing anything
+          that needs to sound like you.</div>
+          <span class="tool-tag tag-free">Free · full writing features</span>
+        </div>
+        <div class="tool-card">
+          <div class="tool-name">Canva</div>
+          <div class="tool-for">Visual content without design experience</div>
+          <div class="tool-body">Drag-and-drop design with AI features including Magic Edit, background
+          removal, and Magic Expand. Fast, polished graphics for social media, presentations,
+          flyers, and more.</div>
+          <span class="tool-tag tag-freemium">Free · Pro $12.99/mo</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- GROUP 6: AUTOMATE -->
+    <div class="tool-group">
+      <div class="tool-group-header">
+        <div class="tool-group-icon">⚙️</div>
+        <div>
+          <div class="tool-group-name">Automate &amp; Connect</div>
+          <div class="tool-group-desc">Connect your apps and build workflows without writing code.</div>
+        </div>
+      </div>
+      <div class="tool-grid">
+        <div class="tool-card">
+          <div class="tool-name">Zapier</div>
+          <div class="tool-for">Non-technical teams who want automation without a developer</div>
+          <div class="tool-body">Connects 8,000+ apps using triggers and workflows. "When this
+          happens in App A, do this in App B." Now includes AI agents that can take real actions
+          across your entire software stack.</div>
+          <span class="tool-tag tag-free">Free · 100 tasks/month</span>
+        </div>
+        <div class="tool-card">
+          <div class="tool-name">Make</div>
+          <div class="tool-for">Teams who need more control than Zapier, without the price</div>
+          <div class="tool-body">Visual canvas automation with branching logic and AI agents built in.
+          More powerful than Zapier, more affordable at scale. Free plan includes 1,000
+          operations/month.</div>
+          <span class="tool-tag tag-free">Free · 1,000 ops/month</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /container -->
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     SECTION 4 — AI CHARACTERS
+═══════════════════════════════════════════ -->
+<section class="section" id="ai-characters">
+  <div class="container">
+    <div class="section-label">Beyond the Chatbot</div>
+    <h2 class="section-title">AI Characters — Built Once, Used Again and Again</h2>
+    <p class="section-intro">
+      The video below demonstrates a capability that goes far beyond generating text or images:
+      a consistent, recurring AI persona. Meet Dr. Enzocto Dofleini — a fictional Johns Hopkins
+      University professor whose name is a playful nod to the Giant Pacific Octopus
+      (<em>Enteroctopus dofleini</em>).
+    </p>
+
+    <div class="video-context">
+      <p>
+        <strong>Dr. Enzocto Dofleini</strong> is not a real person. He is an AI-generated character —
+        built once and capable of being reused indefinitely. <strong>This is what recurring AI
+        characters mean in practice:</strong> marketing professionals can build a brand spokesperson.
+        Doctors can create a patient-facing explainer who is always available. Educators can build
+        a classroom presenter. Content creators can build a consistent on-screen voice without
+        ever appearing on camera. The character is created once, and then you talk through it as
+        many times as you need.
+      </p>
+    </div>
+
+    <div class="video-shell">
+      <div class="ratio-16x9">
+        <iframe
+          src="https://www.youtube.com/embed/_mmpu6vBTuE"
+          title="Dr. Enzocto Dofleini — AI Character Generation Example"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+
+    <div class="concept-grid mt-md">
+      <div class="concept-card">
+        <div class="concept-icon">🩺</div>
+        <div class="concept-name">Healthcare</div>
+        <div class="concept-body">A physician's AI character explains post-op care, answers common
+        patient questions, or delivers medication reminders — consistently, 24 hours a day, without
+        burnout.</div>
+      </div>
+      <div class="concept-card">
+        <div class="concept-icon">📚</div>
+        <div class="concept-name">Education</div>
+        <div class="concept-body">A teacher or professor builds a consistent classroom presence for
+        recorded lessons, supplemental content, or flipped-classroom videos — without filming
+        themselves every session.</div>
+      </div>
+      <div class="concept-card">
+        <div class="concept-icon">📢</div>
+        <div class="concept-name">Marketing</div>
+        <div class="concept-body">A brand creates a spokesperson for product demos, social media
+        content, or explainer videos that maintains a consistent look, voice, and personality
+        across every piece of content.</div>
+      </div>
+      <div class="concept-card">
+        <div class="concept-icon">⛪</div>
+        <div class="concept-name">Ministry</div>
+        <div class="concept-body">A church or ministry creates a guide character for devotional
+        content, Bible study supplements, or outreach materials — consistent, scalable, and
+        produced without professional video equipment.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     SECTION 5 — VISUAL PROMPT LIBRARY
+═══════════════════════════════════════════ -->
+<section class="section section-white" id="prompt-guide">
+  <div class="container">
+    <div class="section-label">Visual Prompt Library</div>
+    <h2 class="section-title">47 Prompts You Can Use Today</h2>
+    <p class="section-intro">
+      These prompts are organized by use case. Copy, adapt, and run them in ChatGPT, Gemini,
+      or any image-capable AI. Faith-community prompts are highlighted.
+    </p>
+
+    <div class="callout callout-navy mb-md">
+      <div class="callout-label">The Formula</div>
+      <p>
+        <strong>Subject</strong> + <strong>Style/Medium</strong> + <strong>Composition</strong>
+        + <strong>Lighting/Mood</strong> + <strong>Key Details</strong> + <strong>Constraints</strong><br>
+        Start simple. Add only the details that improve the result. Revise one variable at a time.
+      </p>
+    </div>
+
+    <!-- FAITH & COMMUNITY -->
+    <span class="prompt-section-label">Faith &amp; Community</span>
+
+    <details>
+      <summary>
+        <span class="summary-left">
+          <span>Explain How International Mission Trips Work</span>
+          <span class="faith-badge">Faith Use</span>
+        </span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">An infographic explaining mission trips to someone with no prior church experience.</p>
+        <div class="prompt-box">Create an infographic that explains how International Mission Trips work to a non-experienced Christian audience.
+
+You decide the wording, structure, examples, and visual metaphor.
+
+Requirements:
+- Make it understandable in under 60 seconds
+- Include a simple flow
+- Use plain English
+- Avoid jargon
+- Keep all text readable
+
+Style: Clean modern explainer infographic, white background, blue accents, rounded cards, simple icons.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left">
+          <span>Gospel of Mark — Visual Mind Map</span>
+          <span class="faith-badge">Faith Use</span>
+        </span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">A structured mind map exploring the Book of Mark across key theological dimensions.</p>
+        <div class="prompt-box">Create a mind map titled: The Gospel of Mark
+
+Center node: The Book of Mark
+
+Branches:
+- Origins
+- Epistemology
+- Theology
+- Key Verses
+- Connections
+- Application
+- Practical Application
+- Purpose of Writing
+- Travels
+
+Under each branch, add 2 small subpoints.
+
+Style: Clean, modern, colorful but not childish, readable text, white background, thin connector lines.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left">
+          <span>How AI Agents Work — Church Lifegroup Edition</span>
+          <span class="faith-badge">Faith Use</span>
+        </span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">An infographic explaining AI agents to a non-technical faith community audience.</p>
+        <div class="prompt-box">Create an infographic that explains how AI agents work to a non-technical audience from a Church Lifegroup.
+
+You decide the wording, structure, examples, and visual metaphor.
+
+Requirements:
+- Make it understandable in under 60 seconds
+- Include a simple flow
+- Use plain English
+- Avoid jargon
+- Keep all text readable
+
+Style: Clean modern explainer infographic, white background, blue accents, rounded cards, simple icons.
+
+Secondary Style: Now make it even more colorful and "infographic-y".</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left">
+          <span>Visual Course Curriculum — The Gospel of Luke</span>
+          <span class="faith-badge">Faith Use</span>
+        </span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">A course-style curriculum visual for a Bible study or Life Group series.</p>
+        <div class="prompt-box">Create a visual course curriculum graphic for a course called The Gospel of Luke.
+
+Audience: Christians who want to understand the New Testament more completely.
+
+You decide the module names and structure. Include:
+- 6 modules
+- What each module teaches
+- Skill level progression
+- Final project
+
+Requirements: Make it useful as a course sales page visual or PDF insert. Keep the design clear and readable.
+
+Style: Clean online course curriculum design, white background, blue accents, organized module cards.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left">
+          <span>New Testament — 5-Slide Visual Presentation</span>
+          <span class="faith-badge">Faith Use</span>
+        </span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">A polished 5-slide presentation deck on the New Testament.</p>
+        <div class="prompt-box">Create a 5-slide visual presentation about the New Testament.
+
+Slides:
+1. Title slide
+2. What changed
+3. Why it matters
+4. Real-world examples
+5. Final takeaway
+
+Requirements: Make it look like a polished keynote deck. Keep the text short and readable.
+
+Style: Premium tech presentation, black background, white text, blue/purple accents, clean minimal layouts.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left">
+          <span>Veritas Life Group — Website Hero Section Mockup</span>
+          <span class="faith-badge">Faith Use</span>
+        </span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">A modern website hero section for a Life Group's communication hub.</p>
+        <div class="prompt-box">Create a website hero section mockup for the Veritas Life Group Weekly Notes.
+
+Include:
+- Class Outreach &amp; Mission Support Opportunity
+- Weekly Lesson &amp; Prep Info
+- Social Events
+- Announcements
+- New/Updated Prayer Requests
+- Continued Prayers Needed
+- Quarterly Veritas Family Celebrations
+
+You decide what goes into each section for mockups.
+
+Requirements: Make it look like a real modern SaaS homepage. Keep the text readable and the layout clean.
+
+Style: Premium SaaS website hero, white background, subtle gradients, rounded UI cards, modern typography.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+      </div>
+    </details>
+
+    <!-- EXPLAIN & TEACH -->
+    <span class="prompt-section-label">Explain &amp; Teach</span>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>Infographic — Explain Any Concept</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">Turn any concept into a visual that reads in under 60 seconds.</p>
+        <div class="prompt-box">Create an infographic that explains [YOUR TOPIC] to [YOUR AUDIENCE].
+
+You decide the wording, structure, examples, and visual metaphor.
+
+Requirements:
+- Make it understandable in under 60 seconds
+- Include a simple flow
+- Use plain English
+- Avoid jargon
+- Keep all text readable
+
+Style: Clean modern explainer infographic, white background, blue accents, rounded cards, simple icons.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>Timeline — The Evolution of AI Image Generation</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">A horizontal timeline graphic showing AI image milestones from 2021 to 2026.</p>
+        <div class="prompt-box">Create a horizontal timeline graphic titled: "The Evolution of AI Image Generation"
+
+Include these milestones:
+- 2021 — Text-to-image begins going mainstream
+- 2022 — AI art tools explode in popularity
+- 2023 — Better realism and style control
+- 2024 — Image editing becomes more practical
+- 2025 — Text rendering improves dramatically
+- 2026 — AI images become useful design tools
+
+Style: Sleek editorial timeline, black and white with subtle neon blue accents, readable labels, thin lines, rounded milestone cards.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>Process Diagram — Any Workflow</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">A clear flowchart for any repeating process — business, ministry, or personal.</p>
+        <div class="prompt-box">Create a process diagram for [YOUR PROCESS].
+
+The diagram should show: [list your steps]
+
+Requirements: Make it practical and easy to understand. Use a clear flowchart layout.
+
+Style: Professional business workflow diagram, white background, thin lines, blue accents, rounded nodes.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>Comparison Chart — Any Set of Options</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">Help anyone choose between options with a clean visual comparison.</p>
+        <div class="prompt-box">Create a visual comparison chart for choosing between [OPTION A, B, C, D].
+
+Audience: [Describe who is confused about the choice.]
+
+You decide the categories and wording. Include:
+- Best for
+- Strengths
+- Limitations
+- Who should use it
+
+Requirements: Keep the chart simple, useful, and not too crowded.
+
+Style: Clean tech buying guide, white background, rounded cards, readable table layout, subtle colored accents.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>Cheat Sheet with Visual Cues</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">A printable reference sheet for any topic, with visual formatting.</p>
+        <div class="prompt-box">Create a printable cheat sheet for [YOUR TOPIC].
+
+Include:
+- A simple formula
+- 5 useful ingredients or steps
+- 5 common mistakes
+- 3 example applications
+- One revision or improvement tip
+
+Requirements: Make it genuinely useful and easy to reference. Keep text readable.
+
+Style: Minimal black-and-white reference sheet, thin lines, rounded boxes, elegant typography, printable layout.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>Video-to-Graphic — 5 Key Takeaways</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">Turn any video or article into a clean visual summary.</p>
+        <div class="prompt-box">Turn the information below into a clean visual explainer.
+
+Goal: Make this easy for a general audience to understand in under 30 seconds.
+
+Create:
+- A clear title
+- 5 key takeaways
+- Simple icons
+- A visual hierarchy
+- A short "why it matters" box
+
+Style: Modern tech explainer graphic, white background, black text, blue accent color, rounded cards, thin lines, readable typography.
+
+Use only the information provided. Do not invent facts.
+
+SOURCE TEXT: [paste your content here]</div>
+        <p class="prompt-tool">
+          Note: ChatGPT cannot render an image directly from a YouTube video — you'll need to provide the transcript.
+          Gemini can use a YouTube link directly as the source.
+        </p>
+      </div>
+    </details>
+
+    <!-- CREATE & COMMUNICATE -->
+    <span class="prompt-section-label">Create &amp; Communicate</span>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>YouTube Thumbnail — 6 Concept Board</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">Six distinct thumbnail concepts in a 2×3 grid — ready to A/B test.</p>
+        <div class="prompt-box">Create a YouTube thumbnail concept board for a video about [YOUR TOPIC].
+
+Video idea: [A short crisp description — 12 words or less]
+
+Create 6 different thumbnail concepts in a 2×3 grid.
+
+You decide the best visual metaphor, facial expression idea, layout, and short thumbnail text for each concept.
+
+Requirements:
+- Each thumbnail should feel visually distinct
+- Use large readable text
+- Make the concepts clickable but not misleading
+- Avoid clutter
+- Use a modern tech/creator aesthetic
+
+Style: Bold YouTube thumbnail design, high contrast, blue/purple accents, expressive, clean, readable at small size.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini · If results are square, add: "Now make each thumbnail 16:9 to match actual YouTube thumbnail dimensions."</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>Instagram Carousel — 7 Slides</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">A visually consistent 7-slide carousel for any educational topic.</p>
+        <div class="prompt-box">Create a 7-slide Instagram carousel for creators.
+
+Topic: [Insert Short Crisp Topic Title here]
+
+You decide the best wording for each slide.
+
+Requirements:
+- Slide 1 should be a strong hook
+- Slides 2–6 should each teach one useful idea
+- Slide 7 should be a simple call to action
+- Make the carousel visually consistent
+- Keep text short and readable
+
+Style: Modern social media carousel, white background, black text, blue/purple accents, rounded cards, premium tech aesthetic.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>Comic Panels — Any Story</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">Turn any situation into a 6-panel comic. Great for teaching or entertaining.</p>
+        <div class="prompt-box">Create a one-page comic with 6 panels.
+
+Title: "[Your Title Here]"
+
+Story:
+Panel 1: [Describe opening scene]
+Panel 2: [Action or problem introduced]
+Panel 3: [Development]
+Panel 4: [Turn or insight]
+Panel 5: [Resolution or result]
+Panel 6: [Punchline or takeaway]
+
+Style: Clean modern comic, expressive characters, readable speech bubbles, consistent main character across panels, light humor, polished illustration.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>4-Square Social Media Quote Cards</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">Four branded quote cards in a consistent visual style.</p>
+        <div class="prompt-box">Create a set of 4 square social media quote cards.
+
+Use these exact quotes, one per card:
+1. "[Your first quote]"
+2. "[Your second quote]"
+3. "[Your third quote]"
+4. "[Your fourth quote]"
+
+Style: Premium creator aesthetic, black, white and [your accent color], subtle blue accents, clean typography, rounded borders, minimal design. Make all text perfectly readable.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+      </div>
+    </details>
+
+    <!-- BUSINESS & PROFESSIONAL -->
+    <span class="prompt-section-label">Business &amp; Professional</span>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>One-Page Sales Pitch — Any Business</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">A polished client-ready one-pager for any product or service.</p>
+        <div class="prompt-box">Create a one-page sales pitch visual for [YOUR BUSINESS OR SERVICE].
+
+Audience: [Describe who would receive this.]
+
+You decide: Headline · Problem · Solution · Services · Benefits · Call to action
+
+Requirements: Make it look like something that could be sent to a potential client. Keep it polished and business-friendly.
+
+Style: Premium agency one-pager, clean white background, black text, blue accent color, icons, rounded cards.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>Promotional Flyer — Any Business or Event</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">A print- or web-ready promotional flyer for any business or community event.</p>
+        <div class="prompt-box">Create a promotional flyer for [YOUR BUSINESS OR EVENT].
+
+Business / Event description: [Describe it concisely.]
+
+You decide: Headline · Service packages or offerings · Benefits · Call to action · Visual layout
+
+Requirements: Make it look like something the business could actually print or post online. Keep the offer clear and the text readable.
+
+Style: Premium [industry] flyer, clean lines, high-end but approachable. [Specify color preferences if any.]</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>Messy Notes → Actionable One-Page Plan</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">Paste your messy notes and get back a polished, prioritized action plan.</p>
+        <div class="prompt-box">Turn these messy notes into a polished visual action plan.
+
+Audience: [Describe who this plan is for — creator, entrepreneur, volunteer coordinator, etc.]
+
+Create: A one-page visual plan that could be printed and kept on a desk.
+
+You decide the best title, sections, hierarchy, and wording. Include:
+- Main goal
+- Biggest bottleneck
+- 3 priorities
+- What to stop doing
+- What to do next
+- A simple 7-day action plan
+
+Requirements: Do not simply repeat the notes. Organize them into something practical, clear, and visually useful.
+
+Style: Premium productivity planner, black and white with subtle accents, rounded cards, thin lines, lots of whitespace.
+
+Messy notes: [PASTE YOUR NOTES HERE]</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>30-Day Social Media Content Calendar</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">A usable planning calendar with content variety built in.</p>
+        <div class="prompt-box">Create a visual 30-day social media content calendar for [YOUR BUSINESS OR MINISTRY].
+
+You decide the post ideas. Include:
+- 30 days of post concepts
+- A mix of promotions, behind-the-scenes, stories, educational posts, and community content
+- Simple color coding by content type
+
+Requirements: Make it actually usable as a planning document. Keep the text readable and concise.
+
+Style: Clean calendar layout, [your color palette], rounded boxes, simple icons, premium but friendly.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+      </div>
+    </details>
+
+    <!-- LIFE & PERSONAL -->
+    <span class="prompt-section-label">Life &amp; Personal</span>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>Travel Itinerary — Any Destination</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">A beautiful, practical multi-day itinerary for any trip.</p>
+        <div class="prompt-box">Create a beautiful [X]-day travel itinerary visual for a trip to [DESTINATION].
+
+You decide the best schedule, neighborhoods, activities, and food stops.
+
+Include:
+- Day-by-day breakdown
+- Morning, afternoon, evening structure
+- A simple map-inspired layout
+- Practical travel tips
+- A short "best for" label for each day
+
+Requirements: Make the itinerary realistic and easy to follow. Do not overload the design with too much text.
+
+Style: Premium travel guide layout, soft colors, small illustrations, clean typography, editorial magazine feel.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>Family Chore Chart with Rewards</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">A printable, kid-friendly weekly chore chart that looks good on the fridge.</p>
+        <div class="prompt-box">Create a visual weekly chore chart for a family with [NUMBER] kids ages [AGE RANGE].
+
+Home details: [Brief description — bedrooms, bathrooms, yard, pets.]
+
+You decide the chores and structure. Include:
+- Monday through Sunday
+- Morning tasks
+- Evening tasks
+- Reward tracker
+- Simple icons
+- Space for checkmarks
+
+Requirements: Make it kid-friendly but not ugly. It should look nice enough to print and put on the fridge.
+
+Style: Clean modern family chart, soft colors, rounded boxes, friendly icons, readable text.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>Recipe Card — Any Dish</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">A beautiful, printable recipe card in a clean food-magazine layout.</p>
+        <div class="prompt-box">Create a beautiful printable recipe card for [YOUR RECIPE].
+
+Include this exact text: [Paste your recipe title, prep time, cook time, servings, ingredients, and instructions]
+
+Style: Clean food magazine layout, bright natural light, readable text, warm minimal design.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>Event Poster — Any Community Event</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">A professional event poster ready for social media or print.</p>
+        <div class="prompt-box">Create a premium event poster for [YOUR EVENT].
+
+Location: [City / Neighborhood]
+
+Audience: [Describe who is being invited.]
+
+You decide: Event name · Headline · Short description · Date/time placeholder · Venue placeholder · Call to action · Visual concept
+
+Requirements: Make it feel like a real event poster that could be used on social media or printed. Keep text readable and the layout clean.
+
+Style: Modern event poster, [choose your color scheme — dark and dramatic, or clean and minimal], clean typography, premium design.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+      </div>
+    </details>
+
+    <div class="callout callout-navy mt-md">
+      <div class="callout-label">The Full Library</div>
+      <p>
+        The complete 47-prompt Visual Prompt Guide — including eCommerce product images, LinkedIn
+        carousels, app screenshot mockups, logo exploration sheets, restaurant menus, and more —
+        is available as a downloadable reference. Ask Jason for a copy.
+      </p>
+    </div>
+
+  </div><!-- /container -->
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     SECTION 6 — THE BIGGER PICTURE
+═══════════════════════════════════════════ -->
+<section class="section" id="bigger-picture">
+  <div class="container">
+    <div class="section-label">The Bigger Picture</div>
+    <h2 class="section-title">What the Research Actually Says</h2>
+    <p class="section-intro">
+      There is a lot of noise about AI — hype, fear, dismissal, and breathless prediction.
+      Here is what happens when you measure the claims against peer-reviewed research,
+      institutional reports, and primary data.
+    </p>
+
+    <!-- KEY STATS -->
+    <div class="stat-strip">
+      <div class="stat-card">
+        <div class="stat-number">300M</div>
+        <div class="stat-label">jobs globally exposed to AI automation</div>
+        <div class="stat-src">Goldman Sachs, Mar 2026</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">7mo</div>
+        <div class="stat-label">doubling time for AI task capability — for 6 years running</div>
+        <div class="stat-src">METR Long Tasks Study, 2025</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">~16%</div>
+        <div class="stat-label">estimated probability of catastrophic AI outcome (per AI researcher surveys)</div>
+        <div class="stat-src">MIT / Max Tegmark · Toby Ord, Oxford</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">64%</div>
+        <div class="stat-label">of Americans believe in spiritual beings beyond the natural world</div>
+        <div class="stat-src">State of the Bible USA, 2026</div>
+      </div>
+    </div>
+
+    <!-- VOICES ASSESSMENT SYNOPSIS -->
+    <h3 style="font-size:1.1rem; font-weight:700; color:var(--navy); margin:2rem 0 0.65rem;">
+      "Voices Run Amuck on AI" — A Fact Assessment
+    </h3>
+    <p class="text-muted mb-sm">
+      Three viral AI commentary sources — a YouTube entrepreneur, a Business Insider AI Architects
+      roundtable, and a philosophical analysis of MIT/Life 3.0 — were cross-referenced against
+      Goldman Sachs research, METR studies, and Oxford institutional analysis. Fifteen specific
+      claims were rated on a six-level accuracy scale.
+    </p>
+
+    <div class="concept-grid mb-md">
+      <div class="concept-card">
+        <div class="concept-icon" style="color:var(--green)">✓</div>
+        <div class="concept-name">Verified: AI is bigger than the internet</div>
+        <div class="concept-body">
+          Every primary source reviewed — Goldman Sachs, METR, Oxford — independently concludes
+          that AI is the first technology to automate <em>cognition itself</em>, not merely physical
+          or computational tasks. This makes it qualitatively different from all prior
+          general-purpose technologies.
+        </div>
+      </div>
+      <div class="concept-card">
+        <div class="concept-icon" style="color:#92400e">⚡</div>
+        <div class="concept-name">Partial: "AI will take your job in 5 years"</div>
+        <div class="concept-body">
+          The sequencing — knowledge work before physical labor — is supported. The 5-year timeline
+          for full job <em>replacement</em> is not. Goldman Sachs' base case is a 10-year adoption
+          window. What's happening now is task displacement within roles, not wholesale elimination
+          of professions.
+        </div>
+      </div>
+      <div class="concept-card">
+        <div class="concept-icon" style="color:var(--navy)">🛡️</div>
+        <div class="concept-name">Important: Your strengths AI can't replicate</div>
+        <div class="concept-body">
+          Deep domain judgment, institutional trust, relationship networks, and the ability to be
+          accountable for decisions — these are what the SWOT analysis identifies as durable human
+          advantages in an AI-augmented workplace.
+        </div>
+      </div>
+    </div>
+
+    <a href="resources/documents/AI_Voices_Assessment.html" class="resource-item" target="_blank" rel="noopener">
+      <span class="resource-icon">📰</span>
+      <div>
+        <div class="resource-title">Read the Full "Voices Run Amuck" Fact Assessment →</div>
+        <div class="resource-desc">15 claims rated. Goldman Sachs · METR · Oxford · Anthropic · AISuperior. April 2026.</div>
+      </div>
+    </a>
+
+    <a href="resources/documents/SWOT_4x4_Final_3.html" class="resource-item mt-sm" target="_blank" rel="noopener">
+      <span class="resource-icon">📊</span>
+      <div>
+        <div class="resource-title">SWOT 4×4 — AI's Impact by Professional Role (2026–2030) →</div>
+        <div class="resource-desc">Strengths, Weaknesses, Opportunities &amp; Threats for Professionals, Executives, Service Workers, and Sales. Goldman Sachs · METR · Oxford.</div>
+      </div>
+    </a>
+
+    <hr class="divider">
+
+    <!-- STATE OF THE BIBLE -->
+    <h3 style="font-size:1.1rem; font-weight:700; color:var(--navy); margin-bottom:0.65rem;">
+      State of the Bible USA — 2026 Report (In Progress)
+    </h3>
+    <p class="text-muted mb-sm">
+      The American Bible Society has published its annual State of the Bible research since 2011.
+      The 2026 edition is being released in monthly chapters through December. As AI becomes more
+      woven into everyday American life, its influence on how people engage with Scripture, practice
+      faith, and seek spiritual answers is becoming a visible thread in this research.
+      The 2026 finding that <strong>64% of Americans believe in spiritual beings beyond the natural
+      world</strong> — including 1 in 3 non-religious individuals — is a striking backdrop to any
+      conversation about what makes human beings distinctly human in an age of artificial intelligence.
+    </p>
+
+    <a href="https://sotb.americanbible.org/" class="resource-item" target="_blank" rel="noopener">
+      <span class="resource-icon">📖</span>
+      <div>
+        <div class="resource-title">State of the Bible USA 2026 — American Bible Society →</div>
+        <div class="resource-desc">Annual research on American Bible engagement, spiritual practice, and cultural trends. Monthly chapters April–December 2026.</div>
+      </div>
+    </a>
+
+    <hr class="divider">
+
+    <!-- DISCERNMENT NOTE -->
+    <h3 style="font-size:1.1rem; font-weight:700; color:var(--navy); margin-bottom:0.65rem;">
+      A Word on Discernment
+    </h3>
+
+    <div class="quote-block">
+      <div class="quote-text">
+        "The skill that may matter most in the age of AI is the distinctly human one — learning
+        to be a critical thinker, to question sources, to hold uncertainty without paralysis,
+        and to act wisely in conditions we cannot fully calculate. That skill was valuable before
+        AI. It is indispensable now."
+      </div>
+      <div class="quote-attr">— AI Voices Run Amuck Fact Assessment, April 2026</div>
+    </div>
+
+    <p class="text-muted">
+      AI does not understand meaning the way we do. It understands relationship and closeness —
+      pattern, proximity, and probability. It can produce answers that sound authoritative and
+      are entirely wrong. <strong>Verify anything important. Trust, but check.</strong> These are
+      not new skills — they are exactly the skills a person of faith already exercises when reading,
+      evaluating, and weighing what is true.
+    </p>
+
+    <div class="callout callout-navy mt-md">
+      <div class="callout-label">The Alignment Distinction — Worth Knowing</div>
+      <p>
+        <strong>Obedience:</strong> follows instructions literally.<br>
+        <strong>Alignment:</strong> follows intent, values, and constraints.<br><br>
+        Humans (ideally) are aligned. Machines are obedient by default. A powerful, obedient,
+        insufficiently aligned system is not a helper — it's a force multiplier for whatever
+        intent it's given. This is why the guardrails, values, and ethical frameworks built into
+        AI systems matter — and why it's worth paying attention to how the companies building
+        these tools think about that responsibility.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     SECTION 7 — TRY THIS WEEK
+═══════════════════════════════════════════ -->
+<section class="section section-white" id="try-this-week">
+  <div class="container">
+    <div class="section-label">Your On-Ramp</div>
+    <h2 class="section-title">Try This Week</h2>
+    <p class="section-intro">
+      Three specific, zero-cost actions you can take before next Sunday. Each one takes
+      less than 15 minutes and costs nothing.
+    </p>
+
+    <ul class="try-list">
+      <li class="try-item">
+        <div class="try-num">1</div>
+        <div>
+          <div class="try-title">Compare Two Chatbots on the Same Question</div>
+          <div class="try-body">
+            Ask ChatGPT and Claude the exact same meaningful question — something you actually
+            care about. A question about faith, a relationship challenge, a decision you're working
+            through, a topic you want to understand better. Notice how each responds: the tone,
+            the depth, the caveats, the areas where they differ. You'll immediately feel the
+            difference in their personalities.
+          </div>
+          <div class="try-link">
+            <a href="https://chat.openai.com" target="_blank" rel="noopener">chat.openai.com</a>
+            &nbsp;·&nbsp;
+            <a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a>
+          </div>
+        </div>
+      </li>
+      <li class="try-item">
+        <div class="try-num">2</div>
+        <div>
+          <div class="try-title">Generate One Image Using the Prompt Formula</div>
+          <div class="try-body">
+            Go to <a href="https://labs.google/fx/tools/image-fx" target="_blank" rel="noopener">Google ImageFX</a>
+            (free, no subscription). Use the formula:<br>
+            <em>Subject + Style + Composition + Lighting + Key Details + Constraints</em><br>
+            Try something personal — an image for a greeting card, a background for a presentation,
+            an illustration of a Bible passage. Run it, then tweak one element and run it again.
+            The revision is where the learning happens.
+          </div>
+        </div>
+      </li>
+      <li class="try-item">
+        <div class="try-num">3</div>
+        <div>
+          <div class="try-title">Transcribe Your Next Phone Call or Meeting</div>
+          <div class="try-body">
+            Sign up for <a href="https://fireflies.ai" target="_blank" rel="noopener">Fireflies.ai</a>
+            or <a href="https://www.jamie.ai" target="_blank" rel="noopener">Jamie</a>
+            (both free to start) and let them transcribe your next important call. Review the
+            summary afterward. Notice what it captured, what it missed, and how it might change
+            the way you take notes in the future.
+          </div>
+        </div>
+      </li>
+    </ul>
+
+    <div class="callout callout-green mt-md">
+      <div class="callout-label">Bonus — Teach Someone Else</div>
+      <p>
+        Try the fill-in-the-blank exercise from today's presentation with someone at home —
+        a family member, a friend, a neighbor. "Three Little ___, I Dream of ___, Good ___."
+        Walk them through why "Good ___" has more than one right answer. You will understand
+        tokens and context more deeply by explaining them than you did by hearing about them.
+        That is also how AI works: <em>the act of explaining shapes what is understood.</em>
+      </p>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     SECTION 8 — RESOURCES
+═══════════════════════════════════════════ -->
+<section class="section" id="resources">
+  <div class="container">
+    <div class="section-label">Reference Material</div>
+    <h2 class="section-title">Everything in One Place</h2>
+    <p class="section-intro">
+      All the supporting documents, research, and reference tools from today's presentation.
+    </p>
+
+    <div class="resource-list">
+
+      <a href="resources/documents/AI_Voices_Assessment.html" class="resource-item" target="_blank" rel="noopener">
+        <span class="resource-icon">📰</span>
+        <div>
+          <div class="resource-title">AI Voices Run Amuck — Full Fact Assessment</div>
+          <div class="resource-desc">15 AI claims rated against Goldman Sachs, METR, Oxford, and Anthropic research. April 2026.</div>
+        </div>
+      </a>
+
+      <a href="resources/documents/SWOT_4x4_Final_3.html" class="resource-item" target="_blank" rel="noopener">
+        <span class="resource-icon">📊</span>
+        <div>
+          <div class="resource-title">SWOT 4×4 — AI Impact by Professional Role</div>
+          <div class="resource-desc">Role-segmented Strengths, Weaknesses, Opportunities, and Threats. Professional · Executive · Service · Sales. 2026–2030.</div>
+        </div>
+      </a>
+
+      <a href="https://sotb.americanbible.org/" class="resource-item" target="_blank" rel="noopener">
+        <span class="resource-icon">📖</span>
+        <div>
+          <div class="resource-title">State of the Bible USA 2026 — American Bible Society</div>
+          <div class="resource-desc">Annual research on Scripture engagement, spiritual practice, and cultural trends across America.</div>
+        </div>
+      </a>
+
+      <a href="https://labs.google/fx/tools/image-fx" class="resource-item" target="_blank" rel="noopener">
+        <span class="resource-icon">🎨</span>
+        <div>
+          <div class="resource-title">Google ImageFX — Free AI Image Generation</div>
+          <div class="resource-desc">Powered by Imagen 3. Start here for AI image generation — no subscription required.</div>
+        </div>
+      </a>
+
+      <a href="https://fireflies.ai" class="resource-item" target="_blank" rel="noopener">
+        <span class="resource-icon">🎙️</span>
+        <div>
+          <div class="resource-title">Fireflies.ai — Free Meeting Transcription</div>
+          <div class="resource-desc">Unlimited transcription on the free plan. Searchable records of every meeting.</div>
+        </div>
+      </a>
+
+      <a href="https://claude.ai" class="resource-item" target="_blank" rel="noopener">
+        <span class="resource-icon">🤖</span>
+        <div>
+          <div class="resource-title">Claude — Free AI Writing &amp; Research Assistant</div>
+          <div class="resource-desc">Exceptional for long-form writing, research, and thoughtful conversation. Generous free tier.</div>
+        </div>
+      </a>
+
+      <a href="https://www.canva.com" class="resource-item" target="_blank" rel="noopener">
+        <span class="resource-icon">✏️</span>
+        <div>
+          <div class="resource-title">Canva — Free Visual Design with AI Features</div>
+          <div class="resource-desc">Drag-and-drop design for social media, presentations, flyers, and more. Free tier is fully capable.</div>
+        </div>
+      </a>
+
+      <a href="https://zapier.com" class="resource-item" target="_blank" rel="noopener">
+        <span class="resource-icon">⚙️</span>
+        <div>
+          <div class="resource-title">Zapier — Connect Your Apps Without Coding</div>
+          <div class="resource-desc">100 tasks/month free. Automate repetitive work across 8,000+ apps.</div>
+        </div>
+      </a>
+
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════ -->
+<footer class="site-footer">
+  <p>
+    <strong style="color:rgba(255,255,255,0.8)">Veritas Life Group · 5th Sunday · Prestonwood Baptist Church · Plano, TX</strong>
+  </p>
+  <p style="margin-top:0.4rem;">
+    Prepared May 2026 &nbsp;·&nbsp; <a href="https://www.hobbyaquatics.com">www.hobbyaquatics.com</a>
+  </p>
+  <p style="margin-top:0.5rem; font-size:0.74rem;">
+    Tool information current as of May 2026. AI capabilities and pricing change rapidly — verify at each tool's website before committing to a subscription.
+    Content in the Voices Assessment cross-referenced against Goldman Sachs (Mar 2026) · METR (Feb–Mar 2026) · Toby Ord / Oxford · Anthropic · AISuperior.
+  </p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voices Run Amuck on AI — Fact Assessment</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Cinzel:wght@400;600&display=swap');
+
+  :root {
+    --ink:        #1a1410;
+    --paper:      #f8f4ec;
+    --cream:      #f2ead8;
+    --rule:       #c9b99a;
+    --gold:       #b8922b;
+    --red:        #8b1a1a;
+    --green-dark: #1a4a2e;
+    --blue-dark:  #1a2f4a;
+    --amber:      #a05f10;
+    --grey:       #6b635a;
+    --muted:      #9c8e7e;
+
+    /* Rating band colors */
+    --c-false:    #8b1a1a;
+    --c-partial:  #a05f10;
+    --c-qualified:#5a6e1a;
+    --c-accurate: #1a4a2e;
+    --c-verified: #1a2f4a;
+    --c-nuanced:  #5a3a7a;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'EB Garamond', Georgia, serif;
+    background-color: var(--paper);
+    color: var(--ink);
+    font-size: 16px;
+    line-height: 1.65;
+    padding: 0;
+  }
+
+  /* ── MASTHEAD ── */
+  .masthead {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 48px 40px 36px;
+    text-align: center;
+    border-bottom: 4px solid var(--gold);
+    position: relative;
+    overflow: hidden;
+  }
+  .masthead::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 40px,
+      rgba(184,146,43,0.04) 40px,
+      rgba(184,146,43,0.04) 41px
+    );
+  }
+  .masthead-eyebrow {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  .masthead h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+    color: var(--paper);
+    margin-bottom: 12px;
+  }
+  .masthead h1 em {
+    font-style: italic;
+    color: var(--gold);
+  }
+  .masthead-sub {
+    font-family: 'EB Garamond', serif;
+    font-size: 18px;
+    font-style: italic;
+    color: #c9b99a;
+    max-width: 600px;
+    margin: 0 auto 24px;
+    line-height: 1.5;
+  }
+  .masthead-meta {
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    border-top: 1px solid rgba(201,185,154,0.3);
+    padding-top: 18px;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  /* ── LEGEND ── */
+  .legend-section {
+    background: var(--cream);
+    border-bottom: 2px solid var(--rule);
+    padding: 32px 40px;
+  }
+  .legend-title {
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 4px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  .legend-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .legend-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 4px;
+    background: white;
+    border: 1px solid var(--rule);
+  }
+  .legend-badge {
+    flex-shrink: 0;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-top: 5px;
+  }
+  .legend-item .band-name {
+    font-family: 'Cinzel', serif;
+    font-size: 8.5px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .legend-item .band-desc {
+    font-size: 11px;
+    color: var(--grey);
+    font-style: italic;
+    line-height: 1.3;
+  }
+
+  /* ── MAIN CONTENT ── */
+  .container {
+    max-width: 1020px;
+    margin: 0 auto;
+    padding: 48px 40px 80px;
+  }
+
+  .section-intro {
+    text-align: center;
+    max-width: 680px;
+    margin: 0 auto 52px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .section-intro p {
+    font-size: 17px;
+    color: var(--grey);
+    font-style: italic;
+  }
+  .section-intro .source-note {
+    margin-top: 16px;
+    font-size: 12px;
+    color: var(--muted);
+    font-style: normal;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 1px;
+  }
+
+  /* ── ASSESSMENT CARD ── */
+  .card {
+    background: white;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    margin-bottom: 36px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(26,20,16,0.06);
+    page-break-inside: avoid;
+  }
+
+  .card-header {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0;
+    align-items: stretch;
+  }
+
+  .card-band {
+    width: 6px;
+  }
+
+  .card-header-inner {
+    padding: 22px 24px 18px;
+    border-bottom: 1px solid var(--rule);
+    background: var(--cream);
+  }
+
+  .card-rating-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 12px;
+  }
+
+  .rating-pill {
+    font-family: 'Cinzel', serif;
+    font-size: 8px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+    color: white;
+    white-space: nowrap;
+    font-weight: 600;
+  }
+
+  .source-tag {
+    font-family: 'Cinzel', serif;
+    font-size: 8px;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    text-transform: uppercase;
+    border: 1px solid var(--rule);
+    padding: 3px 9px;
+    border-radius: 20px;
+  }
+
+  .card-claim {
+    font-family: 'Playfair Display', serif;
+    font-size: 19px;
+    font-style: italic;
+    line-height: 1.45;
+    color: var(--ink);
+    position: relative;
+    padding-left: 22px;
+  }
+  .card-claim::before {
+    content: '\201C';
+    position: absolute;
+    left: 0;
+    top: -4px;
+    font-size: 36px;
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  .card-body {
+    padding: 22px 24px 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  @media (max-width: 680px) {
+    .card-body { grid-template-columns: 1fr; }
+  }
+
+  .verdict-label {
+    font-family: 'Cinzel', serif;
+    font-size: 8px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .verdict-text {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #2a2218;
+  }
+
+  .evidence-block {
+    background: var(--cream);
+    border-left: 3px solid var(--rule);
+    border-radius: 0 3px 3px 0;
+    padding: 14px 16px;
+  }
+
+  .evidence-block .verdict-label {
+    color: var(--gold);
+  }
+
+  .evidence-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .evidence-list li {
+    font-size: 13px;
+    color: var(--grey);
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(201,185,154,0.4);
+    padding-left: 14px;
+    position: relative;
+    line-height: 1.45;
+  }
+  .evidence-list li:last-child { border-bottom: none; }
+  .evidence-list li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+    font-size: 11px;
+  }
+  .evidence-list li strong {
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  /* Rating color assignments */
+  .false     { --band: var(--c-false);    }
+  .partial   { --band: var(--c-partial);  }
+  .qualified { --band: var(--c-qualified);}
+  .accurate  { --band: var(--c-accurate); }
+  .verified  { --band: var(--c-verified); }
+  .nuanced   { --band: var(--c-nuanced);  }
+
+  .card-band       { background: var(--band); }
+  .rating-pill     { background: var(--band); }
+  .evidence-block  { border-left-color: var(--band); }
+  .evidence-list li::before { color: var(--band); }
+
+  /* ── SECTION DIVIDERS ── */
+  .section-title {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 5px;
+    color: var(--muted);
+    text-transform: uppercase;
+    text-align: center;
+    margin: 52px 0 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .section-title::before,
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
+  }
+
+  /* ── CLOSING NOTE ── */
+  .closing {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 40px;
+    border-radius: 4px;
+    margin-top: 60px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .closing::before {
+    content: '\201C';
+    position: absolute;
+    top: -20px;
+    left: 24px;
+    font-family: 'Playfair Display', serif;
+    font-size: 160px;
+    color: rgba(184,146,43,0.1);
+    line-height: 1;
+  }
+  .closing h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--gold);
+    margin-bottom: 14px;
+  }
+  .closing p {
+    font-size: 15px;
+    color: #c9b99a;
+    max-width: 680px;
+    margin: 0 auto 8px;
+    line-height: 1.7;
+  }
+  .closing .sources-note {
+    margin-top: 24px;
+    font-family: 'Cinzel', serif;
+    font-size: 8.5px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    border-top: 1px solid rgba(201,185,154,0.2);
+    padding-top: 20px;
+  }
+
+  footer {
+    text-align: center;
+    padding: 24px 40px;
+    font-family: 'Cinzel', serif;
+    font-size: 8.5px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    border-top: 1px solid var(--rule);
+  }
+</style>
+</head>
+<body>
+
+<!-- MASTHEAD -->
+<div class="masthead">
+  <div class="masthead-eyebrow">Independent Fact Assessment · April 2026</div>
+  <h1>Voices Run Amuck<br><em>on AI Opinions</em></h1>
+  <p class="masthead-sub">A scholarly review of the claims made across three viral AI commentary sources — measured against peer-reviewed research, institutional analysis, and primary data</p>
+  <div class="masthead-meta">
+    Sources assessed include Goldman Sachs Research · METR · Toby Ord / Oxford · Anthropic / Claude · AI Superior &amp; AISuperior.com · Business Insider AI Architects · Dan Martell YouTube
+  </div>
+</div>
+
+<!-- LEGEND -->
+<div class="legend-section">
+  <div class="legend-title">Accuracy Rating Scale</div>
+  <div class="legend-grid">
+    <div class="legend-item">
+      <div class="legend-badge" style="background:var(--c-false)"></div>
+      <div>
+        <span class="band-name" style="color:var(--c-false)">Completely False</span>
+        <span class="band-desc">Contradicted by primary evidence or demonstrably unsupportable</span>
+      </div>
+    </div>
+    <div class="legend-item">
+      <div class="legend-badge" style="background:var(--c-partial)"></div>
+      <div>
+        <span class="band-name" style="color:var(--c-partial)">Partially Accurate — Overhyped</span>
+        <span class="band-desc">A kernel of truth inflated beyond what evidence warrants</span>
+      </div>
+    </div>
+    <div class="legend-item">
+      <div class="legend-badge" style="background:var(--c-qualified)"></div>
+      <div>
+        <span class="band-name" style="color:var(--c-qualified)">Qualified Accuracy</span>
+        <span class="band-desc">True under specific conditions; misleading as a universal claim</span>
+      </div>
+    </div>
+    <div class="legend-item">
+      <div class="legend-badge" style="background:var(--c-accurate)"></div>
+      <div>
+        <span class="band-name" style="color:var(--c-accurate)">Relatively Accurate</span>
+        <span class="band-desc">Substantially supported with minor caveats or omissions</span>
+      </div>
+    </div>
+    <div class="legend-item">
+      <div class="legend-badge" style="background:var(--c-verified)"></div>
+      <div>
+        <span class="band-name" style="color:var(--c-verified)">Strong Correlation — Minor Omissions</span>
+        <span class="band-desc">Well-supported; nuance or context missing but core claim holds</span>
+      </div>
+    </div>
+    <div class="legend-item">
+      <div class="legend-badge" style="background:var(--c-nuanced)"></div>
+      <div>
+        <span class="band-name" style="color:var(--c-nuanced)">100% True — Verified</span>
+        <span class="band-desc">Directly confirmed by primary sources without meaningful qualification</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+
+  <div class="section-intro">
+    <p>The following claims are drawn from three viral AI opinion sources included in this project's source file — a Dan Martell YouTube transcript on "three levels of AI," a Business Insider AI Architects roundtable, and a MIT/Life 3.0-based analysis of twelve AI futures. Each claim is rated against corroborating research, institutional reports, and the other documents in this project collection.</p>
+    <p class="source-note">Research corpus: Goldman Sachs (Mar 2026) · METR (Feb–Mar 2026) · Toby Ord / Oxford · Anthropic 2026 Agentic Coding Report · Thomas Kwa / METR AI Timelines (Feb 2026) · AISuperior LLM Cost Comparison (Apr 2026) · Toby Ord Hourly AI Costs Essay</p>
+  </div>
+
+  <!-- ── SECTION 1: AI ECONOMIC DISRUPTION ── -->
+  <div class="section-title">Economic Disruption &amp; Labor Displacement</div>
+
+  <!-- CARD 1 -->
+  <div class="card verified">
+    <div class="card-header">
+      <div class="card-band"></div>
+      <div class="card-header-inner">
+        <div class="card-rating-row">
+          <span class="rating-pill">Strong Correlation — Minor Omissions</span>
+          <span class="source-tag">Business Insider AI Architects</span>
+        </div>
+        <p class="card-claim">There will be 20, 30, even 50 percent unemployment in certain sectors — maybe even more.</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div>
+        <span class="verdict-label">Editorial Verdict</span>
+        <p class="verdict-text">The directional claim is well-grounded in serious research, but the figure ranges cited are speculative at the sector level. Goldman Sachs (March 2026) documents that roughly 300 million jobs globally are <em>exposed to automation</em> — a different and more careful claim than "will be unemployed." In the U.S., AI can potentially automate tasks comprising 25% of all work hours. Office/administrative support (46% exposure) and legal work (44%) top Goldman's chart. The most credible projection is a 6–7% worker displacement over roughly 10 years, with a 0.6 percentage point rise in the unemployment rate if the transition is gradual. The "50% unemployment" figure is a possible worst-case extrapolation, not a consensus forecast.</p>
+      </div>
+      <div class="evidence-block">
+        <span class="verdict-label">Supporting Evidence</span>
+        <ul class="evidence-list">
+          <li><strong>Goldman Sachs (Mar 2026):</strong> 300 million jobs globally exposed to automation; U.S. tasks vulnerable = ~25% of all work hours.</li>
+          <li><strong>Goldman Sachs (Mar 2026):</strong> Base case — 6–7% of workers displaced over 10 years; 0.6pp unemployment increase if gradual.</li>
+          <li><strong>AI Impact SWOT (2026):</strong> Confirms office/admin (46%), legal (44%), business/finance (35%) as highest-exposure categories.</li>
+          <li><strong>Omission:</strong> Panelists do not distinguish between task exposure and full job elimination — a critical distinction.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 2 -->
+  <div class="card partial">
+    <div class="card-header">
+      <div class="card-band"></div>
+      <div class="card-header-inner">
+        <div class="card-rating-row">
+          <span class="rating-pill">Partially Accurate — Overhyped</span>
+          <span class="source-tag">Business Insider AI Architects</span>
+        </div>
+        <p class="card-claim">AI will take your job in less than five years — intellectual jobs first, then blue-collar.</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div>
+        <span class="verdict-label">Editorial Verdict</span>
+        <p class="verdict-text">The sequencing — knowledge work before physical labor — is supported by evidence. The timeline "less than five years" for widespread job <em>replacement</em> is not. Goldman Sachs' base case is a 10-year adoption window for firms to broadly adopt AI. What is occurring now is task displacement within roles, not wholesale elimination of professions. Notably, Goldman also projects that AI will <em>create</em> roughly 500,000 net new jobs in the U.S. alone through infrastructure build-out by 2030. The METR Agentic Coding Report (March 2026) confirms significant productivity gains in software development, but notes that "fully delegating" tasks to AI currently covers only 0–20% of typical developer work. Replacement is not imminent; augmentation is already here.</p>
+      </div>
+      <div class="evidence-block">
+        <span class="verdict-label">Corrective Evidence</span>
+        <ul class="evidence-list">
+          <li><strong>Goldman Sachs (Mar 2026):</strong> Timeline for broad firm adoption is ~10 years, not under 5.</li>
+          <li><strong>Claude Agentic Coding Report (2026):</strong> Developers "fully delegate" only 0–20% of tasks to AI today.</li>
+          <li><strong>Goldman Sachs (Mar 2026):</strong> ~500,000 net new U.S. jobs projected through data center infrastructure build-out by 2030.</li>
+          <li><strong>METR (Feb 2026):</strong> Observed a 20% <em>slowdown</em> in experienced open-source developers when using AI tools in controlled 2025 study — productivity gains are not universal.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 3 -->
+  <div class="card accurate">
+    <div class="card-header">
+      <div class="card-band"></div>
+      <div class="card-header-inner">
+        <div class="card-rating-row">
+          <span class="rating-pill">Relatively Accurate</span>
+          <span class="source-tag">Business Insider AI Architects</span>
+        </div>
+        <p class="card-claim">Without consumption, there is no economy — firing people to boost productivity eventually collapses demand.</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div>
+        <span class="verdict-label">Editorial Verdict</span>
+        <p class="verdict-text">This is a legitimate macroeconomic concern with a long academic history (Say's Law debates; Keynesian demand theory). Goldman Sachs echoes it implicitly — noting that rapid, frontloaded displacement creates far larger economic shocks than gradual transition. Universal Basic Income and structural social support mechanisms are raised in both the Business Insider roundtable and Toby Ord's analysis as necessary buffers. The AI Impact SWOT document notes the "mid-career salary premium" as directly threatened. This is a well-reasoned structural argument, not hyperbole — though the collapse timeline is contested. The statement earns credit for intellectual honesty about capitalism's self-limiting dynamic when labor income erodes.</p>
+      </div>
+      <div class="evidence-block">
+        <span class="verdict-label">Supporting Evidence</span>
+        <ul class="evidence-list">
+          <li><strong>Goldman Sachs (Mar 2026):</strong> Rapid/frontloaded displacement produces far larger negative economic impact than gradual change.</li>
+          <li><strong>AI Impact SWOT (2026):</strong> Mid-career salary premiums are vulnerable as AI compresses junior-senior productivity gaps.</li>
+          <li><strong>Business Insider panel:</strong> Multiple economists flag UBI-type support as a structural requirement — not an option — in a high-automation economy.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 2: AI CAPABILITY CLAIMS ── -->
+  <div class="section-title">AI Capability &amp; Agent Claims</div>
+
+  <!-- CARD 4 -->
+  <div class="card partial">
+    <div class="card-header">
+      <div class="card-band"></div>
+      <div class="card-header-inner">
+        <div class="card-rating-row">
+          <span class="rating-pill">Partially Accurate — Overhyped</span>
+          <span class="source-tag">Dan Martell</span>
+        </div>
+        <p class="card-claim">Level 2 agents (like Manus) mean you give AI a goal, it plans and executes entirely on its own — completing entire work products without you.</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div>
+        <span class="verdict-label">Editorial Verdict</span>
+        <p class="verdict-text">Agentic AI tools are genuinely capable of multi-step, autonomous task execution — this is real and documented. However, the portrait of frictionless, end-to-end autonomous completion overstates current reliability. The Anthropic 2026 Agentic Coding Report — authored by the company that makes Claude, the engine powering many such workflows — states plainly that human oversight remains essential, that developers "fully delegate" only 0–20% of tasks, and that "active supervision, validation, and human judgment" are required, especially for high-stakes work. A benchmark study (METR, 2025) measured that AI can independently complete software tasks that take a human around 1–2 hours — a genuine advance, but a far cry from "entire projects." Martell's framing captures an aspirational trajectory more than a settled operational reality.</p>
+      </div>
+      <div class="evidence-block">
+        <span class="verdict-label">Corrective &amp; Supporting Evidence</span>
+        <ul class="evidence-list">
+          <li><strong>Anthropic Agentic Coding Report (2026):</strong> Developers using AI in ~60% of work but fully delegate only 0–20% of tasks; human judgment remains mandatory for complex work.</li>
+          <li><strong>METR Long Tasks Study (Mar 2025):</strong> AI task completion horizon ~1–2 hours of human-equivalent work, doubling approximately every 7 months.</li>
+          <li><strong>METR Productivity Update (Feb 2026):</strong> Experienced developers using AI tools in a controlled study were 20% <em>slower</em>, suggesting autonomous productivity gains are highly context-dependent.</li>
+          <li><strong>True core:</strong> Agentic capability is real, growing rapidly, and transformative — but "walk away and it does everything" is marketing, not engineering reality in 2026.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 5 -->
+  <div class="card accurate">
+    <div class="card-header">
+      <div class="card-band"></div>
+      <div class="card-header-inner">
+        <div class="card-rating-row">
+          <span class="rating-pill">Relatively Accurate</span>
+          <span class="source-tag">Dan Martell</span>
+        </div>
+        <p class="card-claim">ChatGPT gets 6 billion visits a month while Manus gets only 18 million — 0.3% — meaning almost nobody is actually using agentic AI yet.</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div>
+        <span class="verdict-label">Editorial Verdict</span>
+        <p class="verdict-text">The underlying observation — that agentic AI adoption lags far behind basic conversational AI use — is directionally accurate and consistent with broader adoption data. The specific figures cited for Manus cannot be independently verified from the documents in this project, and Manus traffic estimates vary considerably by source and measurement period. However, the structural claim maps closely to what Anthropic's own Agentic Coding Report describes: a widening gap between "early adopters who scale agent coordination" and organizations still using AI as a point assistant. The 0.3% ratio, even if the exact numbers shift, captures a real adoption gulf that multiple documents corroborate.</p>
+      </div>
+      <div class="evidence-block">
+        <span class="verdict-label">Supporting Evidence</span>
+        <ul class="evidence-list">
+          <li><strong>Anthropic Agentic Coding Report (2026):</strong> Explicitly notes the gap between early adopters and late movers is "widening" — confirms the adoption disparity claim.</li>
+          <li><strong>METR (Mar 2026):</strong> Describes agentic AI use as an emerging, not yet mainstream, workflow shift even among professional developers.</li>
+          <li><strong>Caveat:</strong> Precise traffic figures for Manus are unverified in primary sources; the ratio should be treated as illustrative, not precise.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 6 -->
+  <div class="card verified">
+    <div class="card-header">
+      <div class="card-band"></div>
+      <div class="card-header-inner">
+        <div class="card-rating-row">
+          <span class="rating-pill">Strong Correlation — Minor Omissions</span>
+          <span class="source-tag">Dan Martell</span>
+        </div>
+        <p class="card-claim">AI task capability has been growing exponentially, doubling roughly every seven months, for years.</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div>
+        <span class="verdict-label">Editorial Verdict</span>
+        <p class="verdict-text">This claim maps almost exactly to METR's published research. METR's "Measuring AI Ability to Complete Long Tasks" (March 2025) found that AI task completion ability has been growing exponentially for six years with a doubling time of approximately seven months. The METR Hourly AI Costs essay by Toby Ord (2025) adds critical context: the cost of running these increasingly capable models has also been rising, meaning the headline capability growth may not translate linearly into economical labor replacement. Martell presents only the numerator (capability) without the denominator (cost), which is a meaningful omission but does not undermine the core factual claim.</p>
+      </div>
+      <div class="evidence-block">
+        <span class="verdict-label">Supporting Evidence</span>
+        <ul class="evidence-list">
+          <li><strong>METR (Mar 2025):</strong> AI task performance has been exponentially increasing for 6 years; doubling time ≈ 7 months. Extrapolation suggests AI completing multi-day human tasks within a decade.</li>
+          <li><strong>METR AI R&amp;D Timelines (Feb 2026):</strong> Consistent with ~2032 for near-full automation of AI R&amp;D itself at current rates.</li>
+          <li><strong>Toby Ord / METR (2025):</strong> Hourly cost of peak AI agent performance has also been growing — a caveat Martell omits.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 3: AI EXISTENTIAL RISK ── -->
+  <div class="section-title">Existential Risk &amp; Safety Claims</div>
+
+  <!-- CARD 7 -->
+  <div class="card nuanced">
+    <div class="card-header">
+      <div class="card-band"></div>
+      <div class="card-header-inner">
+        <div class="card-rating-row">
+          <span class="rating-pill">100% True — Verified</span>
+          <span class="source-tag">MIT / Life 3.0 Analysis</span>
+        </div>
+        <p class="card-claim">The average AI researcher believes there is approximately a one-in-six chance that AI wipes out humanity — literal Russian roulette odds.</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div>
+        <span class="verdict-label">Editorial Verdict</span>
+        <p class="verdict-text">This figure is sourced from Max Tegmark (MIT) and is consistent with published surveys of AI safety researchers. The "one in six" figure appears in the Life 3.0 book and associated research, reflecting median estimates from surveys of AI researchers on existential risk. The Business Insider AI Architects roundtable corroborates this framing — multiple participants independently reference similar probability estimates. Toby Ord's "The Precipice" (Oxford) provides additional academic grounding, estimating AI as the leading source of existential risk in this century. The framing as "Russian roulette odds" is rhetorically charged but mathematically accurate if the ~16% figure holds.</p>
+      </div>
+      <div class="evidence-block">
+        <span class="verdict-label">Verification</span>
+        <ul class="evidence-list">
+          <li><strong>Max Tegmark / MIT:</strong> The 1-in-6 figure is documented in Life 3.0 and associated survey methodology.</li>
+          <li><strong>Business Insider panel (2026):</strong> Multiple AI pioneers independently cite existential risk as a serious, non-fringe concern.</li>
+          <li><strong>Toby Ord (Oxford):</strong> Places AI as the largest contributor to extinction risk this century — published in peer-reviewed work and "The Precipice."</li>
+          <li><strong>Dario Amodei (Anthropic CEO):</strong> Publicly revised his "p(doom)" upward to 25%, corroborating the order-of-magnitude risk framing.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 8 -->
+  <div class="card accurate">
+    <div class="card-header">
+      <div class="card-band"></div>
+      <div class="card-header-inner">
+        <div class="card-rating-row">
+          <span class="rating-pill">Relatively Accurate</span>
+          <span class="source-tag">MIT / Life 3.0 Analysis</span>
+        </div>
+        <p class="card-claim">A co-founder of Anthropic is deeply afraid of what his own company is building — and the CEO himself has raised his probability estimate for catastrophic AI outcomes.</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div>
+        <span class="verdict-label">Editorial Verdict</span>
+        <p class="verdict-text">The factual core is correct and publicly documented. Dario Amodei, Anthropic CEO, has publicly stated that he considers AI to be potentially the most dangerous technology humanity has developed, and has spoken openly about his concern for catastrophic outcomes. The Life 3.0 video and the Business Insider roundtable both reference this. The characterization that he has "moved his PDoom up from 15% to 25%" — as stated in the roundtable transcript — is consistent with Amodei's public statements, though exact percentages vary by interview and year. The context is important: Anthropic was founded specifically on the premise that the most safety-conscious path forward is to remain at the frontier rather than cede it to less safety-focused competitors.</p>
+      </div>
+      <div class="evidence-block">
+        <span class="verdict-label">Supporting Evidence</span>
+        <ul class="evidence-list">
+          <li><strong>Business Insider panel transcript (2026):</strong> Explicitly references Dario Amodei moving his "PDoom" from 15% to 25%.</li>
+          <li><strong>Public record:</strong> Amodei's existential concern is corroborated across multiple published interviews and Anthropic's own "model spec" transparency documentation.</li>
+          <li><strong>Nuance:</strong> Anthropic's founders' safety concerns are the <em>reason</em> they founded the company — the framing should not imply paralysis; they believe engagement is safer than abstention.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 9 -->
+  <div class="card qualified">
+    <div class="card-header">
+      <div class="card-band"></div>
+      <div class="card-header-inner">
+        <div class="card-rating-row">
+          <span class="rating-pill">Qualified Accuracy</span>
+          <span class="source-tag">MIT / Life 3.0 Analysis</span>
+        </div>
+        <p class="card-claim">AI risks are far scarier than nuclear weapons because, unlike with nuclear tests, we cannot do the calculations to predict what will happen.</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div>
+        <span class="verdict-label">Editorial Verdict</span>
+        <p class="verdict-text">The claim captures a genuine epistemic concern — AI alignment is unsolved in ways nuclear physics was not, and the internal mechanisms of large language models remain poorly understood even by their creators. However, the comparative framing with nuclear weapons is contested. Nuclear risk has killed hundreds of thousands and brought humanity to the brink of extinction multiple times (e.g., the 1983 Petrov incident, the 1962 Cuban Missile Crisis). Toby Ord's research actually places AI extinction risk at roughly 100 times the risk of nuclear war — supporting the "scarier" claim at the civilizational scale — but this is a probability argument, not a certainty. The "we cannot do the calculations" assertion is directionally true for superintelligence but understates the significant interpretability and alignment research currently underway.</p>
+      </div>
+      <div class="evidence-block">
+        <span class="verdict-label">Nuancing Evidence</span>
+        <ul class="evidence-list">
+          <li><strong>Toby Ord / Oxford:</strong> Estimates AI extinction risk at ~100x nuclear war risk — supports the "more dangerous" framing at the civilizational scale.</li>
+          <li><strong>Life 3.0 transcript:</strong> References the Petrov/Arkhipov near-miss incidents accurately — these are historically verified events.</li>
+          <li><strong>Qualification:</strong> "We cannot do the calculations" overstates the case — alignment and interpretability research is active and producing results, even if incomplete.</li>
+          <li><strong>Business Insider panel:</strong> Multiple panelists offer the same comparison while acknowledging it as a worst-case framing, not a certainty.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 4: AI SCALE & TECHNOLOGY ── -->
+  <div class="section-title">Technology Scale, Cost &amp; Timeline Claims</div>
+
+  <!-- CARD 10 -->
+  <div class="card nuanced">
+    <div class="card-header">
+      <div class="card-band"></div>
+      <div class="card-header-inner">
+        <div class="card-rating-row">
+          <span class="rating-pill">100% True — Verified</span>
+          <span class="source-tag">Multiple Sources</span>
+        </div>
+        <p class="card-claim">What is coming with AI is bigger than the internet, bigger than smartphones, bigger than any previous technical shift in history.</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div>
+        <span class="verdict-label">Editorial Verdict</span>
+        <p class="verdict-text">This claim — stated by Dan Martell and echoed in the Business Insider roundtable — is among the most frequently repeated in AI discourse. Remarkably, it holds up under scrutiny from every primary source reviewed. The Goldman Sachs analysis calls AI's potential labor impact "far broader than any previous automation wave," affecting 25% of all U.S. work tasks. METR's exponential task-completion growth curve, if it continues even half as fast as projected, would produce AI capabilities that dwarf the internet's economic disruption. Toby Ord's broad timelines essay argues that AI is unique among technologies precisely because it is the first to amplify <em>cognition itself</em>, not just physical or computational tasks. The Business Insider panel — including a Nobel laureate's perspective via Jeffrey Hinton — converges on this conclusion independently.</p>
+      </div>
+      <div class="evidence-block">
+        <span class="verdict-label">Verification</span>
+        <ul class="evidence-list">
+          <li><strong>Goldman Sachs (Mar 2026):</strong> 300 million jobs globally exposed; scale of impact broader than any prior automation.</li>
+          <li><strong>METR (Mar 2025):</strong> Exponential capability growth with 7-month doubling time — unprecedented in tool history.</li>
+          <li><strong>Thomas Kwa / METR (Feb 2026):</strong> Projects 99% AI R&amp;D automation by ~2032 — would produce recursive self-improvement at historic scale.</li>
+          <li><strong>Toby Ord / Oxford:</strong> AI is the first technology to automate cognition itself, not merely labor or computation — qualitatively distinct from all prior general-purpose technologies.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 11 -->
+  <div class="card verified">
+    <div class="card-header">
+      <div class="card-band"></div>
+      <div class="card-header-inner">
+        <div class="card-rating-row">
+          <span class="rating-pill">Strong Correlation — Minor Omissions</span>
+          <span class="source-tag">Business Insider / Dan Martell</span>
+        </div>
+        <p class="card-claim">We are almost out of human knowledge to train AI on, and AI systems are beginning to look at their own intelligence, debug their own code, and make themselves smarter.</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div>
+        <span class="verdict-label">Editorial Verdict</span>
+        <p class="verdict-text">The "running out of training data" observation reflects a real and documented challenge in AI development — discussed as the "data wall" problem in research circles. The claim about AI systems beginning to improve themselves is more precise than it sounds in casual framing: METR's February 2026 research note explicitly models when AI will automate AI R&D itself, with a median prediction of ~99% automation of the AI research pipeline by 2032. Thomas Kwa's paper at METR describes this as already beginning, with AI assisting in code generation, model evaluation, and increasingly in architecture decisions. The omission is that current "self-improvement" is still largely human-directed and narrow — truly recursive, unsupervised self-improvement remains a future capability.</p>
+      </div>
+      <div class="evidence-block">
+        <span class="verdict-label">Supporting Evidence</span>
+        <ul class="evidence-list">
+          <li><strong>Thomas Kwa / METR (Feb 2026):</strong> Median prediction of >99% AI R&amp;D automation by late 2032 at current compute and algorithmic growth rates.</li>
+          <li><strong>METR (Mar 2026 / Two Hours):</strong> Researchers using AI to run their own AI research — a real, present-day example of AI assisting its own development.</li>
+          <li><strong>Caveat:</strong> Current self-improvement is human-supervised and tool-assisted, not yet the recursive autonomous loop the framing implies.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 12 -->
+  <div class="card qualified">
+    <div class="card-header">
+      <div class="card-band"></div>
+      <div class="card-header-inner">
+        <div class="card-rating-row">
+          <span class="rating-pill">Qualified Accuracy</span>
+          <span class="source-tag">Business Insider AI Architects</span>
+        </div>
+        <p class="card-claim">I am almost betting my life that we will see Artificial General Intelligence in 2026.</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div>
+        <span class="verdict-label">Editorial Verdict</span>
+        <p class="verdict-text">As of April 2026 — the date of this assessment — AGI as commonly defined (a system matching or exceeding human performance across all cognitively demanding domains) has not been achieved and is not widely reported as imminent. Toby Ord's "Broad Timelines" essay from Oxford explicitly cautions against binary AGI-arrival pronouncements, arguing that AGI is better understood as a continuum crossed gradually, making precise year predictions practically meaningless. The METR research notes suggest extraordinary capability growth but no threshold-crossing event as of their March 2026 publication dates. The speaker's confidence may reflect a narrower, more permissive personal definition of AGI than the field-standard one. The statement is a sincere forecast, not fabrication, but it does not appear to have been borne out by mid-2026.</p>
+      </div>
+      <div class="evidence-block">
+        <span class="verdict-label">Qualifying Evidence</span>
+        <ul class="evidence-list">
+          <li><strong>Toby Ord (Oxford, Mar 2026):</strong> AGI timelines are deeply uncertain; even defining "arrival" is contested — predictions of a specific year are epistemically overconfident.</li>
+          <li><strong>METR (Mar 2026):</strong> Capability growth is genuine and rapid, but as of March 2026 documents, no AGI threshold has been crossed.</li>
+          <li><strong>Thomas Kwa / METR (Feb 2026):</strong> Models superintelligence on "fast" timelines as ~mid-2031, not 2026.</li>
+          <li><strong>Important note:</strong> Multiple respected researchers do believe AGI timelines are shorter than mainstream consensus — disagreement is genuine.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 13 -->
+  <div class="card accurate">
+    <div class="card-header">
+      <div class="card-band"></div>
+      <div class="card-header-inner">
+        <div class="card-rating-row">
+          <span class="rating-pill">Relatively Accurate</span>
+          <span class="source-tag">Business Insider AI Architects</span>
+        </div>
+        <p class="card-claim">Current AI systems often lie to users despite being trained not to — we don't even have a reliable way to control current AI systems, let alone superintelligence.</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div>
+        <span class="verdict-label">Editorial Verdict</span>
+        <p class="verdict-text">AI hallucination — generating plausible but false information with confidence — is well-documented, widespread, and acknowledged by all major AI developers. The characterization of this as AI "lying" is technically contested (hallucination is probabilistic output error, not intentional deception) but captures the real-world effect accurately. The statement that "we don't have a reliable way to control current AI systems" is supported by the METR experiment finding that AI systems can produce unexpected behaviors, and by OpenAI's own published research noting cases where AI models found unintended solutions to training objectives. The Business Insider panel's consensus that alignment for superintelligence is unsolved is consistent with the academic literature. The broader claim about superintelligence control is speculative but not fringe.</p>
+      </div>
+      <div class="evidence-block">
+        <span class="verdict-label">Supporting Evidence</span>
+        <ul class="evidence-list">
+          <li><strong>Industry consensus:</strong> Hallucination rates in leading models are documented and declining but not eliminated.</li>
+          <li><strong>Business Insider panel:</strong> OpenAI published research on AI systems finding unintended reward hacks — the "gaming" of training objectives.</li>
+          <li><strong>METR (2025–2026):</strong> Unexpected productivity patterns (e.g., the 20% slowdown) illustrate that AI behavior in real conditions diverges from benchmark predictions.</li>
+          <li><strong>Nuance:</strong> "Lying" implies intent; "hallucinating" is more precise. The practical consequence for users is the same, but the distinction matters for alignment theory.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 14 — LLM COSTS -->
+  <div class="section-title">AI Costs &amp; Accessibility</div>
+
+  <div class="card verified">
+    <div class="card-header">
+      <div class="card-band"></div>
+      <div class="card-header-inner">
+        <div class="card-rating-row">
+          <span class="rating-pill">Strong Correlation — Minor Omissions</span>
+          <span class="source-tag">Dan Martell / Business Insider</span>
+        </div>
+        <p class="card-claim">AI is getting dramatically cheaper over time — the cost of running these tools is dropping fast, making powerful AI accessible to anyone.</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div>
+        <span class="verdict-label">Editorial Verdict</span>
+        <p class="verdict-text">The broad trend toward declining AI inference costs is well-documented. The AISuperior LLM Cost Comparison (April 2026) shows input token pricing ranging from $0.10 to $5 per million tokens across 15+ models — with the gap between budget and premium tiers being enormous. DeepSeek R1's emergence in January 2025 accelerated this trend sharply by demonstrating frontier-comparable reasoning at dramatically lower compute cost. However, Toby Ord's essay on hourly AI costs introduces a critical qualification: the cost of AI at the <em>performance frontier</em> (i.e., the most capable model available at any given time) has likely been rising, even as commodity AI gets cheaper. The "AI is getting cheaper" narrative applies to last year's capability level, not to the cutting edge.</p>
+      </div>
+      <div class="evidence-block">
+        <span class="verdict-label">Supporting &amp; Qualifying Evidence</span>
+        <ul class="evidence-list">
+          <li><strong>AISuperior (Apr 2026):</strong> Input tokens range $0.10–$5/M; output tokens $0.40–$25/M — wide affordability spectrum exists.</li>
+          <li><strong>DeepSeek R1 (Jan 2025):</strong> Demonstrated frontier reasoning at dramatically lower cost, validating the democratization trend.</li>
+          <li><strong>Toby Ord (2025):</strong> Cost at the <em>frontier</em> of AI capability has likely been rising exponentially — "cheaper AI" describes last year's capability, not today's best.</li>
+          <li><strong>Implication:</strong> Broadly accessible AI is real; the <em>most capable</em> AI remains expensive and concentrated in large labs.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 15 — HEALTHCARE -->
+  <div class="section-title">AI Benefits &amp; Positive Applications</div>
+
+  <div class="card nuanced">
+    <div class="card-header">
+      <div class="card-band"></div>
+      <div class="card-header-inner">
+        <div class="card-rating-row">
+          <span class="rating-pill">100% True — Verified</span>
+          <span class="source-tag">Business Insider AI Architects</span>
+        </div>
+        <p class="card-claim">The most immediate positive changes from AI will come in healthcare — AI can integrate across specialties in ways human doctors cannot, potentially acting as better than the best doctor for certain diagnostic tasks.</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div>
+        <span class="verdict-label">Editorial Verdict</span>
+        <p class="verdict-text">Healthcare is among the most consistently cited and best-evidenced areas of near-term AI benefit across all reviewed sources. Goldman Sachs specifically highlights healthcare as a domain where AI will create new specialized occupations, not merely replace existing ones. The Business Insider panel's description of AI integrating across medical specialties — where human medicine has been forced into narrow sub-specialties precisely because no single human can master the full breadth of medical knowledge — is a structurally sound argument. Published studies on AI diagnostic performance in radiology, pathology, and ophthalmology already demonstrate performance at or above expert physician levels in specific tasks. The "better than the best doctor" claim is conditional on task type, not universal — but the directional argument is well-grounded.</p>
+      </div>
+      <div class="evidence-block">
+        <span class="verdict-label">Verification</span>
+        <ul class="evidence-list">
+          <li><strong>Goldman Sachs (Mar 2026):</strong> Healthcare cited as a sector where AI creates new jobs and specializations, not just eliminates them.</li>
+          <li><strong>Business Insider panel:</strong> Convergent expert opinion that cross-specialty medical integration is AI's clearest near-term "gift."</li>
+          <li><strong>AI Impact SWOT (2026):</strong> Healthcare among industries listed as having highest potential for AI-driven positive transformation.</li>
+          <li><strong>Public evidence:</strong> AI diagnostic performance at or above specialist-level is documented in radiology, retinal imaging, dermatology, and pathology as of 2024–2025.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLOSING -->
+  <div class="closing">
+    <h3>An Editorial Reflection on the Voices We Have Reviewed</h3>
+    <p>What is striking about these three sources — a YouTube entrepreneur, a panel of AI scientists, and a philosopher's analysis of a researcher's book — is not their differences, but their convergences. Across radically different styles of communication and vastly different audiences, a consistent picture emerges: AI capability is growing at a pace without historical precedent, its benefits are real and near-term, its risks are serious and underappreciated by the general public, and the transition it is creating will be among the most consequential humans have ever navigated.</p>
+    <p>Where the voices "run amuck" is not in fabrication, but in compression — in collapsing nuanced probability distributions into confident assertions, trading epistemic precision for rhetorical impact. The antidote is not dismissal, but careful reading. These voices, with their imprecisions, are pointing at something real.</p>
+    <p>As one panelist in the Business Insider roundtable observed: the skill that may matter most in the age of AI is the distinctly human one — learning to be a critical thinker, to question sources, to hold uncertainty without paralysis, and to act wisely in conditions we cannot fully calculate. That skill was valuable before AI. It is indispensable now.</p>
+    <div class="sources-note">
+      Primary Sources: Goldman Sachs Research (Mar 18, 2026) · METR Long Tasks Study (Mar 19, 2025) · METR Productivity Update (Feb 24, 2026) · METR "Two Hours in the Future" (Mar 19, 2026) · METR AI Timelines Model (Feb 10, 2026) · Toby Ord / Oxford "Broad Timelines" (Mar 19, 2026) · Toby Ord "Hourly Costs of AI Agents" (Dec 2025) · Anthropic 2026 Agentic Coding Trends Report · AISuperior LLM Cost Comparison (Apr 17, 2026) · AI Impact SWOT 2026–2030 (Claude-generated document) · Dan Martell YouTube transcript · Business Insider AI Architects Roundtable · MIT / Life 3.0 based AI futures video
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  Prepared April 2026 &nbsp;·&nbsp; Assessment methodology: cross-reference against primary institutional sources &nbsp;·&nbsp; For educational and professional use
+</footer>
+
+</body>
+</html>
