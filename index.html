@@ -353,6 +353,106 @@
     @media (max-width: 400px) {
       .stat-strip { grid-template-columns: 1fr; }
     }
+
+    /* ── FAITH CARDS ── */
+    .faith-cards { display: flex; flex-direction: column; gap: 2rem; margin-bottom: 2.5rem; }
+    .faith-card {
+      background: var(--white);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+    }
+    .faith-card-img-wrap {
+      position: relative;
+      overflow: hidden;
+      background: #111;
+      min-height: 260px;
+      cursor: pointer;
+    }
+    .faith-card-img-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.3s;
+    }
+    .faith-card-img-wrap:hover img { transform: scale(1.03); }
+    .faith-card-img-hint {
+      position: absolute; bottom: 8px; right: 8px;
+      background: rgba(0,0,0,0.55);
+      color: #fff; font-size: 0.7rem; padding: 3px 8px;
+      border-radius: 20px; pointer-events: none;
+    }
+    .faith-card-body {
+      padding: 1.5rem;
+      display: flex; flex-direction: column; gap: 0.6rem;
+    }
+    .faith-card-body h3 { font-size: 1rem; color: var(--navy); margin: 0; }
+    .faith-card-body .prompt-desc { font-size: 0.82rem; color: var(--muted); margin: 0; }
+    .faith-card-body .prompt-box {
+      font-size: 0.78rem; font-family: Georgia, serif;
+      background: #f4f4f4; border-left: 3px solid var(--gold);
+      padding: 0.75rem; border-radius: 0 6px 6px 0;
+      white-space: pre-wrap; flex: 1;
+      max-height: 220px; overflow-y: auto;
+    }
+    .faith-card-body .prompt-tool { font-size: 0.74rem; color: var(--muted); margin: 0; }
+
+    /* NT Carousel */
+    .nt-carousel { display: flex; flex-direction: row; gap: 8px; width: 100%; height: 100%; min-height: 300px; }
+    .nt-main { flex: 1; overflow: hidden; cursor: pointer; }
+    .nt-main img { width: 100%; height: 100%; object-fit: contain; background: #111; display: block; }
+    .nt-thumbs { width: 72px; display: flex; flex-direction: column; gap: 4px; overflow-y: auto; padding: 4px 0; }
+    .nt-thumb {
+      width: 100%; aspect-ratio: 4/3; object-fit: cover;
+      cursor: pointer; border-radius: 4px;
+      border: 2px solid transparent; opacity: 0.55;
+      transition: opacity 0.2s, border-color 0.2s;
+      flex-shrink: 0;
+    }
+    .nt-thumb:hover { opacity: 0.8; }
+    .nt-thumb.nt-active { opacity: 1; border-color: var(--gold); }
+
+    /* Lightbox */
+    .nt-lightbox {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.92); z-index: 9999;
+      align-items: center; justify-content: center;
+      flex-direction: column;
+    }
+    .nt-lightbox.open { display: flex; }
+    .nt-lightbox-img {
+      max-width: 92vw; max-height: 85vh;
+      object-fit: contain; border-radius: 6px;
+      user-select: none;
+    }
+    .nt-lightbox-close {
+      position: absolute; top: 16px; right: 20px;
+      color: #fff; font-size: 2rem; cursor: pointer;
+      background: none; border: none; line-height: 1;
+    }
+    .nt-lightbox-nav {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background: rgba(255,255,255,0.15); border: none;
+      color: #fff; font-size: 2rem; cursor: pointer;
+      padding: 0.5rem 0.9rem; border-radius: 50%;
+      line-height: 1;
+    }
+    .nt-lightbox-nav.prev { left: 16px; }
+    .nt-lightbox-nav.next { right: 16px; }
+    .nt-lightbox-counter {
+      color: rgba(255,255,255,0.6); font-size: 0.82rem; margin-top: 10px;
+    }
+
+    @media (max-width: 700px) {
+      .faith-card { grid-template-columns: 1fr; }
+      .faith-card-img-wrap { min-height: 200px; }
+      .nt-carousel { flex-direction: column; min-height: auto; }
+      .nt-thumbs { flex-direction: row; width: 100%; height: 56px; overflow-x: auto; overflow-y: hidden; padding: 4px 0; }
+      .nt-thumb { width: 72px; height: 100%; aspect-ratio: unset; }
+    }
   </style>
 </head>
 <body>
@@ -677,6 +777,17 @@
           your preference.</strong>
         </p>
       </div>
+
+      <div class="benchmark-wrap mt-md" style="padding:1rem;">
+        <img src="resources/graphics/Visual-Prompt-Images/Which AI Assistant.jpg"
+             alt="Which AI Assistant: ChatGPT vs Claude vs Gemini vs Perplexity — best uses, strengths, limitations, and who each tool is for"
+             loading="lazy" style="width:100%;border-radius:8px;">
+        <p class="benchmark-cap">
+          Not sure which AI to use? Each tool has a different personality and strength.
+          <strong>ChatGPT</strong> is the most versatile. <strong>Claude</strong> excels at writing and nuance.
+          <strong>Gemini</strong> connects to your Google apps. <strong>Perplexity</strong> is the search-first option.
+        </p>
+      </div>
     </div>
 
     <!-- GROUP 2: IMAGE -->
@@ -957,7 +1068,7 @@
     <h2 class="section-title">47 Prompts You Can Use Today</h2>
     <p class="section-intro">
       These prompts are organized by use case. Copy, adapt, and run them in ChatGPT, Gemini,
-      or any image-capable AI. Faith-community prompts are highlighted.
+      or any image-capable AI. Faith-community prompts are highlighted — and shown with their actual AI-generated outputs below.
     </p>
 
     <div class="callout callout-navy mb-md">
@@ -969,29 +1080,235 @@
       </p>
     </div>
 
-    <!-- FAITH & COMMUNITY -->
+    <!-- ── FAITH FEATURE CARDS ── -->
+    <span class="prompt-section-label">Faith &amp; Community — Featured with AI Output</span>
+
+    <div class="faith-cards">
+
+      <!-- CARD 1: Mission Trips -->
+      <div class="faith-card">
+        <div class="faith-card-img-wrap" onclick="openLightbox('resources/graphics/Visual-Prompt-Images/Mission Trip Planning.jpg')">
+          <img src="resources/graphics/Visual-Prompt-Images/Mission Trip Planning.jpg" alt="AI-generated infographic: How International Mission Trips Work" loading="lazy">
+          <span class="faith-card-img-hint">Click to expand</span>
+        </div>
+        <div class="faith-card-body">
+          <span class="faith-badge">Faith Use</span>
+          <h3>1. Explain a Concept in Images</h3>
+          <p class="prompt-desc">An infographic explaining mission trips to someone with no prior church experience.</p>
+          <div class="prompt-box">Create an infographic that explains how International Mission Trips work to a non-experienced Christian audience.
+
+You decide the wording, structure, examples, and visual metaphor.
+
+Requirements:
+Make it understandable in under 60 seconds
+Include a simple flow
+Use plain English
+Avoid jargon
+Keep all text readable
+
+Style: Clean modern explainer infographic, white background, blue accents, rounded cards, simple icons.</div>
+          <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini, Adobe Firefly</p>
+        </div>
+      </div>
+
+      <!-- CARD 2: Apologetics -->
+      <div class="faith-card">
+        <div class="faith-card-img-wrap" onclick="openLightbox('resources/graphics/Visual-Prompt-Images/apologetics-from-seminar-video.jpg')">
+          <img src="resources/graphics/Visual-Prompt-Images/apologetics-from-seminar-video.jpg" alt="AI-generated visual explainer from Apologetics seminar content" loading="lazy">
+          <span class="faith-card-img-hint">Click to expand</span>
+        </div>
+        <div class="faith-card-body">
+          <span class="faith-badge">Faith Use</span>
+          <h3>2. Video to Graphic for Presentations</h3>
+          <p class="prompt-desc">Turn a sermon, seminar, or video into a shareable visual explainer. Gemini can pull directly from a YouTube link.</p>
+          <div class="prompt-box">Turn the information below into a clean visual explainer.
+
+Goal: Make this easy for a general audience to understand in under 30 seconds.
+
+Create:
+A clear title
+5 key takeaways
+Simple icons
+A visual hierarchy
+A short "why it matters" box
+
+Style: Modern tech explainer graphic, white background, black text, blue accent color, rounded cards, thin lines, readable typography.
+
+Use only the information provided. Do not invent facts.
+
+SOURCE TEXT: [paste transcript or YouTube link]
+
+Note: Gemini can accept a YouTube link directly. ChatGPT needs the transcript pasted in.</div>
+          <p class="prompt-tool">Works well in: Google Gemini (YouTube link), ChatGPT 4o (paste transcript)</p>
+        </div>
+      </div>
+
+      <!-- CARD 3: Mind Map Book of Mark -->
+      <div class="faith-card">
+        <div class="faith-card-img-wrap" onclick="openLightbox('resources/graphics/Visual-Prompt-Images/Gemini Mind Map Book of Mark.jpg')">
+          <img src="resources/graphics/Visual-Prompt-Images/Gemini Mind Map Book of Mark.jpg" alt="AI-generated mind map of the Gospel of Mark" loading="lazy">
+          <span class="faith-card-img-hint">Click to expand</span>
+        </div>
+        <div class="faith-card-body">
+          <span class="faith-badge">Faith Use</span>
+          <h3>6. Create a Visual Mind Map of Anything</h3>
+          <p class="prompt-desc">Map any book of the Bible, theological concept, or sermon series visually.</p>
+          <div class="prompt-box">Create a mind map titled: The Gospel of Mark
+
+Center node:
+The Book of Mark
+
+Branches:
+Origins · Epistemology · Theology · Key Verses
+Connections · Application · Practical Application
+Purpose of Writing · Travels
+
+Under each branch, add 2 small subpoints.
+
+Style: Clean, modern, colorful but not childish, readable text, white background, thin connector lines.</div>
+          <p class="prompt-tool">Works well in: Google Gemini, ChatGPT 4o</p>
+        </div>
+      </div>
+
+      <!-- CARD 4: New Testament — CAROUSEL -->
+      <div class="faith-card" style="grid-template-columns:1fr;">
+        <div style="padding:0.5rem 0.5rem 0 0.5rem;">
+          <span class="faith-badge" style="margin-bottom:0.3rem;display:inline-block;">Faith Use</span>
+          <h3 style="color:var(--navy);font-size:1rem;margin-bottom:0.3rem;">8. Create a Multi-Slide Visual Presentation</h3>
+          <p style="font-size:0.82rem;color:var(--muted);margin-bottom:0.5rem;">A polished 5-slide keynote-style deck on any topic — here shown for The New Testament. Tap any thumbnail to view full slide.</p>
+        </div>
+        <div class="nt-carousel" id="nt-carousel">
+          <div class="nt-main">
+            <img id="nt-active" src="resources/graphics/Visual-Prompt-Images/nt-slide-1.jpg" alt="New Testament Slide 1" onclick="openNTLightbox(0)">
+          </div>
+          <div class="nt-thumbs">
+            <img src="resources/graphics/Visual-Prompt-Images/nt-slide-1.jpg" class="nt-thumb nt-active" data-idx="0" alt="Slide 1" onclick="ntSetSlide(0)">
+            <img src="resources/graphics/Visual-Prompt-Images/nt-slide-2.jpg" class="nt-thumb" data-idx="1" alt="Slide 2" onclick="ntSetSlide(1)">
+            <img src="resources/graphics/Visual-Prompt-Images/nt-slide-3.jpg" class="nt-thumb" data-idx="2" alt="Slide 3" onclick="ntSetSlide(2)">
+            <img src="resources/graphics/Visual-Prompt-Images/nt-slide-4.jpg" class="nt-thumb" data-idx="3" alt="Slide 4" onclick="ntSetSlide(3)">
+            <img src="resources/graphics/Visual-Prompt-Images/nt-slide-5.jpg" class="nt-thumb" data-idx="4" alt="Slide 5" onclick="ntSetSlide(4)">
+            <img src="resources/graphics/Visual-Prompt-Images/nt-slide-6.jpg" class="nt-thumb" data-idx="5" alt="Slide 6" onclick="ntSetSlide(5)">
+          </div>
+        </div>
+        <div class="faith-card-body" style="border-top:1px solid var(--border);">
+          <div class="prompt-box">Create a 5-slide visual presentation about The New Testament.
+
+Slides:
+1. Title slide
+2. What changed
+3. Why it matters
+4. Real-world examples
+5. Final takeaway
+
+Requirements:
+Make it look like a polished keynote deck. Keep the text short and readable.
+
+Style: Premium tech presentation, black background, white text, blue/purple accents, clean minimal layouts.</div>
+          <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+        </div>
+      </div>
+
+      <!-- CARD 5: Biblical Backpacks -->
+      <div class="faith-card">
+        <div class="faith-card-img-wrap" onclick="openLightbox('resources/graphics/Visual-Prompt-Images/ChatGPT Biblical Backpack Product Sheet.jpg')">
+          <img src="resources/graphics/Visual-Prompt-Images/ChatGPT Biblical Backpack Product Sheet.jpg" alt="AI-generated product packaging concept: Biblical Backpacks for Teens — Covenant Carry brand" loading="lazy">
+          <span class="faith-card-img-hint">Click to expand</span>
+        </div>
+        <div class="faith-card-body">
+          <span class="faith-badge">Faith Use</span>
+          <h3>10. Product Packaging Concept Sheet</h3>
+          <p class="prompt-desc">AI designed a complete brand concept — names, quotes, color palette, and three backpack mockups — from a single prompt.</p>
+          <div class="prompt-box">Create a product packaging concept sheet for Biblical Backpacks for Teens.
+
+You decide:
+Bag names · Backpack testimonial quotes
+Visual style · Color palette · 3 backpack mockups
+
+Requirements:
+Make it look like a real CPG brand concept presentation. Text should be readable. Packaging should feel modern and retail/shelf/store-ready.
+
+Style: Clean premium design, studio mockup lighting, organized concept board.</div>
+          <p class="prompt-tool">Works well in: ChatGPT 4o Images, Google Gemini</p>
+        </div>
+      </div>
+
+      <!-- CARD 6: Website Visuals Veritas -->
+      <div class="faith-card">
+        <div class="faith-card-img-wrap" onclick="openLightbox('resources/graphics/Visual-Prompt-Images/ChatGPT Website Visuals Veritas Weekly.jpg')">
+          <img src="resources/graphics/Visual-Prompt-Images/ChatGPT Website Visuals Veritas Weekly.jpg" alt="AI-generated website hero section mockup for Veritas Life Group Weekly Notes" loading="lazy">
+          <span class="faith-card-img-hint">Click to expand</span>
+        </div>
+        <div class="faith-card-body">
+          <span class="faith-badge">Faith Use</span>
+          <h3>15. Website Visuals</h3>
+          <p class="prompt-desc">A polished website hero section mockup for a life group's weekly notes page — designed in one prompt.</p>
+          <div class="prompt-box">Create a website hero section mockup for the Veritas Life Group Weekly Notes.
+
+Include:
+Class Outreach & Mission Support Opportunity
+Weekly Lesson & Prep Info
+Social Events · Announcements
+New/Updated Prayer Requests
+Continued Prayers Needed
+Quarterly Veritas Family Celebrations
+
+You decide what goes into each section for mockups.
+
+Requirements:
+Make it look like a real modern SaaS homepage. Keep the text readable and the layout clean.
+
+Style: Premium SaaS website hero, white background, subtle gradients, rounded UI cards, modern typography.</div>
+          <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+        </div>
+      </div>
+
+      <!-- CARD 7: Curriculum Gospel of Luke -->
+      <div class="faith-card">
+        <div class="faith-card-img-wrap" onclick="openLightbox('resources/graphics/Visual-Prompt-Images/ChatGPT Curriculum Prompt.jpg')">
+          <img src="resources/graphics/Visual-Prompt-Images/ChatGPT Curriculum Prompt.jpg" alt="AI-generated visual course curriculum for The Gospel of Luke" loading="lazy">
+          <span class="faith-card-img-hint">Click to expand</span>
+        </div>
+        <div class="faith-card-body">
+          <span class="faith-badge">Faith Use</span>
+          <h3>17. Visual Curriculum for Any Course</h3>
+          <p class="prompt-desc">A full 6-module course curriculum graphic for a Bible study — structured, readable, and sales-page ready.</p>
+          <div class="prompt-box">Create a visual course curriculum graphic for a course called The Gospel of Luke.
+
+Audience: Christians who want to understand the New Testament more completely.
+
+You decide the module names and structure.
+
+Include:
+6 modules · What each module teaches
+Skill level progression · Final project
+
+Requirements:
+Make it useful as a course sales page visual or PDF insert. Keep the design clear and readable.
+
+Style: Clean online course curriculum design, white background, blue accents, organized module cards.</div>
+          <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+        </div>
+      </div>
+
+    </div><!-- /faith-cards -->
+
+    <!-- ALL 47 PROMPTS ACCORDION -->
     <span class="prompt-section-label">Faith &amp; Community</span>
 
     <details>
       <summary>
-        <span class="summary-left">
-          <span>Explain How International Mission Trips Work</span>
-          <span class="faith-badge">Faith Use</span>
-        </span>
+        <span class="summary-left"><span>1. Explain How Mission Trips Work</span><span class="faith-badge">Faith Use</span></span>
         <span class="summary-arrow">+</span>
       </summary>
       <div class="acc-body">
-        <p class="prompt-desc">An infographic explaining mission trips to someone with no prior church experience.</p>
+        <p class="prompt-desc">Infographic explaining International Mission Trips to a non-experienced Christian audience.</p>
         <div class="prompt-box">Create an infographic that explains how International Mission Trips work to a non-experienced Christian audience.
 
 You decide the wording, structure, examples, and visual metaphor.
 
 Requirements:
-- Make it understandable in under 60 seconds
-- Include a simple flow
-- Use plain English
-- Avoid jargon
-- Keep all text readable
+Make it understandable in under 60 seconds
+Include a simple flow · Use plain English · Avoid jargon · Keep all text readable
 
 Style: Clean modern explainer infographic, white background, blue accents, rounded cards, simple icons.</div>
         <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
@@ -1000,109 +1317,58 @@ Style: Clean modern explainer infographic, white background, blue accents, round
 
     <details>
       <summary>
-        <span class="summary-left">
-          <span>Gospel of Mark — Visual Mind Map</span>
-          <span class="faith-badge">Faith Use</span>
-        </span>
+        <span class="summary-left"><span>2. Video to Graphic for Presentations</span><span class="faith-badge">Faith Use</span></span>
         <span class="summary-arrow">+</span>
       </summary>
       <div class="acc-body">
-        <p class="prompt-desc">A structured mind map exploring the Book of Mark across key theological dimensions.</p>
+        <p class="prompt-desc">Turn a sermon, seminar video, or article into a shareable visual explainer. Gemini can pull directly from a YouTube link.</p>
+        <div class="prompt-box">Turn the information below into a clean visual explainer.
+
+Goal: Make this easy for a general audience to understand in under 30 seconds.
+
+Create: A clear title · 5 key takeaways · Simple icons · A visual hierarchy · A short "why it matters" box
+
+Style: Modern tech explainer graphic, white background, black text, blue accent color, rounded cards, thin lines, readable typography.
+
+Use only the information provided. Do not invent facts.
+
+SOURCE TEXT: [paste transcript or YouTube link]
+
+Note: Gemini can accept a YouTube link directly. ChatGPT needs the transcript pasted in.</div>
+        <p class="prompt-tool">Works well in: Google Gemini (YouTube link), ChatGPT 4o (paste transcript)</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>6. Visual Mind Map of Anything</span><span class="faith-badge">Faith Use</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">Map any book of the Bible, theological concept, or sermon series visually.</p>
         <div class="prompt-box">Create a mind map titled: The Gospel of Mark
 
 Center node: The Book of Mark
 
-Branches:
-- Origins
-- Epistemology
-- Theology
-- Key Verses
-- Connections
-- Application
-- Practical Application
-- Purpose of Writing
-- Travels
+Branches: Origins · Epistemology · Theology · Key Verses · Connections · Application · Practical Application · Purpose of Writing · Travels
 
 Under each branch, add 2 small subpoints.
 
-Style: Clean, modern, colorful but not childish, readable text, white background, thin connector lines.</div>
-        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+Style: Clean, modern, colorful but not childish, readable text, white background, thin connector lines</div>
+        <p class="prompt-tool">Works well in: Google Gemini, ChatGPT 4o</p>
       </div>
     </details>
 
     <details>
       <summary>
-        <span class="summary-left">
-          <span>How AI Agents Work — Church Lifegroup Edition</span>
-          <span class="faith-badge">Faith Use</span>
-        </span>
+        <span class="summary-left"><span>8. Multi-Slide Visual Presentation</span><span class="faith-badge">Faith Use</span></span>
         <span class="summary-arrow">+</span>
       </summary>
       <div class="acc-body">
-        <p class="prompt-desc">An infographic explaining AI agents to a non-technical faith community audience.</p>
-        <div class="prompt-box">Create an infographic that explains how AI agents work to a non-technical audience from a Church Lifegroup.
+        <p class="prompt-desc">A polished 5-slide keynote-style deck on any topic. Shown above with The New Testament as the example.</p>
+        <div class="prompt-box">Create a 5-slide visual presentation about [YOUR TOPIC].
 
-You decide the wording, structure, examples, and visual metaphor.
-
-Requirements:
-- Make it understandable in under 60 seconds
-- Include a simple flow
-- Use plain English
-- Avoid jargon
-- Keep all text readable
-
-Style: Clean modern explainer infographic, white background, blue accents, rounded cards, simple icons.
-
-Secondary Style: Now make it even more colorful and "infographic-y".</div>
-        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
-      </div>
-    </details>
-
-    <details>
-      <summary>
-        <span class="summary-left">
-          <span>Visual Course Curriculum — The Gospel of Luke</span>
-          <span class="faith-badge">Faith Use</span>
-        </span>
-        <span class="summary-arrow">+</span>
-      </summary>
-      <div class="acc-body">
-        <p class="prompt-desc">A course-style curriculum visual for a Bible study or Life Group series.</p>
-        <div class="prompt-box">Create a visual course curriculum graphic for a course called The Gospel of Luke.
-
-Audience: Christians who want to understand the New Testament more completely.
-
-You decide the module names and structure. Include:
-- 6 modules
-- What each module teaches
-- Skill level progression
-- Final project
-
-Requirements: Make it useful as a course sales page visual or PDF insert. Keep the design clear and readable.
-
-Style: Clean online course curriculum design, white background, blue accents, organized module cards.</div>
-        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
-      </div>
-    </details>
-
-    <details>
-      <summary>
-        <span class="summary-left">
-          <span>New Testament — 5-Slide Visual Presentation</span>
-          <span class="faith-badge">Faith Use</span>
-        </span>
-        <span class="summary-arrow">+</span>
-      </summary>
-      <div class="acc-body">
-        <p class="prompt-desc">A polished 5-slide presentation deck on the New Testament.</p>
-        <div class="prompt-box">Create a 5-slide visual presentation about the New Testament.
-
-Slides:
-1. Title slide
-2. What changed
-3. Why it matters
-4. Real-world examples
-5. Final takeaway
+Slides: 1. Title slide · 2. What changed · 3. Why it matters · 4. Real-world examples · 5. Final takeaway
 
 Requirements: Make it look like a polished keynote deck. Keep the text short and readable.
 
@@ -1113,76 +1379,78 @@ Style: Premium tech presentation, black background, white text, blue/purple acce
 
     <details>
       <summary>
-        <span class="summary-left">
-          <span>Veritas Life Group — Website Hero Section Mockup</span>
-          <span class="faith-badge">Faith Use</span>
-        </span>
+        <span class="summary-left"><span>10. Product Packaging Concept Sheet</span><span class="faith-badge">Faith Use</span></span>
         <span class="summary-arrow">+</span>
       </summary>
       <div class="acc-body">
-        <p class="prompt-desc">A modern website hero section for a Life Group's communication hub.</p>
+        <p class="prompt-desc">AI designed a full brand concept for Biblical Backpacks — names, quotes, color palette, and three mockups — in one prompt.</p>
+        <div class="prompt-box">Create a product packaging concept sheet for Biblical Backpacks for Teens.
+
+You decide: Bag names · Backpack testimonial quotes · Visual style · Color palette · 3 backpack mockups
+
+Requirements: Make it look like a real CPG brand concept presentation. Text should be readable. Packaging should feel modern and retail/shelf/store-ready.
+
+Style: Clean premium design, studio mockup lighting, organized concept board.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o Images, Google Gemini</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>15. Website Visuals</span><span class="faith-badge">Faith Use</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">A polished website hero section mockup — shown here for a life group's weekly notes page.</p>
         <div class="prompt-box">Create a website hero section mockup for the Veritas Life Group Weekly Notes.
 
-Include:
-- Class Outreach &amp; Mission Support Opportunity
-- Weekly Lesson &amp; Prep Info
-- Social Events
-- Announcements
-- New/Updated Prayer Requests
-- Continued Prayers Needed
-- Quarterly Veritas Family Celebrations
+Include: Class Outreach &amp; Mission Support · Weekly Lesson &amp; Prep Info · Social Events · Announcements · New/Updated Prayer Requests · Continued Prayers Needed · Quarterly Veritas Family Celebrations
 
-You decide what goes into each section for mockups.
-
-Requirements: Make it look like a real modern SaaS homepage. Keep the text readable and the layout clean.
+Requirements: Make it look like a real modern SaaS homepage. Keep text readable and layout clean.
 
 Style: Premium SaaS website hero, white background, subtle gradients, rounded UI cards, modern typography.</div>
         <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
       </div>
     </details>
 
-    <!-- EXPLAIN & TEACH -->
-    <span class="prompt-section-label">Explain &amp; Teach</span>
-
     <details>
       <summary>
-        <span class="summary-left"><span>Infographic — Explain Any Concept</span></span>
+        <span class="summary-left"><span>17. Visual Curriculum for Any Course</span><span class="faith-badge">Faith Use</span></span>
         <span class="summary-arrow">+</span>
       </summary>
       <div class="acc-body">
-        <p class="prompt-desc">Turn any concept into a visual that reads in under 60 seconds.</p>
-        <div class="prompt-box">Create an infographic that explains [YOUR TOPIC] to [YOUR AUDIENCE].
+        <p class="prompt-desc">A full 6-module course curriculum graphic for a Bible study — structured, readable, and sales-page ready.</p>
+        <div class="prompt-box">Create a visual course curriculum graphic for a course called The Gospel of Luke.
 
-You decide the wording, structure, examples, and visual metaphor.
+Audience: Christians who want to understand the New Testament more completely.
 
-Requirements:
-- Make it understandable in under 60 seconds
-- Include a simple flow
-- Use plain English
-- Avoid jargon
-- Keep all text readable
+Include: 6 modules · What each module teaches · Skill level progression · Final project
 
-Style: Clean modern explainer infographic, white background, blue accents, rounded cards, simple icons.</div>
+Requirements: Make it useful as a course sales page visual or PDF insert. Keep the design clear and readable.
+
+Style: Clean online course curriculum design, white background, blue accents, organized module cards.</div>
         <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
       </div>
     </details>
 
+    <span class="prompt-section-label">Explain &amp; Teach</span>
+
     <details>
       <summary>
-        <span class="summary-left"><span>Timeline — The Evolution of AI Image Generation</span></span>
+        <span class="summary-left"><span>3. Timeline Graphics from Prompts</span></span>
         <span class="summary-arrow">+</span>
       </summary>
       <div class="acc-body">
-        <p class="prompt-desc">A horizontal timeline graphic showing AI image milestones from 2021 to 2026.</p>
+        <p class="prompt-desc">Generate a sleek editorial timeline for any historical sequence, project roadmap, or Bible narrative.</p>
         <div class="prompt-box">Create a horizontal timeline graphic titled: "The Evolution of AI Image Generation"
 
 Include these milestones:
-- 2021 — Text-to-image begins going mainstream
-- 2022 — AI art tools explode in popularity
-- 2023 — Better realism and style control
-- 2024 — Image editing becomes more practical
-- 2025 — Text rendering improves dramatically
-- 2026 — AI images become useful design tools
+2021 - Text-to-image begins going mainstream
+2022 - AI art tools explode in popularity
+2023 - Better realism and style control
+2024 - Image editing becomes more practical
+2025 - Text rendering improves dramatically
+2026 - AI images become useful design tools
 
 Style: Sleek editorial timeline, black and white with subtle neon blue accents, readable labels, thin lines, rounded milestone cards.</div>
         <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
@@ -1191,14 +1459,15 @@ Style: Sleek editorial timeline, black and white with subtle neon blue accents, 
 
     <details>
       <summary>
-        <span class="summary-left"><span>Process Diagram — Any Workflow</span></span>
+        <span class="summary-left"><span>4. Process Diagram Anything</span></span>
         <span class="summary-arrow">+</span>
       </summary>
       <div class="acc-body">
-        <p class="prompt-desc">A clear flowchart for any repeating process — business, ministry, or personal.</p>
-        <div class="prompt-box">Create a process diagram for [YOUR PROCESS].
+        <p class="prompt-desc">Flowchart any workflow — business process, Bible study structure, event planning sequence.</p>
+        <div class="prompt-box">Create a process diagram for a small business using AI to handle customer inquiries.
 
-The diagram should show: [list your steps]
+The diagram should show:
+Customer message comes in → AI categorizes it → AI drafts a response → Human reviews if needed → Response is sent → Common questions are logged → Business improves the FAQ
 
 Requirements: Make it practical and easy to understand. Use a clear flowchart layout.
 
@@ -1209,22 +1478,20 @@ Style: Professional business workflow diagram, white background, thin lines, blu
 
     <details>
       <summary>
-        <span class="summary-left"><span>Comparison Chart — Any Set of Options</span></span>
+        <span class="summary-left"><span>5. Compare and Contrast Any Choice Visually</span></span>
         <span class="summary-arrow">+</span>
       </summary>
       <div class="acc-body">
-        <p class="prompt-desc">Help anyone choose between options with a clean visual comparison.</p>
-        <div class="prompt-box">Create a visual comparison chart for choosing between [OPTION A, B, C, D].
+        <p class="prompt-desc">A side-by-side comparison chart for any decision — tools, options, candidates, Bible translations.</p>
+        <div class="prompt-box">Create a visual comparison chart for choosing between [ChatGPT, Claude, Gemini, and Perplexity].
 
-Audience: [Describe who is confused about the choice.]
+Audience: Normal people who are confused about which AI tool to use.
 
-You decide the categories and wording. Include:
-- Best for
-- Strengths
-- Limitations
-- Who should use it
+You decide the categories and wording.
 
-Requirements: Keep the chart simple, useful, and not too crowded.
+Include: Best for · Strengths · Limitations · Who should use it
+
+Requirements: Keep the chart simple, useful, and not too crowded. Use current general knowledge. Avoid unsupported claims.
 
 Style: Clean tech buying guide, white background, rounded cards, readable table layout, subtle colored accents.</div>
         <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
@@ -1233,19 +1500,14 @@ Style: Clean tech buying guide, white background, rounded cards, readable table 
 
     <details>
       <summary>
-        <span class="summary-left"><span>Cheat Sheet with Visual Cues</span></span>
+        <span class="summary-left"><span>7. Create Cheat Sheets with Visual Cues</span></span>
         <span class="summary-arrow">+</span>
       </summary>
       <div class="acc-body">
-        <p class="prompt-desc">A printable reference sheet for any topic, with visual formatting.</p>
-        <div class="prompt-box">Create a printable cheat sheet for [YOUR TOPIC].
+        <p class="prompt-desc">A printable one-page reference sheet for any topic — AI tools, Bible memory verses, procedure checklists.</p>
+        <div class="prompt-box">Create a printable cheat sheet for [writing better AI image prompts].
 
-Include:
-- A simple formula
-- 5 useful ingredients or steps
-- 5 common mistakes
-- 3 example applications
-- One revision or improvement tip
+Include: A simple prompt formula · 5 useful prompt ingredients · 5 common mistakes · 3 example prompts · Revision tip
 
 Requirements: Make it genuinely useful and easy to reference. Keep text readable.
 
@@ -1256,146 +1518,104 @@ Style: Minimal black-and-white reference sheet, thin lines, rounded boxes, elega
 
     <details>
       <summary>
-        <span class="summary-left"><span>Video-to-Graphic — 5 Key Takeaways</span></span>
+        <span class="summary-left"><span>18. Messy Notes Into Actionable Plan</span></span>
         <span class="summary-arrow">+</span>
       </summary>
       <div class="acc-body">
-        <p class="prompt-desc">Turn any video or article into a clean visual summary.</p>
+        <p class="prompt-desc">Upload a photo of handwritten notes or paste raw text — AI turns it into a clean, structured one-page visual plan.</p>
+        <div class="prompt-box">Turn these messy notes into a polished visual action plan. [Upload Messy Notes or paste text]
+
+Audience: A creator or entrepreneur who feels overwhelmed.
+
+Create: A one-page visual plan that could be printed and kept on a desk.
+
+You decide the best title, sections, hierarchy, and wording.
+
+Include: Main goal · Biggest bottleneck · 3 priorities · What to stop doing · What to do next · A simple 7-day action plan
+
+Requirements: Do not simply repeat the notes. Organize them into something practical, clear, and visually useful.
+
+Style: Premium productivity planner, black and white with subtle purple accents, rounded cards, thin lines, lots of whitespace.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>45. Explanatory Infographics</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">Explain any complex or technical concept to a non-technical audience in a single glanceable graphic.</p>
+        <div class="prompt-box">Create an infographic that explains how AI agents work to a non-technical audience from a Church Lifegroup.
+
+You decide the wording, structure, examples, and visual metaphor.
+
+Requirements: Make it understandable in under 60 seconds · Include a simple flow · Use plain English · Avoid jargon · Keep all text readable
+
+Style: Clean modern explainer infographic, white background, blue accents, rounded cards, simple icons.
+
+Secondary style: Now make it even more colorful and "infographicy".</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>46. Timelines</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">A horizontal timeline for any historical, Biblical, or project sequence.</p>
+        <div class="prompt-box">Create a horizontal timeline graphic titled: "The Evolution of AI Image Generation"
+
+Include these milestones:
+2021 - Text-to-image begins going mainstream
+2022 - AI art tools explode in popularity
+2023 - Better realism and style control
+2024 - Image editing becomes more practical
+2025 - Text rendering improves dramatically
+2026 - AI images become useful design tools
+
+Style: Sleek editorial timeline, black and white with subtle neon blue accents, readable labels, thin lines, rounded milestone cards.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>47. Web-Referenced Topic Visual Explainer</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">Paste any URL or web content and get a clean visual explainer — useful for turning a news article or research paper into a shareable graphic.</p>
         <div class="prompt-box">Turn the information below into a clean visual explainer.
 
 Goal: Make this easy for a general audience to understand in under 30 seconds.
 
-Create:
-- A clear title
-- 5 key takeaways
-- Simple icons
-- A visual hierarchy
-- A short "why it matters" box
+Create: A clear title · 5 key takeaways · Simple icons · A visual hierarchy · A short "why it matters" box
 
 Style: Modern tech explainer graphic, white background, black text, blue accent color, rounded cards, thin lines, readable typography.
 
 Use only the information provided. Do not invent facts.
 
-SOURCE TEXT: [paste your content here]</div>
-        <p class="prompt-tool">
-          Note: ChatGPT cannot render an image directly from a YouTube video — you'll need to provide the transcript.
-          Gemini can use a YouTube link directly as the source.
-        </p>
+SOURCE TEXT: [paste article text or URL]</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
       </div>
     </details>
 
-    <!-- CREATE & COMMUNICATE -->
     <span class="prompt-section-label">Create &amp; Communicate</span>
 
     <details>
       <summary>
-        <span class="summary-left"><span>YouTube Thumbnail — 6 Concept Board</span></span>
+        <span class="summary-left"><span>9. 1-Page Visual Sales Pitch for Any Business</span></span>
         <span class="summary-arrow">+</span>
       </summary>
       <div class="acc-body">
-        <p class="prompt-desc">Six distinct thumbnail concepts in a 2×3 grid — ready to A/B test.</p>
-        <div class="prompt-box">Create a YouTube thumbnail concept board for a video about [YOUR TOPIC].
+        <p class="prompt-desc">A polished one-pager you could actually send to a potential client.</p>
+        <div class="prompt-box">Create a one-page sales pitch visual for an automation agency called [Business Name].
 
-Video idea: [A short crisp description — 12 words or less]
-
-Create 6 different thumbnail concepts in a 2×3 grid.
-
-You decide the best visual metaphor, facial expression idea, layout, and short thumbnail text for each concept.
-
-Requirements:
-- Each thumbnail should feel visually distinct
-- Use large readable text
-- Make the concepts clickable but not misleading
-- Avoid clutter
-- Use a modern tech/creator aesthetic
-
-Style: Bold YouTube thumbnail design, high contrast, blue/purple accents, expressive, clean, readable at small size.</div>
-        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini · If results are square, add: "Now make each thumbnail 16:9 to match actual YouTube thumbnail dimensions."</p>
-      </div>
-    </details>
-
-    <details>
-      <summary>
-        <span class="summary-left"><span>Instagram Carousel — 7 Slides</span></span>
-        <span class="summary-arrow">+</span>
-      </summary>
-      <div class="acc-body">
-        <p class="prompt-desc">A visually consistent 7-slide carousel for any educational topic.</p>
-        <div class="prompt-box">Create a 7-slide Instagram carousel for creators.
-
-Topic: [Insert Short Crisp Topic Title here]
-
-You decide the best wording for each slide.
-
-Requirements:
-- Slide 1 should be a strong hook
-- Slides 2–6 should each teach one useful idea
-- Slide 7 should be a simple call to action
-- Make the carousel visually consistent
-- Keep text short and readable
-
-Style: Modern social media carousel, white background, black text, blue/purple accents, rounded cards, premium tech aesthetic.</div>
-        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
-      </div>
-    </details>
-
-    <details>
-      <summary>
-        <span class="summary-left"><span>Comic Panels — Any Story</span></span>
-        <span class="summary-arrow">+</span>
-      </summary>
-      <div class="acc-body">
-        <p class="prompt-desc">Turn any situation into a 6-panel comic. Great for teaching or entertaining.</p>
-        <div class="prompt-box">Create a one-page comic with 6 panels.
-
-Title: "[Your Title Here]"
-
-Story:
-Panel 1: [Describe opening scene]
-Panel 2: [Action or problem introduced]
-Panel 3: [Development]
-Panel 4: [Turn or insight]
-Panel 5: [Resolution or result]
-Panel 6: [Punchline or takeaway]
-
-Style: Clean modern comic, expressive characters, readable speech bubbles, consistent main character across panels, light humor, polished illustration.</div>
-        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
-      </div>
-    </details>
-
-    <details>
-      <summary>
-        <span class="summary-left"><span>4-Square Social Media Quote Cards</span></span>
-        <span class="summary-arrow">+</span>
-      </summary>
-      <div class="acc-body">
-        <p class="prompt-desc">Four branded quote cards in a consistent visual style.</p>
-        <div class="prompt-box">Create a set of 4 square social media quote cards.
-
-Use these exact quotes, one per card:
-1. "[Your first quote]"
-2. "[Your second quote]"
-3. "[Your third quote]"
-4. "[Your fourth quote]"
-
-Style: Premium creator aesthetic, black, white and [your accent color], subtle blue accents, clean typography, rounded borders, minimal design. Make all text perfectly readable.</div>
-        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
-      </div>
-    </details>
-
-    <!-- BUSINESS & PROFESSIONAL -->
-    <span class="prompt-section-label">Business &amp; Professional</span>
-
-    <details>
-      <summary>
-        <span class="summary-left"><span>One-Page Sales Pitch — Any Business</span></span>
-        <span class="summary-arrow">+</span>
-      </summary>
-      <div class="acc-body">
-        <p class="prompt-desc">A polished client-ready one-pager for any product or service.</p>
-        <div class="prompt-box">Create a one-page sales pitch visual for [YOUR BUSINESS OR SERVICE].
-
-Audience: [Describe who would receive this.]
+Audience: Small business owners.
 
 You decide: Headline · Problem · Solution · Services · Benefits · Call to action
 
@@ -1408,97 +1628,476 @@ Style: Premium agency one-pager, clean white background, black text, blue accent
 
     <details>
       <summary>
-        <span class="summary-left"><span>Promotional Flyer — Any Business or Event</span></span>
+        <span class="summary-left"><span>11. eCommerce Ready Product Images</span></span>
         <span class="summary-arrow">+</span>
       </summary>
       <div class="acc-body">
-        <p class="prompt-desc">A print- or web-ready promotional flyer for any business or community event.</p>
-        <div class="prompt-box">Create a promotional flyer for [YOUR BUSINESS OR EVENT].
+        <p class="prompt-desc">A complete 6-image product set ready for Amazon or Shopify — hero, lifestyle, feature callout, and more.</p>
+        <div class="prompt-box">Create an ecommerce product image set for a Professional Journal for Notes, for a Christian Life Group called Veritas at Prestonwood Baptist Church, Plano, Texas.
 
-Business / Event description: [Describe it concisely.]
+You decide: Key features (more than just blank pages) · Use-case scenes · Lifestyle image concepts focused around living in faith · Feature callouts that differentiate from a regular notebook
 
-You decide: Headline · Service packages or offerings · Benefits · Call to action · Visual layout
+Create a grid of 6 product images:
+1. Hero product image · 2. Desk lifestyle scene · 3. Feature callout
+4. Size/context image · 5. Mood lighting scene · 6. Packaging image
 
-Requirements: Make it look like something the business could actually print or post online. Keep the offer clear and the text readable.
+Style: Clean ecommerce product photography, white and lifestyle backgrounds, premium but realistic.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o Images, Google Gemini</p>
+      </div>
+    </details>
 
-Style: Premium [industry] flyer, clean lines, high-end but approachable. [Specify color preferences if any.]</div>
+    <details>
+      <summary>
+        <span class="summary-left"><span>12. Merch Mockups</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">See your phrase or logo on t-shirts, mugs, hats, and stickers before spending a dollar on production.</p>
+        <div class="prompt-box">Create a merch mockup sheet for a Christian creator brand called Veritas@PBC.
+
+Brand phrase: "It Starts With Genesis"
+
+Show the phrase on: A black t-shirt · A white hoodie · A sticker · A coffee mug · A dad hat
+
+Style: Clean product mockup sheet, premium lighting, white studio background, realistic fabric and materials, readable text on each item.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o Images, Google Gemini</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>13. App Screenshot Mockups</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">A set of App Store screenshots with benefit-driven headlines and realistic UI mockups.</p>
+        <div class="prompt-box">Create a set of 5 app store screenshot mockups for a productivity app called "The Bible In a Year"
+
+You decide: The app's main features · Screenshot headlines · UI mockup content · Visual hierarchy
+
+Requirements: Each screenshot should have a clear benefit-driven headline and a realistic app UI mockup. Text must be readable.
+
+Style: Modern iOS app store screenshot design, clean UI, blue/purple gradients, premium SaaS aesthetic.</div>
         <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
       </div>
     </details>
 
     <details>
       <summary>
-        <span class="summary-left"><span>Messy Notes → Actionable One-Page Plan</span></span>
+        <span class="summary-left"><span>16. Spice Up Your Recipes</span></span>
         <span class="summary-arrow">+</span>
       </summary>
       <div class="acc-body">
-        <p class="prompt-desc">Paste your messy notes and get back a polished, prioritized action plan.</p>
-        <div class="prompt-box">Turn these messy notes into a polished visual action plan.
+        <p class="prompt-desc">Turn any recipe into a beautiful, printable recipe card.</p>
+        <div class="prompt-box">Create a beautiful printable recipe card for High Protein Breakfast Tacos.
 
-Audience: [Describe who this plan is for — creator, entrepreneur, volunteer coordinator, etc.]
+Include this exact text:
+High Protein Breakfast Tacos · Prep: 10 min · Cook: 8 min · Serves: 2
 
-Create: A one-page visual plan that could be printed and kept on a desk.
+Ingredients: 4 eggs · 4 corn tortillas · 1/2 cup cottage cheese · 1 avocado · 1/2 cup salsa · 1/4 cup shredded cheddar · Salt and pepper · Hot sauce
 
-You decide the best title, sections, hierarchy, and wording. Include:
-- Main goal
-- Biggest bottleneck
-- 3 priorities
-- What to stop doing
-- What to do next
-- A simple 7-day action plan
+Instructions:
+1. Scramble the eggs with cottage cheese
+2. Warm the tortillas · 3. Add eggs, avocado, salsa, and cheddar · 4. Finish with hot sauce · 5. Serve immediately
 
-Requirements: Do not simply repeat the notes. Organize them into something practical, clear, and visually useful.
-
-Style: Premium productivity planner, black and white with subtle accents, rounded cards, thin lines, lots of whitespace.
-
-Messy notes: [PASTE YOUR NOTES HERE]</div>
+Style: clean food magazine layout, bright natural light, readable text, warm minimal design.</div>
         <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
       </div>
     </details>
 
     <details>
       <summary>
-        <span class="summary-left"><span>30-Day Social Media Content Calendar</span></span>
+        <span class="summary-left"><span>19. Make Anything Into Comic Panels</span></span>
         <span class="summary-arrow">+</span>
       </summary>
       <div class="acc-body">
-        <p class="prompt-desc">A usable planning calendar with content variety built in.</p>
-        <div class="prompt-box">Create a visual 30-day social media content calendar for [YOUR BUSINESS OR MINISTRY].
+        <p class="prompt-desc">Turn any concept, story, or scenario into a 6-panel comic — surprisingly effective for explaining complex ideas.</p>
+        <div class="prompt-box">Create a one-page comic with 6 panels.
 
-You decide the post ideas. Include:
-- 30 days of post concepts
-- A mix of promotions, behind-the-scenes, stories, educational posts, and community content
-- Simple color coding by content type
+Title: "The Day My AI Assistant Took Over My Inbox"
 
-Requirements: Make it actually usable as a planning document. Keep the text readable and concise.
+Story:
+Panel 1: A stressed creator stares at hundreds of unread emails
+Panel 2: The creator asks an AI assistant for help
+Panel 3: The AI organizes the inbox into categories
+Panel 4: The AI drafts polite replies
+Panel 5: The creator looks relieved with an empty inbox
+Panel 6: The creator says, "Okay, that was actually useful"
 
-Style: Clean calendar layout, [your color palette], rounded boxes, simple icons, premium but friendly.</div>
+Style: Clean modern comic, expressive characters, readable speech bubbles, consistent main character, light humor, polished illustration.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o Images, Google Gemini</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>20. YouTube Thumbnail Creator</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">6 thumbnail concepts in a 2×3 grid — visually distinct, high-contrast, and ready to test.</p>
+        <div class="prompt-box">Create a YouTube thumbnail concept board for a video about [your topic — 12 words or less].
+
+Create 6 different thumbnail concepts in a 2x3 grid.
+
+You decide: Best visual metaphor · Facial expression idea · Layout · Short thumbnail text for each concept.
+
+Requirements: Each thumbnail should feel visually distinct · Use large readable text · Make concepts clickable but not misleading · Avoid clutter
+
+Style: Bold YouTube thumbnail design, high contrast, blue/purple tech accents, expressive, clean, readable at small size.
+
+If you get square results (common): Now make each thumbnail 16:9 so they match an actual YouTube thumbnail aspect ratio.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o Images, Google Gemini</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>21. YouTube Thumbnail A/B/C Test Sheet</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">Three competing thumbnail strategies for the same video — compare emotional hooks before publishing.</p>
+        <div class="prompt-box">Create an A/B/C thumbnail test sheet for a YouTube video.
+
+Video topic: [Insert Your Brief Video Idea Here]
+
+Create 3 thumbnail options:
+A: Direct comparison angle
+B: Surprising useful use-cases angle
+C: "AI images can finally do text" angle
+
+For each thumbnail, include: The thumbnail design · The short text on the thumbnail · A small note explaining the emotional hook
+
+Style: Professional YouTube strategy board, clean white background, three large thumbnail mockups, concise labels.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o Images, Google Gemini</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>22. YouTube Story-Boarding</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">A 9-frame storyboard for a video intro — think through your opening sequence visually before filming.</p>
+        <div class="prompt-box">Create a 9-frame storyboard for a YouTube video intro.
+
+Video topic: [Insert short, precise topic — 10 words or less]
+
+Example storyboard:
+1. Creator looking skeptical at a screen · 2. Old AI image with garbled text · 3. New AI image with clean readable text · 4. A menu design appears · 5. An infographic appears · 6. A comic page appears · 7. A YouTube thumbnail appears · 8. Creator looks surprised · 9. Title card
+
+Style: Cinematic storyboard panels, clean black-and-white sketch style, readable labels under each frame, widescreen 16:9 composition.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o Images, Google Gemini</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>25. Instagram Carousels</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">A 7-slide visually consistent Instagram carousel — hook, teach, call to action.</p>
+        <div class="prompt-box">Create a 7-slide Instagram carousel for creators.
+
+Topic: [Insert Short Crisp Topic Title]
+
+You decide the best wording for each slide.
+
+Requirements:
+Slide 1: Strong hook · Slides 2–6: Each teaches one useful idea · Slide 7: Simple call to action
+Make visually consistent · Keep text short and readable
+
+Style: Modern social media carousel, white background, black text, blue/purple accents, rounded cards, premium tech aesthetic.</div>
         <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
       </div>
     </details>
 
-    <!-- LIFE & PERSONAL -->
+    <details>
+      <summary>
+        <span class="summary-left"><span>26. 4-Square for Branding</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">Four square social media quote cards from your brand's best lines — consistent, polished, ready to post.</p>
+        <div class="prompt-box">Create a set of 4 square social media quote cards for a creator brand.
+
+Use these exact quotes, one per card:
+1. "The best AI tools do not replace your taste. They amplify it."
+2. "Your workflow is your moat."
+3. "Don't chase every tool. Chase the capability it unlocks."
+4. "The future belongs to people who can explain things clearly."
+
+Style: Premium tech creator aesthetic, black, white and purple, subtle blue accents, clean typography, rounded borders, minimal design. Make all text perfectly readable.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>27. LinkedIn Carousels</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">A 6-slide professional LinkedIn carousel — polished enough to post, practical enough to share.</p>
+        <div class="prompt-box">Create a professional LinkedIn carousel about [Insert Idea Here].
+
+Audience: Founders, marketers, creators, and small business owners.
+
+Create 6 slides: Strong opening slide · 4 practical examples · Final takeaway slide
+
+You decide the copy and layout.
+
+Requirements: Polished enough to post on LinkedIn · Professional tone (not hypey) · Every slide readable
+
+Style: Premium business presentation design, clean white background, subtle blue accents, large typography, elegant spacing.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+      </div>
+    </details>
+
+    <span class="prompt-section-label">Business &amp; Professional</span>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>14. Visual Employee / Client On-Boarding</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">A professional onboarding checklist polished enough to send to a new client or employee.</p>
+        <div class="prompt-box">Create a new client onboarding checklist for a [Insert Role Here].
+
+Include: Project kickoff · Brand assets · Footage delivery · Style references · Timeline · Feedback process · Final delivery
+
+Requirements: Make it useful enough that a freelancer could send it to a client. Keep it professional and readable.
+
+Style: Clean freelancer business checklist, white background, black text, subtle green accents, rounded sections.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>23. Create Facebook Ads</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">A click-worthy Facebook ad for any website, event, or business — AI writes the hook and designs the visual.</p>
+        <div class="prompt-box">Create a Facebook ad to promote my website at [YOUR URL].
+
+Requirements: Create something that's likely to get a lot of clicks but is accurate to what the site promotes.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>24. Horizontal / Vertical Banner Ads</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">A horizontal banner ad with a clear CTA — shown here for a YouTube channel promotion.</p>
+        <div class="prompt-box">Create a horizontal banner ad that promotes the Prestonwood Baptist Church YouTube channel.
+
+Include a CTA to subscribe and tell people why they should watch.
+
+Channel: https://www.youtube.com/channel/UCGlMouMF2mHJmknxDotqQZw</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>28. Visual 30-Day Social Media Calendar</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">A full month of content ideas — color-coded by type and laid out in a usable calendar format.</p>
+        <div class="prompt-box">Create a visual 30-day social media content calendar for a small business.
+
+Business type: [Insert Business Type]
+
+You decide the post ideas.
+
+Include: 30 days of post concepts · A mix of promos, behind-the-scenes, customer stories, educational posts, and community content · Simple color coding by content type
+
+Requirements: Make it actually usable as a planning document. Keep text readable and concise.
+
+Style: Clean calendar layout, warm colors, rounded boxes, simple icons, premium but friendly.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>29. Product Launch Visuals</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">A polished SaaS-style one-sheet for any product or app launch — headline, features, and CTA.</p>
+        <div class="prompt-box">Create a product launch one-sheet for a fictional app called [Your App Name].
+
+What the app does: [Unique function 1 — 5 words or less] · [Unique function 2] · [Unique function 3]
+
+You decide: Best headline · Sub-headline · Feature copy · Layout · Call to action
+
+Requirements: Look like a real SaaS marketing asset · Include 3–5 key features · Clear call to action · Text readable · Design polished and modern
+
+Style: Clean SaaS landing-page inspired one-sheet, white background, subtle blue/purple gradients, product mockup area, icons.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>30. Mood Boards</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">A full brand direction board — the kind a designer would present to a client — generated in one prompt.</p>
+        <div class="prompt-box">Create a brand mood board for [Enter your focus here].
+
+Audience: Busy creators and entrepreneurs.
+
+You decide: Color palette · Typography vibe · Logo direction · UI visual style · Photography style · Icon style · Brand personality words
+
+Requirements: Look like a real brand direction board a designer would present to a client. Concise readable labels.
+
+Style: Premium startup brand mood board, clean, modern, subtle gradients, organized sections, polished design.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>31. Mock-Up Logo Designs</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">8 logo concepts with labels, a color palette, and icon variations — a professional logo exploration sheet from one prompt.</p>
+        <div class="prompt-box">Create a logo exploration sheet for a fictional creator brand called "Signal Lab". The brand helps people find signal in AI news and technology.
+
+Create: 8 different logo concepts · Short labels explaining each direction · A small color palette · A few icon variations
+
+Requirements: Logos should be simple, modern, and usable. Avoid overly complex illustrations. Make all text readable.
+
+Style: Professional logo design presentation sheet, white background, black text, blue accent color, clean layout.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o Images, Google Gemini</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>32. Promotional Flyers</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">A print-ready promotional flyer for any local business, event, or ministry.</p>
+        <div class="prompt-box">Create a promotional flyer for a fictional local business called "Wolfe Clean" — a premium mobile car detailing service in San Diego.
+
+You decide: Headline · Service packages · Benefits · Call to action · Visual layout
+
+Requirements: Make it look like something the business could actually print or post online. Keep the offer clear and text readable.
+
+Style: Premium automotive service flyer, black and white with blue accents, clean lines, high-end but approachable.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>33. Conference Schedule</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">A one-day event schedule graphic with realistic session titles — works for conferences, retreats, or church events.</p>
+        <div class="prompt-box">Create a one-day conference schedule graphic for an event called "Creator AI Summit".
+
+You decide the session names and flow of the day.
+
+Include: Opening keynote · Morning sessions · Lunch · Afternoon workshops · Closing panel · Networking
+
+Requirements: Make it useful as an attendee schedule. Use realistic session titles. Keep the timeline easy to scan.
+
+Style: Clean conference schedule, white background, dark text, blue accents, timeline layout, professional event design.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>34. Restaurant Menus</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">A polished restaurant menu — great for events like Valentine's Day, Mother's Day, or Easter dinners.</p>
+        <div class="prompt-box">Create a polished restaurant menu for a fictional modern taco restaurant in San Diego called "El Lobo Loco Tacos".
+
+You decide: Menu sections · Item names · Short descriptions · Price ranges · Layout
+
+Requirements: Feel realistic, not random. Include enough items to feel like a real menu without overcrowding. All text readable and spelled correctly.
+
+Style: Modern coastal Mexican restaurant, warm minimal design, cream background, terracotta accents, elegant but casual.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>35. Real Estate Flyers</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">A premium listing flyer from any Zillow or Redfin URL — AI reads the page and designs the flyer.</p>
+        <div class="prompt-box">Create a real estate listing flyer for this property: [Insert URL from Zillow, Redfin, or similar]
+
+You decide: Headline · Property highlights · Feature list · Neighborhood description · Call to action · Layout
+
+Requirements: Make it look like a premium listing flyer.
+
+Style: Luxury real estate flyer, white and beige tones, elegant typography, large photo area, clean feature cards.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini (paste listing details if URL blocked)</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>36. Event Posters</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">A premium event poster ready for social media or print — for meetups, church events, or community gatherings.</p>
+        <div class="prompt-box">Create a premium event poster for [Your Event Title].
+
+Location: [City / Neighborhood]
+Audience: [Describe who is being invited]
+
+You decide: Event name · Headline · Short description · Date/time placeholder · Venue placeholder · Call to action · Visual concept
+
+Requirements: Feel like a real event poster. Keep text readable and layout clean.
+
+Style: Modern event poster, [choose your color scheme — dark and dramatic, or clean and minimal], clean typography, premium design.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+      </div>
+    </details>
+
     <span class="prompt-section-label">Life &amp; Personal</span>
 
     <details>
       <summary>
-        <span class="summary-left"><span>Travel Itinerary — Any Destination</span></span>
+        <span class="summary-left"><span>37. Travel Itineraries</span></span>
         <span class="summary-arrow">+</span>
       </summary>
       <div class="acc-body">
-        <p class="prompt-desc">A beautiful, practical multi-day itinerary for any trip.</p>
-        <div class="prompt-box">Create a beautiful [X]-day travel itinerary visual for a trip to [DESTINATION].
+        <p class="prompt-desc">A beautiful multi-day travel itinerary — morning, afternoon, evening — with practical tips and a map-inspired layout.</p>
+        <div class="prompt-box">Create a beautiful 3-day travel itinerary visual for a first-time trip to Tokyo.
 
 You decide the best schedule, neighborhoods, activities, and food stops.
 
-Include:
-- Day-by-day breakdown
-- Morning, afternoon, evening structure
-- A simple map-inspired layout
-- Practical travel tips
-- A short "best for" label for each day
+Include: Day 1, 2, 3 · Morning, afternoon, evening · A simple map-inspired layout · Practical travel tips · A short "best for" label for each day
 
-Requirements: Make the itinerary realistic and easy to follow. Do not overload the design with too much text.
+Requirements: Realistic and easy to follow. Don't overload with too much text.
 
 Style: Premium travel guide layout, soft colors, small illustrations, clean typography, editorial magazine feel.</div>
         <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
@@ -1507,24 +2106,74 @@ Style: Premium travel guide layout, soft colors, small illustrations, clean typo
 
     <details>
       <summary>
-        <span class="summary-left"><span>Family Chore Chart with Rewards</span></span>
+        <span class="summary-left"><span>38. Illustrated Maps for Travel</span></span>
         <span class="summary-arrow">+</span>
       </summary>
       <div class="acc-body">
-        <p class="prompt-desc">A printable, kid-friendly weekly chore chart that looks good on the fridge.</p>
-        <div class="prompt-box">Create a visual weekly chore chart for a family with [NUMBER] kids ages [AGE RANGE].
+        <p class="prompt-desc">A simple illustrated visitor map for any city — clear, clean, not trying to be Google Maps.</p>
+        <div class="prompt-box">Create a simple illustrated map of San Diego for a visitor guide.
 
-Home details: [Brief description — bedrooms, bathrooms, yard, pets.]
+Include and label: La Jolla · Del Mar · Downtown · Balboa Park · Coronado · Mission Beach · North Park · Petco Park
 
-You decide the chores and structure. Include:
-- Monday through Sunday
-- Morning tasks
-- Evening tasks
-- Reward tracker
-- Simple icons
-- Space for checkmarks
+Style: Clean editorial travel map, soft colors, simple icons, readable labels, not geographically perfect but visually clear and useful.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+      </div>
+    </details>
 
-Requirements: Make it kid-friendly but not ugly. It should look nice enough to print and put on the fridge.
+    <details>
+      <summary>
+        <span class="summary-left"><span>39. Visual Theme Park Plans</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">A practical one-day theme park plan for families — timeline, tips, and packing reminders included.</p>
+        <div class="prompt-box">Create a visual one-day Disneyland plan for a family with kids.
+
+You decide: Morning strategy · Lunch break · Afternoon activities · Rest time · Evening show/fireworks · Packing reminders · Tips for avoiding meltdowns
+
+Requirements: Practical for parents. Use a timeline layout. Keep text concise and readable.
+
+Style: Fun but clean family planning guide, colorful sections, simple icons, printable layout.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>40. Vacation Packing Lists</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">A comprehensive, printable family packing checklist — organized by category and easy-to-forget items included.</p>
+        <div class="prompt-box">Create a visual packing checklist for a 5-day family beach vacation in Galveston, TX.
+
+You decide the categories and items.
+
+Audience: Parents packing for themselves and kids.
+
+Include: Clothing · Beach gear · Toiletries · Kids items · Tech · Snacks · Documents · Easy-to-forget items
+
+Requirements: Comprehensive but not overwhelming. Printable and useful.
+
+Style: Clean family travel checklist, warm beach colors, simple icons, rounded sections, readable text.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="summary-left"><span>41. Chore / Task Trackers</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">A printable weekly chore chart for the whole family — morning tasks, evening tasks, and a reward tracker.</p>
+        <div class="prompt-box">Create a visual weekly chore chart for a family with four kids ages 13–17. Two-story house, 4 bedrooms, 3 bathrooms (not including master suite), small backyard with 2 dogs; no mowing.
+
+You decide the chores and structure.
+
+Include: Monday–Sunday · Morning tasks · Evening tasks · Reward tracker · Simple icons · Space for checkmarks
+
+Requirements: Kid-friendly but not ugly. Nice enough to print and put on the fridge.
 
 Style: Clean modern family chart, soft colors, rounded boxes, friendly icons, readable text.</div>
         <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
@@ -1533,50 +2182,65 @@ Style: Clean modern family chart, soft colors, rounded boxes, friendly icons, re
 
     <details>
       <summary>
-        <span class="summary-left"><span>Recipe Card — Any Dish</span></span>
+        <span class="summary-left"><span>42. Visual Formal Event Schedules</span></span>
         <span class="summary-arrow">+</span>
       </summary>
       <div class="acc-body">
-        <p class="prompt-desc">A beautiful, printable recipe card in a clean food-magazine layout.</p>
-        <div class="prompt-box">Create a beautiful printable recipe card for [YOUR RECIPE].
+        <p class="prompt-desc">An elegant printed schedule for graduations, weddings, or milestone celebrations — guests know exactly what's happening and when.</p>
+        <div class="prompt-box">Create a visual High School Graduation Party schedule for guests in Plano, TX.
 
-Include this exact text: [Paste your recipe title, prep time, cook time, servings, ingredients, and instructions]
+Graduating Senior attends Lebanon Trail High School.
 
-Style: Clean food magazine layout, bright natural light, readable text, warm minimal design.</div>
+You decide the event flow and wording.
+
+Include: Graduation Ceremony · After graduation family hour · Friends arrive · Gifts · Dress code notes · Transportation notes for out-of-town visitors
+
+Requirements: Elegant and easy for guests to understand. Use placeholder times and locations.
+
+Style: Premium graduation stationery design, cream background with LTHS school colors, elegant serif typography, thin lines.</div>
         <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
       </div>
     </details>
 
     <details>
       <summary>
-        <span class="summary-left"><span>Event Poster — Any Community Event</span></span>
+        <span class="summary-left"><span>43. Visual Habit Tracker</span></span>
         <span class="summary-arrow">+</span>
       </summary>
       <div class="acc-body">
-        <p class="prompt-desc">A professional event poster ready for social media or print.</p>
-        <div class="prompt-box">Create a premium event poster for [YOUR EVENT].
+        <p class="prompt-desc">A printable 30-day habit tracker with meal planning, shopping lists, and snack ideas built in.</p>
+        <div class="prompt-box">Create a printable 30-day weight-loss tracker.
 
-Location: [City / Neighborhood]
+Audience: A busy adult trying to lose weight following the Atkins diet. First two weeks focus on induction phase; regular Atkins meals thereafter.
 
-Audience: [Describe who is being invited.]
+You decide the layout and meal planning.
 
-You decide: Event name · Headline · Short description · Date/time placeholder · Venue placeholder · Call to action · Visual concept
+Include: 30-day grid · 5 healthy workday snacks each week · Weekly meal-planning shopping list · Simple motivational line · Minimal visual clutter
 
-Requirements: Make it feel like a real event poster that could be used on social media or printed. Keep text readable and the layout clean.
+Requirements: Actually printable and easy to use. Clean and premium, with icons for common food items.
 
-Style: Modern event poster, [choose your color scheme — dark and dramatic, or clean and minimal], clean typography, premium design.</div>
+Style: Minimal actionable planner, black and white, thin lines, rounded boxes, elegant typography.</div>
         <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
       </div>
     </details>
 
-    <div class="callout callout-navy mt-md">
-      <div class="callout-label">The Full Library</div>
-      <p>
-        The complete 47-prompt Visual Prompt Guide — including eCommerce product images, LinkedIn
-        carousels, app screenshot mockups, logo exploration sheets, restaurant menus, and more —
-        is available as a downloadable reference. Ask Jason for a copy.
-      </p>
-    </div>
+    <details>
+      <summary>
+        <span class="summary-left"><span>44. Organization Vision Board</span></span>
+        <span class="summary-arrow">+</span>
+      </summary>
+      <div class="acc-body">
+        <p class="prompt-desc">A full visual planning board for a home renovation, business launch, or major life project.</p>
+        <div class="prompt-box">Create a visual planning board for a total home renovation of a 3,750 sqft home.
+
+Home details: Mid-70s modern style, never renovated · 55 large-format single-pane windows (replace with energy efficient) · 5 bed / 5 bath · Full interior gut to stud &amp; foundation · Exterior new siding and concrete sidewalk · Total budget: $325,000
+
+You decide: Project phases · Supplies needed · Estimated timeline · Budget categories · Before/after vision · Checklist
+
+Style: Clean home-renovation planning board, white background, neutral colors, simple icons, organized layout.</div>
+        <p class="prompt-tool">Works well in: ChatGPT 4o, Google Gemini</p>
+      </div>
+    </details>
 
   </div><!-- /container -->
 </section>
@@ -1918,5 +2582,96 @@ Style: Modern event poster, [choose your color scheme — dark and dramatic, or 
   </p>
 </footer>
 
+<!-- NT Carousel + Lightbox -->
+<div class="nt-lightbox" id="nt-lightbox" onclick="ntLightboxBgClick(event)">
+  <button class="nt-lightbox-close" onclick="closeLightbox()" aria-label="Close">&#x2715;</button>
+  <button class="nt-lightbox-nav prev" onclick="ntLightboxNav(-1)" aria-label="Previous">&#8249;</button>
+  <img class="nt-lightbox-img" id="nt-lightbox-img" src="" alt="Slide">
+  <button class="nt-lightbox-nav next" onclick="ntLightboxNav(1)" aria-label="Next">&#8250;</button>
+  <div class="nt-lightbox-counter" id="nt-lightbox-counter"></div>
+</div>
+
+<!-- Simple image lightbox (for single faith-card images) -->
+<div class="nt-lightbox" id="img-lightbox" onclick="imgLightboxBgClick(event)">
+  <button class="nt-lightbox-close" onclick="closeImgLightbox()" aria-label="Close">&#x2715;</button>
+  <img class="nt-lightbox-img" id="img-lightbox-img" src="" alt="">
+</div>
+
+<script>
+// ── NT Carousel ──
+var ntSlides = [
+  'resources/graphics/Visual-Prompt-Images/nt-slide-1.jpg',
+  'resources/graphics/Visual-Prompt-Images/nt-slide-2.jpg',
+  'resources/graphics/Visual-Prompt-Images/nt-slide-3.jpg',
+  'resources/graphics/Visual-Prompt-Images/nt-slide-4.jpg',
+  'resources/graphics/Visual-Prompt-Images/nt-slide-5.jpg',
+  'resources/graphics/Visual-Prompt-Images/nt-slide-6.jpg'
+];
+var ntCurrent = 0;
+
+function ntSetSlide(idx) {
+  ntCurrent = idx;
+  document.getElementById('nt-active').src = ntSlides[idx];
+  document.querySelectorAll('.nt-thumb').forEach(function(t, i) {
+    t.classList.toggle('nt-active', i === idx);
+  });
+}
+
+function openNTLightbox(idx) {
+  ntCurrent = idx;
+  var lb = document.getElementById('nt-lightbox');
+  lb.classList.add('open');
+  document.getElementById('nt-lightbox-img').src = ntSlides[idx];
+  document.getElementById('nt-lightbox-counter').textContent = (idx + 1) + ' / ' + ntSlides.length;
+}
+
+function ntLightboxNav(dir) {
+  ntCurrent = (ntCurrent + dir + ntSlides.length) % ntSlides.length;
+  document.getElementById('nt-lightbox-img').src = ntSlides[ntCurrent];
+  document.getElementById('nt-lightbox-counter').textContent = (ntCurrent + 1) + ' / ' + ntSlides.length;
+}
+
+function closeLightbox() {
+  document.getElementById('nt-lightbox').classList.remove('open');
+}
+
+function ntLightboxBgClick(e) {
+  if (e.target === document.getElementById('nt-lightbox')) closeLightbox();
+}
+
+// ── Single-image lightbox ──
+function openLightbox(src) {
+  document.getElementById('img-lightbox-img').src = src;
+  document.getElementById('img-lightbox').classList.add('open');
+}
+
+function closeImgLightbox() {
+  document.getElementById('img-lightbox').classList.remove('open');
+}
+
+function imgLightboxBgClick(e) {
+  if (e.target === document.getElementById('img-lightbox')) closeImgLightbox();
+}
+
+// ── Keyboard navigation ──
+document.addEventListener('keydown', function(e) {
+  var ntOpen = document.getElementById('nt-lightbox').classList.contains('open');
+  var imgOpen = document.getElementById('img-lightbox').classList.contains('open');
+  if (e.key === 'Escape') { closeLightbox(); closeImgLightbox(); }
+  if (ntOpen && e.key === 'ArrowLeft') ntLightboxNav(-1);
+  if (ntOpen && e.key === 'ArrowRight') ntLightboxNav(1);
+});
+
+// ── Touch swipe for NT lightbox ──
+(function() {
+  var el = document.getElementById('nt-lightbox');
+  var startX = 0;
+  el.addEventListener('touchstart', function(e) { startX = e.touches[0].clientX; }, {passive: true});
+  el.addEventListener('touchend', function(e) {
+    var dx = e.changedTouches[0].clientX - startX;
+    if (Math.abs(dx) > 50) ntLightboxNav(dx < 0 ? 1 : -1);
+  }, {passive: true});
+})();
+</script>
 </body>
 </html>
