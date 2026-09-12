@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Photo &amp; Video Release</title>
+<style>
+  :root{
+    --ink:#1a1a1a;
+    --paper:#ffffff;
+    --line:#d8d4cc;
+    --field:#f6f4ef;
+    --brand:#2b5c4f;
+    --brand-press:#234b40;
+    --muted:#6a6a66;
+    --error:#b23b2e;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--field);
+    color:var(--ink);
+    line-height:1.55;
+    font-size:16px;
+    padding:0 0 48px;
+  }
+  .wrap{max-width:560px;margin:0 auto;background:var(--paper);min-height:100vh;}
+  header{
+    background:var(--brand);
+    color:#fff;
+    padding:28px 22px 24px;
+  }
+  header .kicker{
+    font-size:12.5px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    opacity:.82;
+    margin:0 0 6px;
+  }
+  header h1{
+    font-size:23px;
+    font-weight:650;
+    margin:0;
+    line-height:1.25;
+    letter-spacing:-.01em;
+  }
+  header p{margin:10px 0 0;font-size:14px;opacity:.9;}
+  main{padding:22px;}
+  .legal{
+    background:var(--field);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:16px 16px 4px;
+    font-size:13.5px;
+    color:#33332f;
+    max-height:200px;
+    overflow-y:auto;
+    margin:0 0 24px;
+  }
+  .legal p{margin:0 0 12px;}
+  label{display:block;font-weight:600;font-size:14px;margin:0 0 6px;}
+  .field{margin:0 0 20px;}
+  input[type=text],input[type=email],input[type=tel],input[type=date]{
+    width:100%;
+    padding:13px 14px;
+    font-size:16px;
+    border:1.5px solid var(--line);
+    border-radius:9px;
+    background:var(--field);
+    color:var(--ink);
+    font-family:inherit;
+  }
+  input:focus{outline:none;border-color:var(--brand);background:#fff;}
+  .sig-wrap{
+    border:1.5px solid var(--line);
+    border-radius:9px;
+    background:#fff;
+    position:relative;
+    touch-action:none;
+  }
+  .sig-wrap.filled{border-color:var(--brand);}
+  canvas{display:block;width:100%;height:180px;border-radius:9px;}
+  .sig-hint{
+    position:absolute;top:50%;left:0;right:0;
+    text-align:center;color:#b7b3aa;font-size:14px;
+    transform:translateY(-50%);pointer-events:none;
+  }
+  .sig-clear{
+    background:none;border:none;color:var(--brand);
+    font-size:13.5px;font-weight:600;padding:8px 2px 0;cursor:pointer;
+  }
+  .consent{
+    display:flex;gap:11px;align-items:flex-start;
+    background:var(--field);border:1px solid var(--line);
+    border-radius:9px;padding:14px;margin:4px 0 24px;
+  }
+  .consent input{width:22px;height:22px;margin-top:1px;flex:0 0 auto;accent-color:var(--brand);}
+  .consent label{font-weight:500;font-size:13.5px;margin:0;color:#33332f;}
+  button.submit{
+    width:100%;padding:16px;font-size:16.5px;font-weight:650;
+    background:var(--brand);color:#fff;border:none;border-radius:10px;
+    font-family:inherit;cursor:pointer;
+  }
+  button.submit:active{background:var(--brand-press);}
+  button.submit:disabled{opacity:.55;}
+  .err{color:var(--error);font-size:13px;margin:5px 0 0;display:none;}
+  .err.show{display:block;}
+  footer{text-align:center;font-size:12px;color:var(--muted);padding:22px;}
+  .done{text-align:center;padding:60px 26px;}
+  .done .check{
+    width:64px;height:64px;border-radius:50%;background:var(--brand);
+    color:#fff;font-size:34px;line-height:64px;margin:0 auto 18px;
+  }
+  .done h2{margin:0 0 8px;font-size:22px;}
+  .done p{color:var(--muted);margin:0;}
+  .hidden{display:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="kicker">Real Estate Training Event</p>
+    <h1>Photo &amp; Video Release</h1>
+    <p>Please read, complete, and sign below. It takes about a minute.</p>
+  </header>
+
+  <main id="form-view">
+    <div class="legal">
+      <p>I grant the event host and its designees the irrevocable right and permission to photograph and record video of me during this training event, and to use, reproduce, edit, and publish those images and recordings.</p>
+      <p>I understand these materials may be used in advertising, marketing, social media, websites, and other promotional content, in any media now known or later developed, without limitation as to time or territory.</p>
+      <p>I waive any right to inspect or approve the finished materials and any claim to compensation. I release the host from any liability connected with the use of my likeness. I confirm I am at least 18 years old and am signing of my own free will.</p>
+    </div>
+
+    <div class="field">
+      <label for="name">Full name</label>
+      <input type="text" id="name" name="name" autocomplete="name" required>
+      <p class="err" id="err-name">Please enter your name.</p>
+    </div>
+
+    <div class="field">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" autocomplete="email" required>
+      <p class="err" id="err-email">Please enter a valid email.</p>
+    </div>
+
+    <div class="field">
+      <label for="phone">Phone <span style="font-weight:400;color:var(--muted);">(optional)</span></label>
+      <input type="tel" id="phone" name="phone" autocomplete="tel">
+    </div>
+
+    <div class="field">
+      <label for="date">Date</label>
+      <input type="date" id="date" name="date" required>
+    </div>
+
+    <div class="field">
+      <label>Signature</label>
+      <div class="sig-wrap" id="sig-wrap">
+        <canvas id="sig"></canvas>
+        <span class="sig-hint" id="sig-hint">Sign with your finger</span>
+      </div>
+      <button type="button" class="sig-clear" id="sig-clear">Clear signature</button>
+      <p class="err" id="err-sig">Please add your signature.</p>
+    </div>
+
+    <div class="consent">
+      <input type="checkbox" id="agree" name="agreement_confirmed" value="Yes">
+      <label for="agree">I have read and agree to the release above, and my typed name and signature constitute my legal electronic signature.</label>
+    </div>
+    <p class="err" id="err-agree" style="margin-top:-16px;margin-bottom:18px;">You must agree to continue.</p>
+
+    <button type="button" class="submit" id="submit">Sign &amp; submit</button>
+  </main>
+
+  <div class="done hidden" id="done-view">
+    <div class="check">&#10003;</div>
+    <h2>Release signed</h2>
+    <p>Thank you. A copy has been recorded. You can close this page.</p>
+  </div>
+
+  <footer>Secured electronic signature &middot; Your details are sent only to the event host.</footer>
+</div>
+
+<script>
+/* ==== CONFIG: your Formspree endpoint id ==== */
+var FORMSPREE_ID = "xbgjvrjp";
+/* ============================================ */
+
+// prefill today's date
+(function(){
+  var d=new Date();
+  var iso=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+  document.getElementById("date").value=iso;
+})();
+
+// ---- signature pad ----
+var canvas=document.getElementById("sig");
+var wrap=document.getElementById("sig-wrap");
+var hint=document.getElementById("sig-hint");
+var ctx=canvas.getContext("2d");
+var drawing=false, hasInk=false, last=null;
+
+function sizeCanvas(){
+  var r=canvas.getBoundingClientRect();
+  var dpr=window.devicePixelRatio||1;
+  var data=hasInk?canvas.toDataURL():null;
+  canvas.width=r.width*dpr;
+  canvas.height=r.height*dpr;
+  ctx.scale(dpr,dpr);
+  ctx.lineWidth=2.4;ctx.lineCap="round";ctx.lineJoin="round";ctx.strokeStyle="#1a1a1a";
+  if(data){var img=new Image();img.onload=function(){ctx.drawImage(img,0,0,r.width,r.height);};img.src=data;}
+}
+setTimeout(sizeCanvas,50);
+window.addEventListener("resize",sizeCanvas);
+
+function pos(e){
+  var r=canvas.getBoundingClientRect();
+  var t=e.touches?e.touches[0]:e;
+  return {x:t.clientX-r.left,y:t.clientY-r.top};
+}
+function start(e){e.preventDefault();drawing=true;last=pos(e);}
+function move(e){
+  if(!drawing)return;e.preventDefault();
+  var p=pos(e);
+  ctx.beginPath();ctx.moveTo(last.x,last.y);ctx.lineTo(p.x,p.y);ctx.stroke();
+  last=p;
+  if(!hasInk){hasInk=true;hint.style.display="none";wrap.classList.add("filled");}
+}
+function end(e){drawing=false;last=null;}
+
+canvas.addEventListener("touchstart",start,{passive:false});
+canvas.addEventListener("touchmove",move,{passive:false});
+canvas.addEventListener("touchend",end);
+canvas.addEventListener("mousedown",start);
+canvas.addEventListener("mousemove",move);
+canvas.addEventListener("mouseup",end);
+canvas.addEventListener("mouseleave",end);
+
+document.getElementById("sig-clear").addEventListener("click",function(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  hasInk=false;hint.style.display="";wrap.classList.remove("filled");
+});
+
+// ---- validation + submit ----
+function showErr(id,on){document.getElementById("err-"+id).classList.toggle("show",on);}
+
+document.getElementById("submit").addEventListener("click",async function(){
+  var btn=this;
+  var name=document.getElementById("name").value.trim();
+  var email=document.getElementById("email").value.trim();
+  var phone=document.getElementById("phone").value.trim();
+  var date=document.getElementById("date").value;
+  var agree=document.getElementById("agree").checked;
+
+  var ok=true;
+  if(!name){showErr("name",true);ok=false;}else showErr("name",false);
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){showErr("email",true);ok=false;}else showErr("email",false);
+  if(!hasInk){showErr("sig",true);ok=false;}else showErr("sig",false);
+  if(!agree){showErr("agree",true);ok=false;}else showErr("agree",false);
+  if(!ok)return;
+
+  btn.disabled=true;btn.textContent="Submitting...";
+
+  var sigData=canvas.toDataURL("image/png");
+  var payload={
+    name:name,
+    email:email,
+    phone:phone||"(not provided)",
+    date:date,
+    agreement_confirmed:"Yes - read and agreed to the release",
+    signed_at:new Date().toString(),
+    signature_image:sigData,
+    _subject:"Signed model release - "+name
+  };
+
+  try{
+    var res=await fetch("https://formspree.io/f/"+FORMSPREE_ID,{
+      method:"POST",
+      headers:{"Content-Type":"application/json","Accept":"application/json"},
+      body:JSON.stringify(payload)
+    });
+    if(!res.ok)throw new Error("bad status");
+    document.getElementById("form-view").classList.add("hidden");
+    document.getElementById("done-view").classList.remove("hidden");
+    window.scrollTo(0,0);
+  }catch(err){
+    btn.disabled=false;btn.textContent="Sign & submit";
+    alert("Something went wrong sending your release. Please check your connection and try again.");
+  }
+});
+</script>
+</body>
+</html>
