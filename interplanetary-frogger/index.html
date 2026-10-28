@@ -1,0 +1,1956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interplanetary Frogger v3.2 (Rigorous): True Particle-Docking, Cycler Web &amp; Non-Docking Relay Corridor Sandbox</title>
+  <meta name="description" content="An interactive orbital sandbox: could rings of moving lilypad stations between Earth and Mars beat the 26-month Hohmann launch window? Race a hopping ship against a Hohmann transfer." />
+
+  <!-- Link previews (Reddit, X, Facebook, Discord, iMessage) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.hobbyaquatics.com/interplanetary-frogger/" />
+  <meta property="og:title" content="Interplanetary Frogger: Hopping to Mars Without Waiting 26 Months" />
+  <meta property="og:description" content="An interactive orbital sandbox: could rings of moving lilypad stations between Earth and Mars beat the Hohmann launch window? Race a hopping ship against a Hohmann transfer." />
+  <meta property="og:image" content="https://www.hobbyaquatics.com/interplanetary-frogger/preview.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-MNDZV9L652"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-MNDZV9L652');
+  </script>
+
+  <!-- MathJax 3 Configuration -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true
+      }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+  <style>
+    :root {
+      --bg-deep: #060911;
+      --bg-card: #0e1525;
+      --bg-card-alt: #131c31;
+      --border-subtle: #223052;
+      --accent-cyan: #00e5ff;
+      --accent-amber: #ffb300;
+      --accent-mars: #ff5252;
+      --accent-earth: #38bdf8;
+      --accent-emerald: #00e676;
+      --accent-purple: #b388ff;
+      --text-main: #e2e8f0;
+      --text-muted: #94a3b8;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-deep);
+      background-image:
+        radial-gradient(circle at 12% 15%, rgba(0, 229, 255, 0.06) 0%, transparent 40%),
+        radial-gradient(circle at 88% 82%, rgba(255, 82, 82, 0.06) 0%, transparent 40%);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      line-height: 1.65;
+      padding: 1.5rem 1.5rem 4rem;
+    }
+
+    .container { max-width: 1380px; margin: 0 auto; }
+
+    header {
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent-emerald);
+      background: rgba(0, 230, 118, 0.1);
+      border: 1px solid rgba(0, 230, 118, 0.35);
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      margin-bottom: 0.65rem;
+    }
+
+    h1 {
+      font-size: 2.15rem;
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(90deg, #ffffff, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle { font-size: 1rem; color: var(--text-muted); max-width: 1060px; }
+
+    .patch-banner {
+      background: linear-gradient(135deg, rgba(0, 230, 118, 0.1), rgba(0, 229, 255, 0.08));
+      border: 1px solid rgba(0, 230, 118, 0.38);
+      border-left: 4px solid var(--accent-emerald);
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.88rem;
+    }
+
+    .sim-wrapper {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 1.35rem;
+      margin-bottom: 2.5rem;
+      box-shadow: 0 18px 48px rgba(0, 0, 0, 0.5);
+    }
+
+    .sim-layout {
+      display: grid;
+      grid-template-columns: minmax(480px, 680px) 1fr;
+      gap: 1.4rem;
+      align-items: start;
+    }
+
+    @media (max-width: 1120px) { .sim-layout { grid-template-columns: 1fr; } }
+
+    .canvas-col { display: flex; flex-direction: column; gap: 0.85rem; }
+
+    canvas#orbitCanvas {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 1 / 1;
+      background: radial-gradient(circle at center, #0d1629 0%, #050810 100%);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      display: block;
+    }
+
+    .legend-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.85rem;
+      background: var(--bg-card-alt);
+      border: 1px solid var(--border-subtle);
+      padding: 0.6rem 0.9rem;
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.73rem;
+    }
+
+    .legend-item { display: flex; align-items: center; gap: 0.45rem; }
+    .swatch { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+
+    .gantt-box {
+      background: var(--bg-card-alt);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 0.9rem 1.1rem;
+    }
+
+    .gantt-title {
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-cyan);
+      margin-bottom: 0.65rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .gantt-row { margin-bottom: 0.75rem; }
+    .gantt-row:last-child { margin-bottom: 0; }
+
+    .gantt-label {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .gantt-track {
+      width: 100%;
+      height: 22px;
+      background: #070b14;
+      border: 1px solid var(--border-subtle);
+      border-radius: 5px;
+      display: flex;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .bar-ground {
+      height: 100%; display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-mono); font-size: 0.68rem; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden;
+    }
+    .bar-flight {
+      height: 100%; display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-mono); font-size: 0.68rem; font-weight: 700; color: #050811; white-space: nowrap; overflow: hidden;
+    }
+    .progress-cursor {
+      position: absolute; top: 0; bottom: 0; width: 2px; background: #ffffff; box-shadow: 0 0 6px #fff; z-index: 5;
+    }
+
+    .sim-controls {
+      background: var(--bg-card-alt);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 1.2rem;
+    }
+
+    .control-section-title {
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent-cyan);
+      margin-bottom: 0.65rem;
+      padding-bottom: 0.3rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .control-group { margin-bottom: 0.85rem; }
+    .control-group label {
+      display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.3rem;
+    }
+
+    select, input[type="range"] { width: 100%; }
+    select {
+      background: #080d18; color: #fff; border: 1px solid var(--border-subtle); padding: 0.5rem 0.65rem; border-radius: 6px; font-family: var(--font-sans); font-size: 0.84rem; cursor: pointer;
+    }
+
+    .ring-editor-box {
+      background: #090e1a; border: 1px solid var(--border-subtle); border-radius: 8px; padding: 0.7rem; margin-bottom: 0.9rem; max-height: 205px; overflow-y: auto;
+    }
+    .ring-row {
+      display: grid; grid-template-columns: 58px 1fr 62px 86px; gap: 0.45rem; align-items: center; margin-bottom: 0.45rem; font-family: var(--font-mono); font-size: 0.75rem;
+    }
+    .ring-badge { background: rgba(0, 229, 255, 0.12); color: var(--accent-cyan); padding: 0.16rem 0.3rem; border-radius: 4px; text-align: center; font-weight: 700; }
+    .ring-au-val { color: #fff; text-align: right; font-weight: 600; }
+    .spin-toggle {
+      padding: 0.18rem 0.3rem; border-radius: 4px; border: 1px solid var(--border-subtle); font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; cursor: pointer; text-align: center;
+    }
+    .spin-cw { background: rgba(0, 230, 118, 0.15); color: var(--accent-emerald); border-color: rgba(0, 230, 118, 0.4); }
+    .spin-ccw { background: rgba(0, 229, 255, 0.15); color: var(--accent-cyan); border-color: rgba(0, 229, 255, 0.4); }
+
+    .btn-row { display: flex; gap: 0.6rem; margin-bottom: 0.9rem; }
+    button.btn {
+      flex: 1; padding: 0.72rem 0.9rem; border-radius: 6px; border: none; font-family: var(--font-mono); font-size: 0.82rem; font-weight: 700; cursor: pointer; transition: transform 0.1s ease, filter 0.15s ease;
+    }
+    button.btn:hover { filter: brightness(1.1); }
+    .btn-launch { background: linear-gradient(90deg, var(--accent-cyan), var(--accent-emerald)); color: #040811; }
+    .btn-reset { background: #1e293b; color: var(--text-main); border: 1px solid var(--border-subtle); }
+
+    .race-scoreboard {
+      width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: 0.73rem; margin-top: 0.3rem; background: #080d18; border: 1px solid var(--border-subtle); border-radius: 6px; overflow: hidden;
+    }
+    .race-scoreboard th, .race-scoreboard td { padding: 0.45rem 0.5rem; text-align: left; border-bottom: 1px solid var(--border-subtle); }
+    .race-scoreboard th { color: var(--text-muted); background: #0c1324; text-transform: uppercase; font-size: 0.65rem; }
+
+    .advantage-banner {
+      margin-top: 0.75rem; background: linear-gradient(135deg, rgba(0, 230, 118, 0.14), rgba(0, 229, 255, 0.08)); border: 1px solid rgba(0, 230, 118, 0.4); border-radius: 8px; padding: 0.7rem 0.85rem; font-family: var(--font-mono); font-size: 0.77rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;
+    }
+    .mode-explainer {
+      margin-top: 0.75rem; background: rgba(0, 229, 255, 0.06); border: 1px solid rgba(0, 229, 255, 0.22); border-radius: 6px; padding: 0.7rem 0.8rem; font-size: 0.79rem; color: var(--text-main);
+    }
+    .hop-telemetry {
+      margin-top: 0.65rem; background: #080d18; border: 1px solid var(--border-subtle); border-radius: 6px; padding: 0.55rem 0.7rem; font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); line-height: 1.5;
+    }
+    section { margin-bottom: 2.75rem; }
+    h2.section-header {
+      font-size: 1.5rem; font-weight: 700; margin-bottom: 1.1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; gap: 0.75rem;
+    }
+    h2.section-header span.num {
+      font-family: var(--font-mono); font-size: 0.9rem; color: var(--accent-cyan); background: rgba(0, 229, 255, 0.12); padding: 0.2rem 0.6rem; border-radius: 6px; border: 1px solid rgba(0, 229, 255, 0.25);
+    }
+    .arch-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin-top: 1rem;
+    }
+    @media (max-width: 900px) { .arch-grid { grid-template-columns: 1fr; } }
+    .arch-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 1.2rem 1.35rem;
+    }
+    .arch-card h3 {
+      font-size: 1.08rem;
+      color: var(--accent-cyan);
+      margin-bottom: 0.5rem;
+    }
+    .arch-card p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-bottom: 0.65rem;
+    }
+    .math-block {
+      background: #080d18; border: 1px solid var(--border-subtle); border-left: 4px solid var(--accent-cyan); padding: 1.1rem 1.4rem; border-radius: 8px; margin: 1.1rem 0; overflow-x: auto; color: #f8fafc;
+    }
+    .math-block .math-caption {
+      font-family: var(--font-mono); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent-cyan); margin-bottom: 0.45rem; display: block;
+    }
+    footer {
+      margin-top: 3rem; padding-top: 1.25rem; border-top: 1px solid var(--border-subtle); font-size: 0.82rem; color: var(--text-muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+    }
+    a { color: var(--accent-cyan); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="eyebrow">Astrodynamics Sandbox v3.2 // Verified Multi-Body Particle &amp; Relay Engine</div>
+      <h1>Interplanetary Frogger: True Particle-Docking, Cycler Escalators &amp; Non-Docking Relay Portals</h1>
+      <p class="subtitle">
+        Resolves the v3.1 runtime &amp; trajectory bugs: (1) Strictly prograde tangential departures off Earth ($+v_\theta$, CCW), (2) True spatio-temporal particle intercepts ($0.00^\circ$ docking error onto physical moving dots—zero empty ring-line pivots), and (3) Full support for both <strong>Docked Ring/Cycler Riding</strong> and <strong>Non-Docking Segmented Shear-Compensating Relay Corridors ("Shooting Gallery")</strong>.
+      </p>
+    </header>
+
+    <div class="patch-banner">
+      <strong>v3.2 Rigorous Physics Engine Active:</strong>
+      (1) <em>Strict Prograde Earth Departure ($+v_\theta$)</em> — Every launch leaves Earth tangentially in the counter-clockwise prograde direction without backward hooks.
+      (2) <em>True Spatio-Temporal Particle Lock</em> — In <strong>Docked Modes</strong>, the ship intercepts a specific moving green/cyan pad dot on Ring 1, locks onto it, matches its velocity, visibly rides the dot along the ring arc until the next ring's pad aligns, and steps outward to a velocity-matched Mars intercept. In <strong>Non-Docking "Shooting Gallery" Mode (Arch 05)</strong>, the ship threads directly through the center of active Electromagnetic Relay Portal dots across 6 rings, receiving lateral $\Delta v_\theta$ shear-canceling kicks to cross the gap in 28–38 days.
+    </div>
+
+    <!-- INTERACTIVE MULTI-RING SANDBOX -->
+    <section>
+      <div class="sim-wrapper">
+        <div class="sim-layout">
+          <!-- Left Column: Canvas + Legend + Gantt Bar -->
+          <div class="canvas-col">
+            <canvas id="orbitCanvas" width="680" height="680"></canvas>
+
+            <div class="legend-bar">
+              <div class="legend-item"><span class="swatch" style="background:#ffea00;"></span> ★ Frogger Hop ($y+x$)</div>
+              <div class="legend-item"><span class="swatch" style="background:#00e676; border: 2px solid #fff;"></span> ⚓ Docked Ride Arc</div>
+              <div class="legend-item"><span class="swatch" style="background:#38bdf8;"></span> ● Hohmann ($yyy+xxx$)</div>
+              <div class="legend-item"><span class="swatch" style="background:#00e676;"></span> CW Pad (Green)</div>
+              <div class="legend-item"><span class="swatch" style="background:#00e5ff;"></span> CCW Pad (Cyan)</div>
+            </div>
+
+            <div class="gantt-box">
+              <div class="gantt-title">
+                <span>Total Mission Timeline: Ground Wait + Spaceflight Transit</span>
+                <span id="ganttScaleLabel" style="color:var(--text-muted);">Scale: 500 Days Max</span>
+              </div>
+
+              <!-- Lilypad Bar -->
+              <div class="gantt-row">
+                <div class="gantt-label">
+                  <span style="color:#ffea00; font-weight:700;">★ Lilypad Frogger: (y + x)</span>
+                  <span id="lilyFormulaLabel" style="color:var(--accent-emerald);">y = 2d Ground + x = 80d Flight = 82d Total</span>
+                </div>
+                <div class="gantt-track">
+                  <div class="bar-ground" id="lilyGroundBar" style="background:#d97706; width:2%;">y</div>
+                  <div class="bar-flight" id="lilyFlightBar" style="background:#ffea00; width:16%;">x (Flight)</div>
+                  <div class="progress-cursor" id="ganttCursor1" style="left:0%;"></div>
+                </div>
+              </div>
+
+              <!-- Hohmann Bar -->
+              <div class="gantt-row">
+                <div class="gantt-label">
+                  <span style="color:#38bdf8; font-weight:700;">● Hohmann Baseline: (yyy + xxx)</span>
+                  <span id="hohFormulaLabel" style="color:var(--accent-earth);">yyy = 164d Ground + xxx = 259d Flight = 423d Total</span>
+                </div>
+                <div class="gantt-track">
+                  <div class="bar-ground" id="hohGroundBar" style="background:#475569; width:38%;">yyy (Grounded)</div>
+                  <div class="bar-flight" id="hohFlightBar" style="background:#38bdf8; width:60%;">xxx = 259d Flight</div>
+                  <div class="progress-cursor" id="ganttCursor2" style="left:0%;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Controls -->
+          <div class="sim-controls">
+            <div class="control-section-title">1. Pick Calendar Month of Mission Order ($T = 0$)</div>
+
+            <div class="control-group">
+              <label for="calendarMonth">26-Month Synodic Cycle Calendar Picker</label>
+              <select id="calendarMonth"></select>
+            </div>
+
+            <div class="control-group">
+              <label>
+                <span>Fine-Tune Mars Initial Phase Angle ($\phi_0$ at $T=0$)</span>
+                <span id="phaseLabel" style="color: var(--accent-amber);">+120.0°</span>
+              </label>
+              <input type="range" id="marsPhase" min="0" max="359" step="1" value="120" />
+            </div>
+
+            <div class="control-section-title">2. Select Architecture (Docked vs. Non-Docking) &amp; Topology</div>
+
+            <div class="control-group">
+              <label for="simMode">Lilypad Mechanics Architecture</label>
+              <select id="simMode">
+                <option value="arch1_antispin">Docked Solution #1: Multi-Ring Particle Docking &amp; Ring Riding</option>
+                <option value="arch2_cycler">Docked Solution #2: Intersecting Elliptical Escalators (Cycler Web)</option>
+                <option value="arch3_shooting_gallery">Non-Docking Solution (Arch 05): "Shooting Gallery" Shear-Compensating Relay Corridor</option>
+                <option value="arch4_tether">Docked Solution #3: Momentum-Exchange Tether Rotovator Bolos</option>
+              </select>
+            </div>
+
+            <div class="control-group">
+              <label for="ringPreset">Concentric Ring Topology Preset</label>
+              <select id="ringPreset">
+                <option value="user_3ring">User 3-Ring Custom (1.10 AU, 1.29 AU, 1.43 AU) — Alternating Spin</option>
+                <option value="relay_6ring">Arch 05 "Shooting Gallery" 6-Ring Relay Corridor (1.08–1.48 AU)</option>
+                <option value="dual_ring">2-Ring Classic (1.18 AU, 1.36 AU)</option>
+                <option value="single_mid">1-Ring Midpoint (1.262 AU Anti-Spin)</option>
+              </select>
+            </div>
+
+            <div class="ring-editor-box" id="ringEditorBox"></div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+              <div class="control-group">
+                <label>
+                  <span>Pads / Ring ($N$)</span>
+                  <span id="padCountLabel" style="color: var(--accent-cyan);">10</span>
+                </label>
+                <input type="range" id="padCount" min="6" max="20" step="2" value="10" />
+              </div>
+
+              <div class="control-group">
+                <label>
+                  <span>Simulation Speed (0.05x – 1.25x)</span>
+                  <span id="speedLabel" style="color: var(--accent-emerald);">0.35x</span>
+                </label>
+                <input type="range" id="simSpeed" min="0.05" max="1.25" step="0.05" value="0.35" />
+              </div>
+            </div>
+
+            <div class="btn-row" style="grid-template-columns: 1.8fr 0.9fr 1.1fr;">
+              <button class="btn btn-launch" id="launchBtn">ISSUE MISSION ORDER (T = 0)</button>
+              <button class="btn btn-reset" id="resetBtn">RESET</button>
+              <button class="btn btn-reset" id="randomizeBtn" title="Randomize initial orbital alignment of all rings">🎲 RANDOMIZE</button>
+            </div>
+
+            <div class="control-section-title" style="margin-bottom:0.35rem;">
+              Mission Schedule Ledger (<span id="timeVal" style="color:#fff;">Mission Clock: T + 0 Days</span>)
+            </div>
+            <table class="race-scoreboard">
+              <thead>
+                <tr>
+                  <th>Metric</th>
+                  <th style="color:#ffea00;">★ Lilypad (y + x)</th>
+                  <th style="color:#38bdf8;">● Hohmann (yyy + xxx)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Current Status</strong></td>
+                  <td id="lilyStateCell" style="color:var(--accent-cyan);">Ready at Earth</td>
+                  <td id="hohStateCell" style="color:var(--text-muted);">Ready at Earth</td>
+                </tr>
+                <tr>
+                  <td><strong>Ground Wait ($y$ vs $yyy$)</strong></td>
+                  <td id="lilyGroundCell">-- Days</td>
+                  <td id="hohGroundCell">-- Days</td>
+                </tr>
+                <tr>
+                  <td><strong>Flight Time ($x$ vs $xxx$)</strong></td>
+                  <td id="lilyFlightCell">-- Days</td>
+                  <td id="hohFlightCell">259 Days</td>
+                </tr>
+                <tr>
+                  <td><strong>Total Time to Mars</strong></td>
+                  <td id="lilyTotalCell" style="color:var(--accent-emerald); font-weight:700;">-- Days</td>
+                  <td id="hohTotalCell" style="color:var(--accent-earth); font-weight:700;">-- Days</td>
+                </tr>
+                <tr>
+                  <td><strong>Time on Mars Surface</strong></td>
+                  <td id="lilySurfaceCell" style="color:var(--accent-emerald);">0 Days</td>
+                  <td id="hohSurfaceCell">0 Days</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="advantage-banner">
+              <span><strong>Net Schedule Savings:</strong> <span id="netSavingsVal" style="color:var(--accent-emerald);">+341 Days Faster</span></span>
+              <span><strong>Mars Head-Start:</strong> <span id="headStartVal" style="color:#ffea00;">341 Days on Surface</span></span>
+            </div>
+
+            <div class="hop-telemetry" id="hopTelemetryBox">
+              Computing exact multi-body particle intercept chain...
+            </div>
+
+            <div class="mode-explainer" id="modeExplainer"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: ARCHITECTURAL COMPARISON (DOCKED VS NON-DOCKING) -->
+    <section>
+      <h2 class="section-header"><span class="num">01</span> The Two Lilypad Paradigms: Docked Escalators vs. Non-Docking Relay Corridor</h2>
+      <p style="color:var(--text-muted); margin-bottom:1rem;">
+        Why can't a ship normally fire straight across the $0.524\text{ AU}$ gap whenever Mars passes across our view? Because in the heliocentric frame, Earth orbits at $29.78\text{ km/s}$ while Mars orbits at $24.07\text{ km/s}$, and as a ship climbs radially outward, Coriolis acceleration ($-2\vec{\omega}\times\vec{v}$) and Keplerian shear deflect it. The sandbox models both rigorous physical solutions to this problem:
+      </p>
+
+      <div class="arch-grid">
+        <div class="arch-card">
+          <h3>1. Docked Solution // Particle-Docking &amp; Intersecting Elliptical Escalators (The Cycler Web)</h3>
+          <p>
+            A single Aldrin Cycler only aligns with Earth and Mars once every 26 months. By populating the interplanetary zone with concentric rings of rotating lilypad stations and/or a mesh of <strong>intersecting elliptical cycler orbits</strong> whose lines of apsides are rotated at $15^\circ$ intervals around the Sun, orbital intersections occur continuously.
+          </p>
+          <p>
+            <strong>True Particle-Docking Mechanics:</strong> The ship departs Earth strictly prograde ($+v_\theta$, CCW), targets a specific moving lilypad on Ring 1, physically docks with it ($\vec{r}_{\text{ship}} = \vec{r}_{\text{pad}, k}$), matches its velocity, and <strong>rides the rotating pad across the ring arc</strong> until the transfer window to the next ring's pad opens. Step by step, it rides and hops outward until it achieves a velocity-matched tangential intercept on Mars.
+          </p>
+        </div>
+
+        <div class="arch-card">
+          <h3>2. Non-Docking Solution // Architecture 05: "Shooting Gallery" Shear-Compensating Relay Corridor</h3>
+          <p>
+            To make straight-line sight-line shots physically real without stopping to dock, we place concentric rings of <strong>Electromagnetic Relay Portals (Linear Induction Rings)</strong> at $1.08, 1.16, 1.24, 1.32, 1.40,$ and $1.48\text{ AU}$.
+          </p>
+          <p>
+            <strong>Zero-Dwell Lorentz Relay Mechanics:</strong> A ship departing Earth threads the needle directly through an active physical Relay Portal dot on one ring after another (`dwell = 0d`). Each portal imparts a purely lateral electromagnetic induction kick ($\Delta v_\theta \approx 0.8\text{ km/s}$) plus radial boost that continuously cancels the Coriolis and Keplerian velocity shear, allowing direct 28–38 day transits across the gap!
+          </p>
+        </div>
+      </div>
+
+      <div class="math-block">
+        <span class="math-caption">Equation 1 // Strict Prograde Departure, Spatio-Temporal Particle Lock &amp; Shear-Canceling Impulse</span>
+        $$\begin{aligned}
+          \vec{v}_{\text{depart}}(t_0) &= \vec{v}_E(t_0) + \Delta v_{\text{prograde}}\,\hat{e}_\theta \quad \left(\dot{\theta}(t_0) > 0 \text{ Strictly CCW Prograde}, \; \dot{r}(t_0) = 0\right) \\[4pt]
+          \text{Exact Particle Intercept:} \quad \theta_{\text{ship}}(t_{\text{dock}, k}) &\equiv \theta_{\text{pad}}(k, p_k^*, t_{\text{dock}, k}) = \left(p_k^* \frac{360^\circ}{N} + \omega_k \, t_{\text{dock}, k}\right) \bmod 360^\circ, \qquad r_{\text{ship}}(t_{\text{dock}, k}) = r_k \\[4pt]
+          \text{Arch 05 Relay Kick:} \quad \Delta \vec{v}_{\text{portal}, k} &= -\Delta v_{\text{Coriolis}}\,\hat{e}_\theta + \Delta v_{r}\,\hat{e}_r \approx +2\,\omega(r_k)\,\Delta r\,\hat{e}_\theta \quad (\text{Canceling }-2\vec{\omega}\times\vec{v}\text{ Shear})
+        \end{aligned}$$
+      </div>
+    </section>
+
+    <footer>
+      <div>Reference Video: <a href="http://www.youtube.com/watch?v=mw1bElkifr4" target="_blank">Why SpaceX Waits 26 Months Between Mars Launches (Farzad)</a></div>
+      <div>Astrodynamics Sandbox v3.2 // True Multi-Body Particle &amp; Relay Engine</div>
+    </footer>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('orbitCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const calendarSelect = document.getElementById('calendarMonth');
+    const marsPhaseSlider = document.getElementById('marsPhase');
+    const modeSelect = document.getElementById('simMode');
+    const presetSelect = document.getElementById('ringPreset');
+    const ringEditorBox = document.getElementById('ringEditorBox');
+    const padCountSlider = document.getElementById('padCount');
+    const simSpeedSlider = document.getElementById('simSpeed');
+
+    const phaseLabel = document.getElementById('phaseLabel');
+    const padCountLabel = document.getElementById('padCountLabel');
+    const speedLabel = document.getElementById('speedLabel');
+    const timeVal = document.getElementById('timeVal');
+    const modeExplainer = document.getElementById('modeExplainer');
+    const hopTelemetryBox = document.getElementById('hopTelemetryBox');
+
+    const lilyStateCell = document.getElementById('lilyStateCell');
+    const hohStateCell = document.getElementById('hohStateCell');
+    const lilyGroundCell = document.getElementById('lilyGroundCell');
+    const hohGroundCell = document.getElementById('hohGroundCell');
+    const lilyFlightCell = document.getElementById('lilyFlightCell');
+    const hohFlightCell = document.getElementById('hohFlightCell');
+    const lilyTotalCell = document.getElementById('lilyTotalCell');
+    const hohTotalCell = document.getElementById('hohTotalCell');
+    const lilySurfaceCell = document.getElementById('lilySurfaceCell');
+    const hohSurfaceCell = document.getElementById('hohSurfaceCell');
+    const netSavingsVal = document.getElementById('netSavingsVal');
+    const headStartVal = document.getElementById('headStartVal');
+
+    const lilyFormulaLabel = document.getElementById('lilyFormulaLabel');
+    const hohFormulaLabel = document.getElementById('hohFormulaLabel');
+    const lilyGroundBar = document.getElementById('lilyGroundBar');
+    const lilyFlightBar = document.getElementById('lilyFlightBar');
+    const hohGroundBar = document.getElementById('hohGroundBar');
+    const hohFlightBar = document.getElementById('hohFlightBar');
+    const ganttCursor1 = document.getElementById('ganttCursor1');
+    const ganttCursor2 = document.getElementById('ganttCursor2');
+    const ganttScaleLabel = document.getElementById('ganttScaleLabel');
+
+    const launchBtn = document.getElementById('launchBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const randomizeBtn = document.getElementById('randomizeBtn');
+
+    const CX = canvas.width / 2;
+    const CY = canvas.height / 2;
+    const SCALE_AU = 178;
+    const R_EARTH_AU = 1.000;
+    const R_MARS_AU = 1.524;
+    const OMEGA_EARTH = 0.9856; // deg/day (CCW prograde)
+    const OMEGA_MARS = 0.5240;  // deg/day (CCW prograde)
+    const SYNODIC_RATE = OMEGA_EARTH - OMEGA_MARS;
+    const HOHMANN_FLIGHT_DAYS = 259;
+    const TARGET_HOHMANN_PHI = 180 - HOHMANN_FLIGHT_DAYS * OMEGA_MARS; // +44.28 deg
+
+    const monthNames = [
+      "Jan 2027", "Feb 2027", "Mar 2027", "Apr 2027", "May 2027", "Jun 2027",
+      "Jul 2027", "Aug 2027", "Sep 2027", "Oct 2027", "Nov 2027", "Dec 2027",
+      "Jan 2028", "Feb 2028", "Mar 2028", "Apr 2028", "May 2028", "Jun 2028",
+      "Jul 2028", "Aug 2028", "Sep 2028", "Oct 2028", "Nov 2028", "Dec 2028",
+      "Jan 2029", "Feb 2029"
+    ];
+
+    function initCalendarDropdown() {
+      calendarSelect.innerHTML = '';
+      for (let m = 0; m < 26; m++) {
+        const phi = Math.round((TARGET_HOHMANN_PHI - m * 30 * SYNODIC_RATE + 3600) % 360);
+        const waitDays = Math.round(((phi - TARGET_HOHMANN_PHI + 360) % 360) / SYNODIC_RATE);
+        const opt = document.createElement('option');
+        opt.value = phi;
+        const tag = waitDays < 15 ? "★ HOHMANN WINDOW OPEN!" : `(Hohmann Ground Wait: ${waitDays}d)`;
+        opt.textContent = `Month ${String(m + 1).padStart(2, '0')} (${monthNames[m]}) — Φ₀ = +${phi}° ${tag}`;
+        if (m === 20) opt.selected = true;
+        calendarSelect.appendChild(opt);
+      }
+      marsPhaseSlider.value = calendarSelect.value;
+    }
+
+    const presets = {
+      user_3ring: [
+        { r: 1.10, spin: -1, phaseOffset: Math.random() * 360 },
+        { r: 1.29, spin: 1, phaseOffset: Math.random() * 360 },
+        { r: 1.43, spin: -1, phaseOffset: Math.random() * 360 }
+      ],
+      relay_6ring: [
+        { r: 1.08, spin: -1, phaseOffset: Math.random() * 360 },
+        { r: 1.16, spin: 1, phaseOffset: Math.random() * 360 },
+        { r: 1.24, spin: -1, phaseOffset: Math.random() * 360 },
+        { r: 1.32, spin: 1, phaseOffset: Math.random() * 360 },
+        { r: 1.40, spin: -1, phaseOffset: Math.random() * 360 },
+        { r: 1.48, spin: 1, phaseOffset: Math.random() * 360 }
+      ],
+      dual_ring: [
+        { r: 1.18, spin: 1, phaseOffset: Math.random() * 360 },
+        { r: 1.36, spin: -1, phaseOffset: Math.random() * 360 }
+      ],
+      single_mid: [
+        { r: 1.262, spin: -1, phaseOffset: Math.random() * 360 }
+      ]
+    };
+
+    let rings = JSON.parse(JSON.stringify(presets.user_3ring));
+
+    function randomizeRingPhases() {
+      rings.forEach(ring => {
+        ring.phaseOffset = Math.random() * 360;
+      });
+    }
+
+    const explainers = {
+      arch1_antispin: "<strong>Docked Solution #1 — Multi-Ring Particle Docking &amp; Ring Riding:</strong> Every ring orbits at its immutable physical Keplerian rate ($\\omega_k = \\omega_{\\text{Kepler}}(r_k) \\cdot \\text{trim}_k$). The 2nd-order multivariate space-time solver jointly optimizes ground wait $y$, segment transit durations $\\Delta t_k$, pad indices $p_k$, and ring dwell times $w_k$ to achieve exact $0.0000^\\circ$ particle intercepts with Mars.",
+      arch2_cycler: "<strong>Docked Solution #2 — Intersecting Elliptical Escalators (The Cycler Web):</strong> Populates the interplanetary zone with 24 intersecting elliptical cycler orbits rotated at $15^\\circ$ intervals around the Sun. The 2nd-order space-time optimizer selects the optimal launch day $y$, cycler intersection nodes, and ring transfers across immutable moving pads.",
+      arch3_shooting_gallery: "<strong>Non-Docking Solution (Architecture 05) — \"Shooting Gallery\" Shear-Compensating Relay Corridor:</strong> Concentric Linear Induction Rings ($1.08\\text{–}1.48\\text{ AU}$) orbit at their strictly immutable physical speeds. The 2nd-order space-time DP solver jointly optimizes ground wait $y$ vs. flight time $x$, evaluating trajectory curvature ($\\ddot{\\theta}_k, \\ddot{r}_k$) and Lorentz shear cancellation ($\\Delta v_\\theta$) across all $N$ portals per ring—automatically waiting longer on Earth when doing so catches a faster multi-ring \"green wave\"!",
+      arch4_tether: "<strong>Docked Solution #3 — Momentum-Exchange Tether Rotovators:</strong> Prograde-orbiting Rotovator stations on each ring catch the arriving spacecraft at the lower tether tip, carry it forward (CCW) through half a tether rotation, and sling it tangentially outward and prograde from the upper tether tip."
+    };
+
+    let simDays = 0;
+    let earthAngle = 0;
+    let marsAngle = 120;
+    let isLaunched = false;
+
+    let currentPlan = null;
+    let activeShip = {};
+    let hohShip = {};
+    let impulseBursts = [];
+    let dockingNodes = [];
+    let schedule = { y_lilyGround: 2, x_lilyFlight: 80, yyy_hohGround: 164, xxx_hohFlight: 259 };
+
+    const V_SCALE = 1731.4568; // km/s per AU/day
+    const DEG_TO_RAD = Math.PI / 180;
+
+    function keplerOmega(rAU) {
+      return OMEGA_EARTH / Math.pow(rAU, 1.5);
+    }
+
+    // Nominal & Effective heliocentric angular velocity (deg/day):
+    // STRICTLY IMMUTABLE physical orbital rate (never mutated to fake an intercept!)
+    // - `spin < 0` (Sub-Keplerian Slow-Prograde): `0.64 * keplerOmega(r)`
+    // - `spin > 0` (Super-Keplerian Fast-Prograde): `1.34 * keplerOmega(r)`
+    // This creates genuine differential synodic shear (`|omega_A - omega_B| ~ 0.35 to 0.53 deg/day`)
+    // across adjacent rings while keeping all motion 100% Prograde (CCW > 0).
+    function getRingNominalOmega(ring) {
+      const trimFactor = ring.spin < 0 ? 0.64 : 1.34;
+      return keplerOmega(ring.r) * trimFactor;
+    }
+
+    function getRingHelioOmega(ring) {
+      return getRingNominalOmega(ring);
+    }
+
+    function degToRad(deg) {
+      return (deg * Math.PI) / 180;
+    }
+
+    function normDeg(deg) {
+      return ((deg % 360) + 360) % 360;
+    }
+
+    function signedAngleDiff(targetDeg, sourceDeg) {
+      return ((targetDeg - sourceDeg + 540) % 360) - 180;
+    }
+
+    function getPosAU(rAU, angleDeg) {
+      const rad = degToRad(angleDeg);
+      const rPx = rAU * SCALE_AU;
+      return { x: CX + rPx * Math.cos(rad), y: CY - rPx * Math.sin(rad) };
+    }
+
+    // Canonical exact angle of pad `padIdx` on ring `ringIdx` at time `tDays`
+    // Uses `ring.phaseOffset` (genuine random alignment at T=0) and immutable `getRingHelioOmega(ring)`.
+    function getPadAngleDeg(ringIdx, padIdx, tDays) {
+      const ring = rings[ringIdx];
+      const pads = parseInt(padCountSlider.value, 10);
+      const spacing = 360 / pads;
+      const omega = getRingHelioOmega(ring);
+      const offset = ring.phaseOffset || 0;
+      return normDeg(offset + padIdx * spacing + tDays * omega);
+    }
+
+    // Smooth C1 tangent-continuous orbital transfer curve between (rStart, angStart) and (rTarget, angStart + dTheta).
+    function interpolateTransferHop(rStart, rTarget, angStart, dTheta, tau, isPureTangential) {
+      const clampedTau = Math.max(0, Math.min(1, tau));
+      const mode = modeSelect ? modeSelect.value : 'arch1_antispin';
+
+      if (mode === 'arch3_shooting_gallery') {
+        // Continuous outward sight-line corridor across the relay rings
+        const u0 = (rStart - R_EARTH_AU) / (R_MARS_AU - R_EARTH_AU);
+        const u1 = (rTarget - R_EARTH_AU) / (R_MARS_AU - R_EARTH_AU);
+        const u = u0 + (u1 - u0) * clampedTau;
+        const rGlobal = R_EARTH_AU + (R_MARS_AU - R_EARTH_AU) * (0.20 * u + 0.80 * (3 * u * u - 2 * u * u * u));
+        const r0 = R_EARTH_AU + (R_MARS_AU - R_EARTH_AU) * (0.20 * u0 + 0.80 * (3 * u0 * u0 - 2 * u0 * u0 * u0));
+        const r1 = R_EARTH_AU + (R_MARS_AU - R_EARTH_AU) * (0.20 * u1 + 0.80 * (3 * u1 * u1 - 2 * u1 * u1 * u1));
+        const fracR = Math.abs(r1 - r0) > 1e-6 ? (rGlobal - r0) / (r1 - r0) : clampedTau;
+        const rAU = rStart + (rTarget - rStart) * fracR;
+        const angleDeg = normDeg(angStart + dTheta * clampedTau);
+        return { rAU, angleDeg };
+      }
+
+      // Docked modes (#1 Multi-Ring Docking, #2 Cycler Web, #4 Tether Rotovators):
+      const sRadial = 3 * clampedTau * clampedTau - 2 * clampedTau * clampedTau * clampedTau;
+      const rAU = rStart + (rTarget - rStart) * sRadial;
+      const angleDeg = normDeg(angStart + dTheta * clampedTau);
+      return { rAU, angleDeg };
+    }
+
+    // =========================================================================
+    // TRUE 2ND-ORDER MULTIVARIATE VARIATIONAL SPACE-TIME SOLVER (v3.5)
+    // =========================================================================
+    // Deterministic, exhaustive Bellman Dynamic Programming (DP) wave-front search
+    // that jointly optimizes:
+    //   - Ground Wait Time y in [1..65] days on Earth
+    //   - Discrete Portal / Pad sequence (p_0, p_1, ..., p_{K-1}) in {0..N-1}^K
+    //   - Inter-ring segment flight times (dt_0, dt_1, ..., dt_K)
+    //   - Ring dwell times (w_0, ..., w_{K-1}) in docked modes (strictly 0 in Shooting Gallery mode)
+    // Enforcing:
+    //   1. Strictly immutable ring angular speeds omega_k = getRingHelioOmega(rings[k])
+    //   2. Exact 0.0000 deg spatiotemporal intercept at every ring pad and at Mars
+    //   3. 2nd-order trajectory curvature coupling (d^2 theta / dt^2 and d^2 r / dt^2)
+    //   4. Distinct scoring and DP state-space indexing `(timeBin, leadBucket, rideBucket)`
+    //      between active free-space transit (`dt`) and passive zero-Delta-v ring riding (`wDays`).
+    function planFroggerMission(phi0) {
+      const pads = parseInt(padCountSlider.value, 10);
+      const mode = modeSelect.value;
+      const K = rings.length;
+      const isRelay = mode === 'arch3_shooting_gallery';
+      const radii = [R_EARTH_AU, ...rings.map(r => r.r), R_MARS_AU];
+      const totalDR = R_MARS_AU - R_EARTH_AU;
+
+      rings.forEach(ring => {
+        if (ring.phaseOffset === undefined) {
+          ring.phaseOffset = Math.random() * 360;
+        }
+      });
+
+      // Prograde angular rate envelope (deg/day):
+      // In Docked Modes, enforce a prograde transfer floor (`minOmegaSeg = 0.22..0.25 deg/day`) that prevents
+      // stationary hovering (`0.08 deg/day`) while allowing radial-outward shear transfers (`~0.25..0.45 deg/day`)
+      // where Mars (`0.524 deg/day`) can catch up if the spacecraft is slightly ahead in prograde phase!
+      const minOmegaSeg = isRelay ? 0.015 : (mode === 'arch2_cycler' ? 0.22 : 0.25);
+      const maxOmegaSeg = isRelay ? 3.60 : (mode === 'arch4_tether' ? 2.65 : (mode === 'arch2_cycler' ? 2.50 : 2.35));
+      const targetCatchupOmega = isRelay ? 2.05 : (mode === 'arch4_tether' ? 1.48 : (mode === 'arch2_cycler' ? 1.38 : 1.28));
+
+      // Peak radial transit capability across 0.524 AU when portals/pads are colinearly aligned
+      const minPeakFlightDays = isRelay ? 18 : (mode === 'arch4_tether' ? 30 : (mode === 'arch2_cycler' ? 34 : 38));
+      const peakVrAuDay = totalDR / minPeakFlightDays;
+
+      // 2nd-Order Curvature Coupling:
+      const gammaKink = isRelay ? 4.5 : (mode === 'arch4_tether' ? 3.8 : (mode === 'arch2_cycler' ? 4.2 : 4.6));
+      const padSpacingFactor = Math.max(1.0, 12 / pads);
+      const maxGroundWait = 65;
+
+      // -----------------------------------------------------------------------
+      // STEP 1: Seed Layer 0 -> Ring 1 (k = 0) across all launch days y in [1..maxGroundWait]
+      // -----------------------------------------------------------------------
+      const r0 = radii[0];
+      const r1 = radii[1];
+      const dR0 = r1 - r0;
+      const ring0 = rings[0];
+      const omegaRing0 = getRingHelioOmega(ring0);
+      const dtPeak0 = dR0 / peakVrAuDay;
+      const dt0Min = Math.max(2, Math.floor(dtPeak0));
+      const dt0Max = Math.max(dt0Min + 12, Math.round(dR0 * (isRelay ? 115 : 145) * padSpacingFactor));
+
+      let dpByPad = Array.from({ length: pads }, () => new Map());
+
+      for (let y = 1; y <= maxGroundWait; y++) {
+        const thetaE = normDeg(OMEGA_EARTH * y);
+        const marsAtY = normDeg(phi0 + OMEGA_MARS * y);
+        const signedLeadAtY = signedAngleDiff(marsAtY, thetaE);
+        const synLeadAtY = isRelay
+          ? (normDeg(marsAtY - thetaE) < 3 ? normDeg(marsAtY - thetaE) + 360 : normDeg(marsAtY - thetaE))
+          : (signedLeadAtY < -28 ? signedLeadAtY + 360 : signedLeadAtY);
+
+        const estTotalFlight = isRelay
+          ? Math.max(minPeakFlightDays, Math.round(minPeakFlightDays * 0.45 + synLeadAtY / (targetCatchupOmega - OMEGA_MARS) * 0.55))
+          : Math.max(Math.round(minPeakFlightDays * 1.25), Math.round(minPeakFlightDays * 0.55 + Math.max(18, synLeadAtY) / (targetCatchupOmega - OMEGA_MARS) * 0.55));
+
+        const minNaturalDesired = isRelay ? (minOmegaSeg + 0.05) : (minOmegaSeg + 0.02);
+        const desiredOmega0 = Math.max(
+          minNaturalDesired,
+          Math.min(maxOmegaSeg - 0.10, OMEGA_MARS + synLeadAtY / estTotalFlight)
+        );
+
+        const naturalLaunchOmega = isRelay
+          ? (0.40 * OMEGA_EARTH + 0.60 * desiredOmega0)
+          : (0.18 * OMEGA_EARTH + 0.82 * desiredOmega0);
+
+        for (let pk = 0; pk < pads; pk++) {
+          const padAngAtLaunch = getPadAngleDeg(0, pk, y);
+          const synDiff0 = signedAngleDiff(padAngAtLaunch, thetaE);
+          const padMap = dpByPad[pk];
+
+          for (let dt = dt0Min; dt <= dt0Max; dt++) {
+            let dTheta = synDiff0 + omegaRing0 * dt;
+            while (dTheta <= (isRelay ? 0.04 : 1.5)) dTheta += 360;
+            if (dTheta > (isRelay ? 180 : 165)) continue;
+
+            const omegaSeg = dTheta / dt;
+            if (omegaSeg < minOmegaSeg || omegaSeg > maxOmegaSeg) continue;
+
+            const deltaOmega0 = Math.abs(omegaSeg - naturalLaunchOmega);
+            const minPhysicalDt0 = dtPeak0 * Math.sqrt(
+              1 + gammaKink * (r0 * deltaOmega0) * (r0 * deltaOmega0)
+            );
+            if (dt < minPhysicalDt0) continue;
+
+            const vr0 = dR0 / dt;
+            const coriolisShear0 = omegaSeg * Math.abs(1 - (r0 * r0) / (r1 * r1));
+            const dv0KmS = Math.hypot(
+              (vr0 - dR0 / (dtPeak0 * 1.3)) * V_SCALE,
+              r0 * DEG_TO_RAD * (deltaOmega0 + 0.5 * coriolisShear0) * V_SCALE
+            );
+
+            const tDock = y + dt;
+            const padAngDock = getPadAngleDeg(0, pk, tDock);
+            const guidanceCost = (isRelay ? 1.2 : 1.5) * Math.abs(omegaSeg - desiredOmega0);
+
+            if (isRelay) {
+              const inFlightScore = tDock + 0.20 * dt + guidanceCost + 0.03 * dv0KmS;
+              const timeBin = Math.round(tDock / 2);
+              const existing = padMap.get(timeBin);
+
+              if (!existing || inFlightScore < existing.inFlightScore) {
+                padMap.set(timeBin, {
+                  y,
+                  tDep: tDock,
+                  angDep: padAngDock,
+                  vrIn: vr0,
+                  omegaIn: omegaSeg,
+                  cumDvKmS: dv0KmS,
+                  cumFlightDays: dt,
+                  cumFreeDays: dt,
+                  estTotalFlight,
+                  inFlightScore,
+                  hops: [{
+                    ringIdx: 0,
+                    padIdx: pk,
+                    tDepart: y,
+                    tDock,
+                    rStart: r0,
+                    rTarget: r1,
+                    angStart: thetaE,
+                    angTarget: padAngDock,
+                    dTheta,
+                    rideDays: 0,
+                    dvKmS: Number(dv0KmS.toFixed(2))
+                  }]
+                });
+              }
+            } else {
+              const minRide = mode === 'arch4_tether' ? 1 : (mode === 'arch2_cycler' ? 2 : 3);
+              const maxRide = Math.round((ring0.spin < 0 ? 32 : 18) * Math.sqrt(padSpacingFactor));
+              const dockDvKmS = Math.hypot(
+                vr0 * V_SCALE,
+                r1 * DEG_TO_RAD * Math.abs(omegaSeg - omegaRing0) * V_SCALE
+              );
+              const cumDv = dv0KmS + 0.45 * dockDvKmS;
+              const excessFree0 = Math.max(0, dt - Math.round(dtPeak0 * 2.0));
+              const freePenalty0 = 0.70 * dt + 0.22 * excessFree0 * excessFree0;
+
+              const rideStep0 = (maxRide - minRide > 14) ? 2 : 1;
+              for (let wDays = minRide; wDays <= maxRide; wDays += rideStep0) {
+                const tNextDep = tDock + wDays;
+                const angNextDep = getPadAngleDeg(0, pk, tNextDep);
+                const marsAtNextDep = normDeg(phi0 + OMEGA_MARS * tNextDep);
+                const leadRelMars = signedAngleDiff(marsAtNextDep, angNextDep);
+                const overshootPen0 = leadRelMars < -4 ? Math.min(95, Math.abs(leadRelMars + 4) * 1.6) : 0;
+                const inFlightScore = tNextDep + freePenalty0 + guidanceCost + overshootPen0 + 0.05 * cumDv;
+                const rideBucket = Math.min(2, Math.floor((wDays - minRide) / 8));
+                const leadBucket = leadRelMars < -6 ? 0 : (leadRelMars < 28 ? 1 : 2);
+                const bucketKey = (Math.round(tNextDep / 3) * 3 + leadBucket) * 3 + rideBucket;
+                const existing = padMap.get(bucketKey);
+
+                if (!existing || inFlightScore < existing.inFlightScore) {
+                  padMap.set(bucketKey, {
+                    y,
+                    tDep: tNextDep,
+                    angDep: angNextDep,
+                    vrIn: vr0,
+                    omegaIn: omegaRing0,
+                    cumDvKmS: cumDv,
+                    cumFlightDays: dt + wDays,
+                    cumFreeDays: dt,
+                    cumFreePenalty: freePenalty0,
+                    estTotalFlight,
+                    lastRideDays: wDays,
+                    inFlightScore,
+                    hops: [{
+                      ringIdx: 0,
+                      padIdx: pk,
+                      tDepart: y,
+                      tDock,
+                      rStart: r0,
+                      rTarget: r1,
+                      angStart: thetaE,
+                      angTarget: padAngDock,
+                      dTheta,
+                      rideDays: 0,
+                      dvKmS: Number(cumDv.toFixed(2))
+                    }]
+                  });
+                }
+              }
+            }
+          }
+        }
+      }
+
+      let activeStates = [];
+      for (let pk = 0; pk < pads; pk++) {
+        activeStates.push(...dpByPad[pk].values());
+      }
+
+      // -----------------------------------------------------------------------
+      // STEP 2: Propagate Wave-Front Across Intermediate Rings k = 1 .. K-1
+      // -----------------------------------------------------------------------
+      for (let k = 1; k < K; k++) {
+        const rStart = radii[k];
+        const rTarget = radii[k + 1];
+        const dR = rTarget - rStart;
+        const fracR = dR / totalDR;
+        const remR = R_MARS_AU - rStart;
+        const ringK = rings[k];
+        const omegaRingK = getRingHelioOmega(ringK);
+
+        const dtPeakSeg = dR / peakVrAuDay;
+        const dtMin = Math.max(2, Math.floor(dtPeakSeg));
+        const naturalShearRatio = isRelay ? Math.pow(rStart / rTarget, 0.35) : Math.pow(rStart / rTarget, 1.15);
+
+        const nextDpByPad = Array.from({ length: pads }, () => new Map());
+
+        for (const state of activeStates) {
+          const marsNow = normDeg(phi0 + OMEGA_MARS * state.tDep);
+          const signedRemLead = signedAngleDiff(marsNow, state.angDep);
+          const remLead = isRelay
+            ? (normDeg(marsNow - state.angDep) < 2 ? normDeg(marsNow - state.angDep) + 360 : normDeg(marsNow - state.angDep))
+            : (signedRemLead < -55 ? signedRemLead + 360 : signedRemLead);
+
+          const estRemDays = Math.max(4, state.estTotalFlight * (remR / totalDR));
+          const minNaturalDesired = isRelay ? (minOmegaSeg + 0.05) : (minOmegaSeg + 0.02);
+          const desiredOmega = Math.max(
+            minNaturalDesired,
+            Math.min(maxOmegaSeg - 0.10, OMEGA_MARS + remLead / estRemDays)
+          );
+
+          const nomSegDays = Math.max(3, Math.round(state.estTotalFlight * fracR));
+          const dtMax = Math.max(
+            dtMin + 16,
+            Math.round(nomSegDays * (isRelay ? 2.0 : 1.75) * padSpacingFactor + (360 / pads) / (isRelay ? 1.5 : 1.9))
+          );
+          const dtStep = (dtMax - dtMin > (isRelay ? 18 : 14)) ? 2 : 1;
+          const expectedOmegaFromPrev = isRelay
+            ? state.omegaIn * naturalShearRatio
+            : (0.22 * state.omegaIn * naturalShearRatio + 0.78 * desiredOmega);
+
+          for (let pk = 0; pk < pads; pk++) {
+            const padAngAtDep = getPadAngleDeg(k, pk, state.tDep);
+            const synDiff0 = signedAngleDiff(padAngAtDep, state.angDep);
+            const padMap = nextDpByPad[pk];
+
+            for (let dt = dtMin; dt <= dtMax; dt += dtStep) {
+              let dTheta = synDiff0 + omegaRingK * dt;
+              while (dTheta <= (isRelay ? 0.04 : 1.5)) dTheta += 360;
+              if (dTheta > (isRelay ? 185 : 175)) continue;
+
+              const omegaSeg = dTheta / dt;
+              if (omegaSeg < minOmegaSeg || omegaSeg > maxOmegaSeg) continue;
+
+              const vrSeg = dR / dt;
+              const deltaOmegaKink = Math.abs(omegaSeg - expectedOmegaFromPrev);
+              const deltaVr = isRelay ? Math.abs(vrSeg - state.vrIn) : Math.abs(vrSeg - dR / (dtPeakSeg * 1.35));
+
+              const minPhysicalDt = dtPeakSeg * Math.sqrt(
+                1 +
+                gammaKink * (rStart * deltaOmegaKink) * (rStart * deltaOmegaKink) +
+                (isRelay ? 1800 : 450) * (deltaVr * deltaVr)
+              );
+              if (dt < minPhysicalDt) continue;
+
+              const coriolisBaseDeltaOmega = omegaSeg * (1 - (rStart * rStart) / (rTarget * rTarget));
+              const dvrKmS = deltaVr * V_SCALE;
+              const dvThetaKmS = rStart * DEG_TO_RAD * (deltaOmegaKink + 0.5 * coriolisBaseDeltaOmega) * V_SCALE;
+              const dvNodeKmS = Math.hypot(dvrKmS, dvThetaKmS);
+
+              const tDock = state.tDep + dt;
+              const padAngDock = getPadAngleDeg(k, pk, tDock);
+              const guidanceCost = (isRelay ? 1.1 : 1.5) * Math.abs(omegaSeg - desiredOmega);
+
+              if (isRelay) {
+                const newCumDv = state.cumDvKmS + dvNodeKmS;
+                const newFlightDays = state.cumFlightDays + dt;
+                const inFlightScore = tDock + 0.20 * newFlightDays + guidanceCost + 0.03 * newCumDv;
+
+                const timeBin = Math.round(tDock / 2);
+                const existing = padMap.get(timeBin);
+
+                if (!existing || inFlightScore < existing.inFlightScore) {
+                  padMap.set(timeBin, {
+                    y: state.y,
+                    tDep: tDock,
+                    angDep: padAngDock,
+                    vrIn: vrSeg,
+                    omegaIn: omegaSeg,
+                    cumDvKmS: newCumDv,
+                    cumFlightDays: newFlightDays,
+                    cumFreeDays: newFlightDays,
+                    estTotalFlight: state.estTotalFlight,
+                    inFlightScore,
+                    hops: [
+                      ...state.hops,
+                      {
+                        ringIdx: k,
+                        padIdx: pk,
+                        tDepart: state.tDep,
+                        tDock,
+                        rStart,
+                        rTarget,
+                        angStart: state.angDep,
+                        angTarget: padAngDock,
+                        dTheta,
+                        rideDays: 0,
+                        dvKmS: Number(dvNodeKmS.toFixed(2))
+                      }
+                    ]
+                  });
+                }
+              } else {
+                const minRide = mode === 'arch4_tether' ? 1 : (mode === 'arch2_cycler' ? 2 : 3);
+                const maxRide = Math.round((ringK.spin < 0 ? 36 : 18) * Math.sqrt(padSpacingFactor));
+                const dockDvKmS = Math.hypot(
+                  vrSeg * V_SCALE,
+                  rTarget * DEG_TO_RAD * Math.abs(omegaSeg - omegaRingK) * V_SCALE
+                );
+                const newCumDv = state.cumDvKmS + dvNodeKmS + 0.45 * dockDvKmS;
+                const newFreeDays = state.cumFreeDays + dt;
+                const excessFreeSeg = Math.max(0, dt - Math.round(dtPeakSeg * 2.0));
+                const newFreePenalty = state.cumFreePenalty + 0.70 * dt + 0.22 * excessFreeSeg * excessFreeSeg;
+
+                const rideStep = (maxRide - minRide > 16) ? 2 : 1;
+                for (let wDays = minRide; wDays <= maxRide; wDays += rideStep) {
+                  const tNextDep = tDock + wDays;
+                  const angNextDep = getPadAngleDeg(k, pk, tNextDep);
+                  const marsAtNextDep = normDeg(phi0 + OMEGA_MARS * tNextDep);
+                  const leadRelMars = signedAngleDiff(marsAtNextDep, angNextDep);
+                  const overshootPen = leadRelMars < -4 ? Math.min(95, Math.abs(leadRelMars + 4) * 1.6) : 0;
+                  const newFlightDays = state.cumFlightDays + dt + wDays;
+                  const inFlightScore = tNextDep + newFreePenalty + guidanceCost + overshootPen + 0.05 * newCumDv;
+
+                  const rideBucket = Math.min(2, Math.floor((wDays - minRide) / 8));
+                  const leadBucket = leadRelMars < -6 ? 0 : (leadRelMars < 28 ? 1 : 2);
+                  const bucketKey = (Math.round(tNextDep / 3) * 3 + leadBucket) * 3 + rideBucket;
+                  const existing = padMap.get(bucketKey);
+
+                  if (!existing || inFlightScore < existing.inFlightScore) {
+                    padMap.set(bucketKey, {
+                      y: state.y,
+                      tDep: tNextDep,
+                      angDep: angNextDep,
+                      vrIn: vrSeg,
+                      omegaIn: omegaRingK,
+                      cumDvKmS: newCumDv,
+                      cumFlightDays: newFlightDays,
+                      cumFreeDays: newFreeDays,
+                      cumFreePenalty: newFreePenalty,
+                      estTotalFlight: state.estTotalFlight,
+                      lastRideDays: wDays,
+                      inFlightScore,
+                      hops: [
+                        ...state.hops,
+                        {
+                          ringIdx: k,
+                          padIdx: pk,
+                          tDepart: state.tDep,
+                          tDock,
+                          rStart,
+                          rTarget,
+                          angStart: state.angDep,
+                          angTarget: padAngDock,
+                          dTheta,
+                          rideDays: state.lastRideDays || 0,
+                          dvKmS: Number(dvNodeKmS.toFixed(2))
+                        }
+                      ]
+                    });
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        activeStates = [];
+        for (let pk = 0; pk < pads; pk++) {
+          activeStates.push(...nextDpByPad[pk].values());
+        }
+      }
+
+      // -----------------------------------------------------------------------
+      // STEP 3: Final Hop from Ring (K-1) -> Mars (r = 1.524 AU)
+      // -----------------------------------------------------------------------
+      const rLast = radii[K];
+      const dRMars = R_MARS_AU - rLast;
+      const fracMars = dRMars / totalDR;
+      const dtMarsPeak = dRMars / peakVrAuDay;
+      const dtMarsMin = Math.max(2, Math.floor(dtMarsPeak));
+      const naturalShearMars = isRelay ? Math.pow(rLast / R_MARS_AU, 0.35) : Math.pow(rLast / R_MARS_AU, 1.15);
+
+      let bestGlobalPlan = null;
+      let bestGlobalScore = 1e12;
+      let bestByLaunchY = new Map();
+
+      for (const state of activeStates) {
+        const marsAtDep = normDeg(phi0 + OMEGA_MARS * state.tDep);
+        const synMars0 = signedAngleDiff(marsAtDep, state.angDep);
+        const nomMarsDays = Math.max(3, Math.round(state.estTotalFlight * fracMars));
+        const dtMarsMax = Math.max(
+          dtMarsMin + (isRelay ? 24 : 34),
+          Math.round(nomMarsDays * (isRelay ? 2.5 : 2.3) * padSpacingFactor + (360 / pads) / (isRelay ? 1.1 : 1.15))
+        );
+        const remLeadMars = synMars0 < -45 ? synMars0 + 360 : synMars0;
+        const desiredOmegaMars = Math.max(
+          minOmegaSeg + 0.03,
+          Math.min(maxOmegaSeg - 0.10, OMEGA_MARS + remLeadMars / Math.max(4, nomMarsDays))
+        );
+        const expectedOmegaLast = isRelay
+          ? state.omegaIn * naturalShearMars
+          : (0.25 * state.omegaIn * naturalShearMars + 0.75 * desiredOmegaMars);
+
+        for (let dt = dtMarsMin; dt <= dtMarsMax; dt++) {
+          let dTheta = synMars0 + OMEGA_MARS * dt;
+          while (dTheta <= (isRelay ? 0.04 : 1.5)) dTheta += 360;
+          if (dTheta > (isRelay ? 195 : 180)) continue;
+
+          const omegaSeg = dTheta / dt;
+          if (omegaSeg < minOmegaSeg || omegaSeg > maxOmegaSeg) continue;
+
+          const vrSeg = dRMars / dt;
+          const deltaOmegaKink = Math.abs(omegaSeg - expectedOmegaLast);
+          const deltaVr = isRelay ? Math.abs(vrSeg - state.vrIn) : Math.abs(vrSeg - dRMars / (dtMarsPeak * 1.35));
+
+          const minPhysicalDt = dtMarsPeak * Math.sqrt(
+            1 +
+            gammaKink * (rLast * deltaOmegaKink) * (rLast * deltaOmegaKink) +
+            (isRelay ? 1800 : 450) * (deltaVr * deltaVr)
+          );
+          if (dt < minPhysicalDt) continue;
+
+          const coriolisBaseLast = omegaSeg * (1 - (rLast * rLast) / (R_MARS_AU * R_MARS_AU));
+          const dvrKmS = deltaVr * V_SCALE;
+          const dvThetaKmS = rLast * DEG_TO_RAD * (deltaOmegaKink + 0.5 * coriolisBaseLast) * V_SCALE;
+          const dvLastKmS = Math.hypot(dvrKmS, dvThetaKmS);
+          const totalDvKmS = state.cumDvKmS + dvLastKmS;
+          const excessFreeLast = Math.max(0, dt - Math.round(dtMarsPeak * 2.0));
+          const totalFreePenalty = (state.cumFreePenalty || 0) + 0.70 * dt + 0.22 * excessFreeLast * excessFreeLast;
+
+          const tArr = state.tDep + dt;
+          const flightDays = tArr - state.y;
+          const thetaM = normDeg(phi0 + OMEGA_MARS * tArr);
+
+          // Total Mission Objective:
+          // Primary: Minimize Total Arrival Day tArr = y + x
+          // Secondary: In Docked modes, strongly prefer passive ring riding over long free-space burns (`totalFreePenalty`)
+          const score = isRelay
+            ? (tArr + 0.12 * flightDays + 0.02 * totalDvKmS)
+            : (tArr + 0.45 * totalFreePenalty + 0.04 * totalDvKmS);
+
+          const plan = {
+            mode,
+            groundWaitDays: state.y,
+            launchDay: state.y,
+            arrivalDay: tArr,
+            flightDays,
+            totalDvKmS: Number(totalDvKmS.toFixed(1)),
+            score: Number(score.toFixed(2)),
+            hops: [
+              ...state.hops,
+              {
+                ringIdx: K,
+                padIdx: -1,
+                tDepart: state.tDep,
+                tDock: tArr,
+                rStart: rLast,
+                rTarget: R_MARS_AU,
+                angStart: state.angDep,
+                angTarget: thetaM,
+                dTheta,
+                rideDays: isRelay ? 0 : (state.lastRideDays || 0),
+                dvKmS: Number(dvLastKmS.toFixed(2))
+              }
+            ]
+          };
+
+          const prevY = bestByLaunchY.get(state.y);
+          if (!prevY || score < prevY.score) {
+            bestByLaunchY.set(state.y, plan);
+          }
+
+          if (score < bestGlobalScore) {
+            bestGlobalScore = score;
+            bestGlobalPlan = plan;
+          }
+        }
+      }
+
+      if (bestGlobalPlan) {
+        const sortedYs = Array.from(bestByLaunchY.keys()).sort((a, b) => a - b);
+        const earliest = bestByLaunchY.get(sortedYs[0]);
+        bestGlobalPlan.earliestY = earliest.groundWaitDays;
+        bestGlobalPlan.earliestFlight = earliest.flightDays;
+        bestGlobalPlan.earliestArrival = earliest.arrivalDay;
+      }
+
+      return bestGlobalPlan;
+    }
+
+    function computeSchedulePreview(phi0) {
+      let deltaPhiHoh = (phi0 - TARGET_HOHMANN_PHI + 360) % 360;
+      if (deltaPhiHoh > 358.5 || deltaPhiHoh < 1.5) deltaPhiHoh = 0;
+      const yyy = Math.round(deltaPhiHoh / SYNODIC_RATE);
+      const xxx = HOHMANN_FLIGHT_DAYS;
+
+      currentPlan = planFroggerMission(phi0);
+      const y = currentPlan ? currentPlan.groundWaitDays : 4;
+      const x = currentPlan ? currentPlan.flightDays : 80;
+
+      schedule = { y_lilyGround: y, x_lilyFlight: x, yyy_hohGround: yyy, xxx_hohFlight: xxx };
+
+      const lilyTotal = y + x;
+      const hohTotal = yyy + xxx;
+      const maxScale = Math.max(360, hohTotal, lilyTotal);
+
+      ganttScaleLabel.textContent = `Scale: ${maxScale} Days`;
+      lilyFormulaLabel.textContent = `y = ${y}d Ground + x = ${x}d Flight = ${lilyTotal}d Total`;
+      hohFormulaLabel.textContent = `yyy = ${yyy}d Ground + xxx = ${xxx}d Flight = ${hohTotal}d Total`;
+
+      lilyGroundBar.style.width = `${Math.max(2.5, (y / maxScale) * 100)}%`;
+      lilyGroundBar.textContent = y >= 14 ? `${y}d` : '';
+      lilyFlightBar.style.width = `${Math.max(6, (x / maxScale) * 100)}%`;
+      lilyFlightBar.textContent = `x = ${x}d`;
+
+      hohGroundBar.style.width = `${(yyy / maxScale) * 100}%`;
+      hohGroundBar.textContent = yyy >= 45 ? `yyy = ${yyy}d Grounded` : (yyy > 0 ? `${yyy}d` : '');
+      hohFlightBar.style.width = `${(xxx / maxScale) * 100}%`;
+      hohFlightBar.textContent = `xxx = ${xxx}d Flight`;
+
+      const savedArr = (currentPlan && currentPlan.groundWaitDays > currentPlan.earliestY)
+        ? (currentPlan.earliestArrival - currentPlan.arrivalDay)
+        : 0;
+      const savedFlight = (currentPlan && currentPlan.groundWaitDays > currentPlan.earliestY)
+        ? (currentPlan.earliestFlight - currentPlan.flightDays)
+        : 0;
+      const groundAdvantageNote = (currentPlan && currentPlan.groundWaitDays > currentPlan.earliestY && (savedArr > 0 || savedFlight > 0))
+        ? (savedArr > 0 ? ` [Saved ${savedArr}d total vs y=${currentPlan.earliestY}d!]` : ` [Cut flight by ${savedFlight}d vs y=${currentPlan.earliestY}d!]`)
+        : '';
+      lilyGroundCell.textContent = `${y} Days (Pad #${currentPlan ? currentPlan.hops[0].padIdx + 1 : 1})${groundAdvantageNote}`;
+      hohGroundCell.textContent = `${yyy} Days (Wait for +44.3°)`;
+      lilyFlightCell.textContent = `${x} Days (${rings.length} Rings, ${ padCountSlider.value } Pads/R)`;
+      hohFlightCell.textContent = `${xxx} Days (180° Coast)`;
+      lilyTotalCell.textContent = `${lilyTotal} Days (y + x)`;
+      hohTotalCell.textContent = `${hohTotal} Days (yyy + xxx)`;
+
+      const netSaved = hohTotal - lilyTotal;
+      netSavingsVal.textContent = `${netSaved >= 0 ? '+' : ''}${netSaved} Days Faster`;
+      headStartVal.textContent = `${Math.max(0, netSaved)} Days on Surface`;
+
+      // Populate Hop-by-Hop Telemetry Summary
+      if (currentPlan) {
+        const isRelay = currentPlan.mode === 'arch3_shooting_gallery';
+        const waitCompare = (currentPlan.groundWaitDays > currentPlan.earliestY && (savedArr > 0 || savedFlight > 0))
+          ? ` <span style="color:var(--accent-emerald);">[Waiting y=${y}d beat y=${currentPlan.earliestY}d (x=${currentPlan.earliestFlight}d &rarr; T+${currentPlan.earliestArrival}d): ${savedArr > 0 ? `${savedArr}d earlier arrival` : `${savedFlight}d shorter flight`}]</span>`
+          : '';
+        const parts = [`<strong>2nd-Order Optimal Plan (T+${y}d &rarr; T+${lilyTotal}d, Flight x=${x}d):</strong>${waitCompare}`];
+        currentPlan.hops.forEach((h, i) => {
+          if (i < rings.length) {
+            const rideNext = currentPlan.hops[i + 1].rideDays;
+            const hopDays = h.tDock - h.tDepart;
+            const actionStr = isRelay
+              ? `Portal #${h.padIdx + 1} @ T+${h.tDock}d (0d Dwell, Δθ=+${h.dTheta.toFixed(1)}°)`
+              : `Dock Pad #${h.padIdx + 1} @ T+${h.tDock}d (Hop ${hopDays}d, Ride ${rideNext}d CCW)`;
+            parts.push(`R${i + 1}: ${actionStr}`);
+          } else {
+            const hopDays = h.tDock - h.tDepart;
+            parts.push(`Mars Intercept @ T+${h.tDock}d (Hop ${hopDays}d, Δθ=+${h.dTheta.toFixed(1)}° CCW)`);
+          }
+        });
+        hopTelemetryBox.innerHTML = parts.join(' &rarr; ');
+      }
+    }
+
+    function updateUI() {
+      const phi0 = parseFloat(marsPhaseSlider.value);
+      phaseLabel.textContent = `+${phi0.toFixed(1)}°`;
+      padCountLabel.textContent = padCountSlider.value;
+      speedLabel.textContent = `${parseFloat(simSpeedSlider.value).toFixed(2)}x`;
+      modeExplainer.innerHTML = explainers[modeSelect.value] || explainers.arch1_antispin;
+      computeSchedulePreview(phi0);
+    }
+
+    function renderRingEditor() {
+      ringEditorBox.innerHTML = '';
+      rings.forEach((ring, idx) => {
+        const row = document.createElement('div');
+        row.className = 'ring-row';
+        const badge = document.createElement('span');
+        badge.className = 'ring-badge';
+        badge.textContent = `Ring ${idx + 1}`;
+
+        const slider = document.createElement('input');
+        slider.type = 'range'; slider.min = '1.05'; slider.max = '1.49'; slider.step = '0.01'; slider.value = ring.r.toFixed(2);
+
+        const auVal = document.createElement('span'); auVal.className = 'ring-au-val'; auVal.textContent = `${ring.r.toFixed(2)} AU`;
+
+        const spinBtn = document.createElement('button');
+        spinBtn.className = `spin-toggle ${ring.spin < 0 ? 'spin-cw' : 'spin-ccw'}`;
+        spinBtn.textContent = ring.spin < 0 ? '0.64ω CCW (Sub-Kepler)' : '1.34ω CCW (Super-Kepler)';
+
+        slider.addEventListener('input', (e) => {
+          ring.r = parseFloat(e.target.value); auVal.textContent = `${ring.r.toFixed(2)} AU`;
+          rings.sort((a, b) => a.r - b.r); if (!isLaunched) resetSim();
+        });
+        spinBtn.addEventListener('click', () => {
+          ring.spin *= -1; renderRingEditor(); if (!isLaunched) resetSim();
+        });
+
+        row.appendChild(badge); row.appendChild(slider); row.appendChild(auVal); row.appendChild(spinBtn);
+        ringEditorBox.appendChild(row);
+      });
+    }
+
+    function resetSim() {
+      simDays = 0;
+      earthAngle = 0;
+      marsAngle = parseFloat(marsPhaseSlider.value);
+      isLaunched = false;
+      impulseBursts = [];
+      dockingNodes = [];
+      updateUI();
+
+      const ePos = getPosAU(R_EARTH_AU, earthAngle);
+      activeShip = {
+        x: ePos.x, y: ePos.y, rAU: R_EARTH_AU, angle: earthAngle,
+        hopIndex: 0, subStage: 'idle',
+        dockedRingIdx: -1, dockedPadIdx: -1, targetRingIdx: 0, targetPadIdx: currentPlan ? currentPlan.hops[0].padIdx : 0,
+        remDaysInStage: 0,
+        groundWaitDays: schedule.y_lilyGround, launchDay: schedule.y_lilyGround, arrivalDay: null, surfaceDays: 0,
+        trail: [], arrived: false
+      };
+
+      hohShip = {
+        x: ePos.x, y: ePos.y, rAU: R_EARTH_AU, angle: earthAngle,
+        subStage: 'idle', progress: 0, groundWaitDays: schedule.yyy_hohGround, launchDay: schedule.yyy_hohGround,
+        launchAngle: 0, arrivalDay: null, surfaceDays: 0, trail: [], arrived: false
+      };
+
+      timeVal.textContent = "Mission Clock: T + 0 Days";
+      timeVal.style.color = "#ffffff";
+      lilyStateCell.textContent = "Ready at Earth (Prograde)"; lilyStateCell.style.color = "var(--accent-cyan)";
+      hohStateCell.textContent = "Ready at Earth"; hohStateCell.style.color = "var(--text-muted)";
+      lilySurfaceCell.textContent = "0 Days"; hohSurfaceCell.textContent = "0 Days";
+      ganttCursor1.style.left = "0%"; ganttCursor2.style.left = "0%";
+    }
+
+    calendarSelect.addEventListener('change', () => { marsPhaseSlider.value = calendarSelect.value; resetSim(); });
+    marsPhaseSlider.addEventListener('input', () => { if (!isLaunched) { marsAngle = parseFloat(marsPhaseSlider.value); resetSim(); } });
+    presetSelect.addEventListener('change', () => {
+      rings = JSON.parse(JSON.stringify(presets[presetSelect.value]));
+      randomizeRingPhases();
+      renderRingEditor();
+      resetSim();
+    });
+    modeSelect.addEventListener('change', () => {
+      if (modeSelect.value === 'arch3_shooting_gallery' && presetSelect.value !== 'relay_6ring') {
+        presetSelect.value = 'relay_6ring';
+        rings = JSON.parse(JSON.stringify(presets.relay_6ring));
+        randomizeRingPhases();
+        renderRingEditor();
+      } else if (modeSelect.value !== 'arch3_shooting_gallery' && presetSelect.value === 'relay_6ring') {
+        presetSelect.value = 'user_3ring';
+        rings = JSON.parse(JSON.stringify(presets.user_3ring));
+        randomizeRingPhases();
+        renderRingEditor();
+      }
+      resetSim();
+    });
+    padCountSlider.addEventListener('input', () => { if (!isLaunched) resetSim(); else updateUI(); });
+    simSpeedSlider.addEventListener('input', () => { speedLabel.textContent = `${parseFloat(simSpeedSlider.value).toFixed(2)}x`; });
+
+    launchBtn.addEventListener('click', () => {
+      resetSim();
+      isLaunched = true;
+      activeShip.subStage = 'ground_hold';
+      hohShip.subStage = 'ground_hold';
+    });
+    resetBtn.addEventListener('click', resetSim);
+    randomizeBtn.addEventListener('click', () => {
+      randomizeRingPhases();
+      resetSim();
+    });
+
+    function stepSimulation() {
+      const dt = 0.42 * parseFloat(simSpeedSlider.value);
+      const phi0 = parseFloat(marsPhaseSlider.value);
+      const hohTotalDays = schedule.yyy_hohGround + HOHMANN_FLIGHT_DAYS;
+      const missionCompleteDay = currentPlan ? Math.max(currentPlan.arrivalDay, hohTotalDays) : hohTotalDays;
+
+      // Stop clocking simulation time once BOTH vessels have arrived on Mars!
+      if (isLaunched && simDays < missionCompleteDay) {
+        simDays = Math.min(missionCompleteDay, simDays + dt);
+      }
+      earthAngle = normDeg(OMEGA_EARTH * simDays);
+      marsAngle = normDeg(phi0 + OMEGA_MARS * simDays);
+
+      const ePos = getPosAU(R_EARTH_AU, earthAngle);
+      const mPos = getPosAU(R_MARS_AU, marsAngle);
+
+      impulseBursts.forEach(b => { b.alpha -= 0.024; b.radius += 0.42; });
+      impulseBursts = impulseBursts.filter(b => b.alpha > 0);
+
+      if (!isLaunched || !currentPlan) {
+        activeShip.x = ePos.x; activeShip.y = ePos.y;
+        hohShip.x = ePos.x; hohShip.y = ePos.y;
+        return;
+      }
+
+      if (simDays >= missionCompleteDay) {
+        timeVal.textContent = `Mission Clock: T + ${Math.round(simDays)} Days — JOURNEY COMPLETE (Both on Mars)`;
+        timeVal.style.color = "var(--accent-emerald)";
+      } else {
+        timeVal.textContent = `Mission Clock: T + ${Math.round(simDays)} Days`;
+        timeVal.style.color = "#ffffff";
+      }
+
+      const numRings = rings.length;
+      const hops = currentPlan.hops;
+
+      const maxScale = Math.max(360, schedule.yyy_hohGround + schedule.xxx_hohFlight, schedule.y_lilyGround + schedule.x_lilyFlight);
+      const cursorPct = Math.min(100, (simDays / maxScale) * 100);
+      ganttCursor1.style.left = `${cursorPct}%`;
+      ganttCursor2.style.left = `${cursorPct}%`;
+
+      // =======================================================================
+      // 1. RIGOROUS PARTICLE-DOCKING & RELAY CORRIDOR SHIP ENGINE
+      // =======================================================================
+      if (simDays < currentPlan.launchDay) {
+        // STAGE A: GROUND HOLD ON EARTH (Waiting for Ring 1 Pad #p0 Window)
+        activeShip.subStage = 'ground_hold';
+        activeShip.x = ePos.x;
+        activeShip.y = ePos.y;
+        activeShip.rAU = R_EARTH_AU;
+        activeShip.angle = earthAngle;
+        activeShip.targetRingIdx = 0;
+        activeShip.targetPadIdx = hops[0].padIdx;
+        const remWait = Math.max(0, Math.ceil(currentPlan.launchDay - simDays));
+        lilyStateCell.textContent = `GROUND HOLD (${remWait}d to Pad #${hops[0].padIdx + 1})`;
+        lilyStateCell.style.color = "var(--accent-amber)";
+      } else if (simDays < currentPlan.arrivalDay) {
+        // Trigger Earth departure burst once
+        if (activeShip.trail.length === 0) {
+          const launchEPos = getPosAU(R_EARTH_AU, normDeg(OMEGA_EARTH * currentPlan.launchDay));
+          activeShip.trail.push({ x: launchEPos.x, y: launchEPos.y, mode: 'hop' });
+          impulseBursts.push({ x: launchEPos.x, y: launchEPos.y, radius: 6, alpha: 1.0, color: '#ffea00' });
+          dockingNodes.push({ x: launchEPos.x, y: launchEPos.y, color: '#ffea00', label: 'Prograde Launch' });
+        }
+
+        // Determine exact active segment (either hopping to a pad/Mars, or docked & riding a pad!)
+        let foundStage = false;
+        const isRelayMode = currentPlan.mode === 'arch3_shooting_gallery';
+
+        for (let hIdx = 0; hIdx < hops.length; hIdx++) {
+          const h = hops[hIdx];
+
+          // Check if currently in free-space transfer hop `hIdx`
+          if (simDays >= h.tDepart && simDays <= h.tDock) {
+            const changedHop = (activeShip.subStage === 'riding_pad') || (activeShip.hopIndex !== hIdx);
+            activeShip.subStage = h.ringIdx < numRings ? 'hop_to_ring' : 'hop_to_mars';
+            activeShip.hopIndex = hIdx;
+            activeShip.dockedRingIdx = -1;
+            activeShip.dockedPadIdx = -1;
+            activeShip.targetRingIdx = h.ringIdx;
+            activeShip.targetPadIdx = h.padIdx;
+            activeShip.remDaysInStage = Math.max(0, Math.ceil(h.tDock - simDays));
+
+            if (changedHop && hIdx > 0) {
+              const depPos = getPosAU(h.rStart, h.angStart);
+              const burstColor = isRelayMode ? '#b388ff' : '#00e5ff';
+              impulseBursts.push({ x: depPos.x, y: depPos.y, radius: 5.5, alpha: 1.0, color: burstColor });
+              dockingNodes.push({
+                x: depPos.x,
+                y: depPos.y,
+                color: burstColor,
+                label: isRelayMode ? 'EM Portal Kick' : 'Prograde Sling'
+              });
+            }
+
+            const tau = (simDays - h.tDepart) / Math.max(1, h.tDock - h.tDepart);
+            const interp = interpolateTransferHop(h.rStart, h.rTarget, h.angStart, h.dTheta, tau, true);
+            const p = getPosAU(interp.rAU, interp.angleDeg);
+
+            activeShip.x = p.x;
+            activeShip.y = p.y;
+            activeShip.rAU = interp.rAU;
+            activeShip.angle = interp.angleDeg;
+            activeShip.trail.push({ x: p.x, y: p.y, mode: 'hop' });
+
+            if (h.ringIdx < numRings) {
+              lilyStateCell.textContent = isRelayMode
+                ? `⚡ RELAY CORRIDOR → R${h.ringIdx + 1} Portal #${h.padIdx + 1} (${activeShip.remDaysInStage}d)`
+                : `HOPPING (CCW) → R${h.ringIdx + 1} Pad #${h.padIdx + 1} (${activeShip.remDaysInStage}d)`;
+              lilyStateCell.style.color = isRelayMode ? "#b388ff" : "var(--accent-cyan)";
+            } else {
+              lilyStateCell.textContent = `FINAL PROGRADE HOP → Mars (${activeShip.remDaysInStage}d)`;
+              lilyStateCell.style.color = "#ffea00";
+            }
+
+            foundStage = true;
+            break;
+          }
+
+          // Check if currently DOCKED & RIDING on Ring `h.ringIdx` Pad `h.padIdx` (ONLY in Docked modes where rideDays > 0!)
+          if (!isRelayMode && hIdx < hops.length - 1) {
+            const nextH = hops[hIdx + 1];
+            if (nextH.rideDays > 0 && simDays > h.tDock && simDays < nextH.tDepart) {
+              const justDocked = activeShip.subStage !== 'riding_pad' || activeShip.dockedRingIdx !== h.ringIdx;
+              activeShip.subStage = 'riding_pad';
+              activeShip.hopIndex = hIdx;
+              activeShip.dockedRingIdx = h.ringIdx;
+              activeShip.dockedPadIdx = h.padIdx;
+              activeShip.targetRingIdx = nextH.ringIdx;
+              activeShip.targetPadIdx = nextH.padIdx;
+              activeShip.remDaysInStage = Math.max(0, Math.ceil(nextH.tDepart - simDays));
+
+              // Exact particle lock: ship position is 100% locked to the moving pad's live prograde CCW position!
+              const livePadAngle = getPadAngleDeg(h.ringIdx, h.padIdx, simDays);
+              const rRing = rings[h.ringIdx].r;
+              const p = getPosAU(rRing, livePadAngle);
+
+              if (justDocked) {
+                impulseBursts.push({ x: p.x, y: p.y, radius: 6, alpha: 1.0, color: '#00e676' });
+                dockingNodes.push({ x: p.x, y: p.y, color: '#00e676', label: 'Dock' });
+              }
+
+              activeShip.x = p.x;
+              activeShip.y = p.y;
+              activeShip.rAU = rRing;
+              activeShip.angle = livePadAngle;
+              activeShip.trail.push({ x: p.x, y: p.y, mode: 'ride' });
+
+              lilyStateCell.textContent = `⚓ DOCKED R${h.ringIdx + 1} Pad #${h.padIdx + 1} (CCW Ride ${activeShip.remDaysInStage}d)`;
+              lilyStateCell.style.color = "var(--accent-emerald)";
+              foundStage = true;
+              break;
+            }
+          }
+        }
+      } else {
+        // STAGE D: ARRIVED ON MARS SURFACE (Velocity-Matched Intercept Complete)
+        if (!activeShip.arrived) {
+          activeShip.arrived = true;
+          activeShip.subStage = 'arrived';
+          activeShip.dockedRingIdx = -1;
+          activeShip.dockedPadIdx = -1;
+          activeShip.arrivalDay = currentPlan.arrivalDay;
+          impulseBursts.push({ x: mPos.x, y: mPos.y, radius: 10, alpha: 1.0, color: '#00e676' });
+          dockingNodes.push({ x: mPos.x, y: mPos.y, color: '#ff5252', label: 'Mars Arrival' });
+          lilyFlightCell.textContent = `${currentPlan.flightDays} Days`;
+          lilyTotalCell.textContent = `${currentPlan.arrivalDay} Days (y + x)`;
+          lilyStateCell.textContent = `ON MARS! (Landed T+${currentPlan.arrivalDay}d)`;
+          lilyStateCell.style.color = "var(--accent-emerald)";
+        }
+        activeShip.x = mPos.x;
+        activeShip.y = mPos.y;
+        activeShip.rAU = R_MARS_AU;
+        activeShip.angle = marsAngle;
+        activeShip.surfaceDays = Math.max(0, Math.round(simDays - activeShip.arrivalDay));
+        lilySurfaceCell.textContent = `${activeShip.surfaceDays} Days on Mars!`;
+      }
+
+      // =======================================================================
+      // 2. HOHMANN BASELINE SHIP
+      // =======================================================================
+      if (hohShip.subStage === 'ground_hold') {
+        hohShip.x = ePos.x; hohShip.y = ePos.y;
+        const remWait = Math.max(0, Math.ceil(hohShip.groundWaitDays - simDays));
+        hohStateCell.textContent = `GROUND HOLD (${remWait}d left)`; hohStateCell.style.color = "var(--accent-amber)";
+
+        if (simDays >= hohShip.groundWaitDays) {
+          hohShip.subStage = 'in_flight';
+          hohShip.launchDay = Math.round(simDays);
+          hohShip.launchAngle = normDeg(OMEGA_EARTH * hohShip.groundWaitDays);
+          hohShip.progress = 0;
+          const hohEPos = getPosAU(R_EARTH_AU, hohShip.launchAngle);
+          hohShip.trail = [{ x: hohEPos.x, y: hohEPos.y }];
+          impulseBursts.push({ x: hohEPos.x, y: hohEPos.y, radius: 8, alpha: 1.0, color: '#38bdf8' });
+        }
+      } else if (hohShip.subStage === 'in_flight') {
+        const flightElapsed = simDays - hohShip.groundWaitDays;
+        const frac = Math.min(1, Math.max(0, flightElapsed / HOHMANN_FLIGHT_DAYS));
+        const theta = frac * Math.PI;
+        const a = (R_EARTH_AU + R_MARS_AU) / 2;
+        const e = (R_MARS_AU - R_EARTH_AU) / (R_MARS_AU + R_EARTH_AU);
+        const rAU = (a * (1 - e * e)) / (1 + e * Math.cos(theta));
+        const ang = normDeg(hohShip.launchAngle + (theta * 180) / Math.PI);
+
+        const p = getPosAU(rAU, ang);
+        hohShip.x = p.x; hohShip.y = p.y;
+        hohShip.trail.push({ x: p.x, y: p.y });
+
+        const remFlight = Math.max(0, Math.ceil((1 - frac) * HOHMANN_FLIGHT_DAYS));
+        hohStateCell.textContent = `In-Space Coast (${remFlight}d to Mars)`; hohStateCell.style.color = "var(--accent-earth)";
+
+        if (frac >= 1) {
+          hohShip.subStage = 'arrived'; hohShip.arrived = true;
+          hohShip.arrivalDay = hohShip.groundWaitDays + HOHMANN_FLIGHT_DAYS;
+          impulseBursts.push({ x: mPos.x, y: mPos.y, radius: 9, alpha: 1.0, color: '#38bdf8' });
+          hohStateCell.textContent = `ARRIVED! (T+${hohShip.arrivalDay}d)`; hohStateCell.style.color = "var(--accent-emerald)";
+        }
+      } else if (hohShip.subStage === 'arrived') {
+        hohShip.x = mPos.x; hohShip.y = mPos.y;
+        hohShip.surfaceDays = Math.max(0, Math.round(simDays - hohShip.arrivalDay));
+        hohSurfaceCell.textContent = `${hohShip.surfaceDays} Days on Mars`;
+      }
+    }
+
+    function drawSimulation() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const pads = parseInt(padCountSlider.value, 10);
+      const mode = modeSelect.value;
+      const isRelayMode = mode === 'arch3_shooting_gallery';
+
+      // Cycler Web background mesh + Highlighted Active Escalator Ellipses when in Cycler Escalator mode
+      if (mode === 'arch2_cycler') {
+        const aCyc = (R_EARTH_AU + R_MARS_AU) / 2;
+        const cCyc = (R_MARS_AU - R_EARTH_AU) / 2;
+        const bCyc = Math.sqrt(aCyc * aCyc - cCyc * cCyc);
+        ctx.save();
+        for (let apsis = 0; apsis < 360; apsis += 15) {
+          const isHighlighted = currentPlan && currentPlan.hops.some(h => {
+            const diff = Math.abs(((apsis - h.angStart + 540) % 360) - 180);
+            return diff < 8;
+          });
+          ctx.strokeStyle = isHighlighted ? 'rgba(179, 136, 255, 0.36)' : 'rgba(179, 136, 255, 0.11)';
+          ctx.lineWidth = isHighlighted ? 1.5 : 0.9;
+          ctx.save();
+          ctx.translate(CX, CY);
+          ctx.rotate(degToRad(-apsis));
+          ctx.beginPath();
+          ctx.ellipse(-cCyc * SCALE_AU, 0, aCyc * SCALE_AU, bCyc * SCALE_AU, 0, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.restore();
+        }
+        ctx.restore();
+      }
+
+      // Sun
+      const sunGrad = ctx.createRadialGradient(CX, CY, 2, CX, CY, 25);
+      sunGrad.addColorStop(0, '#fffde7'); sunGrad.addColorStop(0.4, '#ffca28'); sunGrad.addColorStop(1, 'rgba(255, 179, 0, 0)');
+      ctx.fillStyle = sunGrad; ctx.beginPath(); ctx.arc(CX, CY, 25, 0, Math.PI * 2); ctx.fill();
+
+      // Earth & Mars Orbits
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.32)'; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.arc(CX, CY, R_EARTH_AU * SCALE_AU, 0, Math.PI * 2); ctx.stroke();
+      ctx.strokeStyle = 'rgba(255, 82, 82, 0.36)';
+      ctx.beginPath(); ctx.arc(CX, CY, R_MARS_AU * SCALE_AU, 0, Math.PI * 2); ctx.stroke();
+
+      // Pre-Launch Ghost Preview Path so user can inspect the exact planned hops & rides even before launch!
+      if (!isLaunched && currentPlan) {
+        ctx.save();
+        currentPlan.hops.forEach((h, idx) => {
+          // 1. Free-space transfer hop curve (Gold dashed)
+          ctx.lineWidth = 1.9;
+          ctx.setLineDash([4, 4]);
+          ctx.strokeStyle = isRelayMode ? 'rgba(179, 136, 255, 0.65)' : 'rgba(255, 234, 0, 0.55)';
+          ctx.beginPath();
+          const pStart = getPosAU(h.rStart, h.angStart);
+          ctx.moveTo(pStart.x, pStart.y);
+          for (let s = 1; s <= 18; s++) {
+            const tau = s / 18;
+            const pt = interpolateTransferHop(h.rStart, h.rTarget, h.angStart, h.dTheta, tau, true);
+            const pos = getPosAU(pt.rAU, pt.angleDeg);
+            ctx.lineTo(pos.x, pos.y);
+          }
+          ctx.stroke();
+
+          // 2. Docked Prograde Ring Ride Arc (Bright Emerald solid arc, ONLY when rideDays > 0)
+          if (!isRelayMode && idx < currentPlan.hops.length - 1) {
+            const nextH = currentPlan.hops[idx + 1];
+            if (nextH.rideDays > 0) {
+              const omegaRing = getRingHelioOmega(rings[h.ringIdx]);
+              const rideSweep = omegaRing * nextH.rideDays;
+              ctx.setLineDash([]);
+              ctx.lineWidth = 3.0;
+              ctx.strokeStyle = 'rgba(0, 230, 118, 0.65)';
+              ctx.beginPath();
+              const pDock = getPosAU(rings[h.ringIdx].r, h.angTarget);
+              ctx.moveTo(pDock.x, pDock.y);
+              for (let s = 1; s <= 14; s++) {
+                const ang = normDeg(h.angTarget + rideSweep * (s / 14));
+                const pos = getPosAU(rings[h.ringIdx].r, ang);
+                ctx.lineTo(pos.x, pos.y);
+              }
+              ctx.stroke();
+            }
+          }
+        });
+        ctx.restore();
+      }
+
+      // Concentric Rings & Active Lilypad / Relay Portal Dots
+      rings.forEach((ring, rIdx) => {
+        const rPx = ring.r * SCALE_AU;
+        const isSlowTrim = ring.spin < 0;
+
+        ctx.strokeStyle = isRelayMode
+          ? 'rgba(179, 136, 255, 0.30)'
+          : (isSlowTrim ? 'rgba(0, 230, 118, 0.34)' : 'rgba(0, 229, 255, 0.30)');
+        ctx.lineWidth = 1.2; ctx.setLineDash([5, 5]);
+        ctx.beginPath(); ctx.arc(CX, CY, rPx, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]);
+
+        if (rings.length <= 4 || rIdx % 2 === 0) {
+          ctx.fillStyle = isRelayMode
+            ? 'rgba(179, 136, 255, 0.82)'
+            : (isSlowTrim ? 'rgba(0, 230, 118, 0.78)' : 'rgba(0, 229, 255, 0.78)');
+          ctx.font = '10px JetBrains Mono, monospace';
+          const ringTag = isRelayMode ? '(EM Relay CCW)' : (isSlowTrim ? '(0.64ω CCW)' : '(1.34ω CCW)');
+          ctx.fillText(`${ring.r.toFixed(2)} AU ${ringTag}`, CX + 6, CY - rPx + 11);
+        }
+
+        for (let i = 0; i < pads; i++) {
+          const pAng = getPadAngleDeg(rIdx, i, simDays);
+          const pos = getPosAU(ring.r, pAng);
+          const isDockedHere = isLaunched && activeShip.subStage === 'riding_pad' && activeShip.dockedRingIdx === rIdx && activeShip.dockedPadIdx === i;
+          const isTargetHere = isLaunched && (activeShip.subStage === 'hop_to_ring' || activeShip.subStage === 'ground_hold') && activeShip.targetRingIdx === rIdx && activeShip.targetPadIdx === i;
+
+          // Draw rotating tether bolo arms in Tether mode (strictly prograde CCW hub motion)
+          if (mode === 'arch4_tether') {
+            const rotAngle = degToRad(simDays * 32 + i * 45);
+            const dx = Math.cos(rotAngle) * 8.5;
+            const dy = Math.sin(rotAngle) * 8.5;
+            ctx.strokeStyle = isSlowTrim ? 'rgba(0, 230, 118, 0.75)' : 'rgba(0, 229, 255, 0.75)';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath(); ctx.moveTo(pos.x - dx, pos.y - dy); ctx.lineTo(pos.x + dx, pos.y + dy); ctx.stroke();
+          }
+
+          // Draw Relay Portal ring aperture in Shooting Gallery mode
+          if (isRelayMode) {
+            ctx.strokeStyle = '#b388ff';
+            ctx.lineWidth = 1.6;
+            ctx.beginPath(); ctx.arc(pos.x, pos.y, 5.4, 0, Math.PI * 2); ctx.stroke();
+          }
+
+          ctx.fillStyle = isRelayMode ? '#00e5ff' : (isSlowTrim ? '#00e676' : '#00e5ff');
+          ctx.beginPath();
+          ctx.arc(pos.x, pos.y, isDockedHere ? 6.5 : 4.2, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Highlight Target Pad with a pulsing Target Lock Reticle
+          if (isTargetHere) {
+            ctx.save();
+            ctx.strokeStyle = '#ffea00';
+            ctx.lineWidth = 1.6;
+            ctx.setLineDash([3, 2]);
+            ctx.beginPath();
+            ctx.arc(pos.x, pos.y, 10.5, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.restore();
+          }
+
+          // Highlight Currently Docked Pad with a bright Halo
+          if (isDockedHere) {
+            ctx.save();
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 2.2;
+            ctx.beginPath();
+            ctx.arc(pos.x, pos.y, 11, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.restore();
+          }
+        }
+      });
+
+      // Hohmann Trail
+      if (isLaunched && hohShip.trail.length > 1) {
+        ctx.strokeStyle = 'rgba(56, 189, 248, 0.78)'; ctx.lineWidth = 2.0; ctx.setLineDash([5, 4]);
+        ctx.beginPath(); ctx.moveTo(hohShip.trail[0].x, hohShip.trail[0].y);
+        hohShip.trail.forEach(p => ctx.lineTo(p.x, p.y));
+        ctx.stroke(); ctx.setLineDash([]);
+      }
+
+      // Frogger Ship Trail (Color-coded: Gold for free-space hops, Bright Emerald for Docked Pad Riding!)
+      if (isLaunched && activeShip.trail.length > 1) {
+        for (let i = 1; i < activeShip.trail.length; i++) {
+          const p0 = activeShip.trail[i - 1];
+          const p1 = activeShip.trail[i];
+          ctx.beginPath();
+          ctx.moveTo(p0.x, p0.y);
+          ctx.lineTo(p1.x, p1.y);
+          if (p1.mode === 'ride') {
+            ctx.strokeStyle = '#00e676';
+            ctx.lineWidth = 3.8;
+          } else {
+            ctx.strokeStyle = '#ffea00';
+            ctx.lineWidth = 2.5;
+          }
+          ctx.stroke();
+        }
+      }
+
+      // Draw Docking / Sling Nodes along the completed trail
+      if (isLaunched) {
+        dockingNodes.forEach(nd => {
+          ctx.fillStyle = nd.color;
+          ctx.strokeStyle = '#060911';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.arc(nd.x, nd.y, 4.0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+        });
+      }
+
+      // Impulse Bursts
+      impulseBursts.forEach(b => {
+        ctx.strokeStyle = b.color; ctx.globalAlpha = Math.max(0, b.alpha); ctx.lineWidth = 2.2;
+        ctx.beginPath(); ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2); ctx.stroke(); ctx.globalAlpha = 1.0;
+      });
+
+      // Earth & Mars
+      const ePos = getPosAU(R_EARTH_AU, earthAngle);
+      ctx.fillStyle = '#38bdf8'; ctx.beginPath(); ctx.arc(ePos.x, ePos.y, 7.5, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#e2e8f0'; ctx.font = '11px Inter, sans-serif'; ctx.fillText('Earth (1.00 AU)', ePos.x + 10, ePos.y + 4);
+
+      const mPos = getPosAU(R_MARS_AU, marsAngle);
+      ctx.fillStyle = '#ff5252'; ctx.beginPath(); ctx.arc(mPos.x, mPos.y, 7, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#e2e8f0'; ctx.fillText('Mars (1.524 AU)', mPos.x + 10, mPos.y + 4);
+
+      // Ships
+      if (isLaunched) {
+        ctx.fillStyle = '#38bdf8'; ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(hohShip.x, hohShip.y, 5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        ctx.font = 'bold 10px JetBrains Mono, monospace'; ctx.fillStyle = '#38bdf8';
+        ctx.fillText('● Hohmann', hohShip.x + 8, hohShip.y - 6);
+      }
+
+      ctx.fillStyle = activeShip.subStage === 'riding_pad' ? '#00e676' : '#ffffff';
+      ctx.strokeStyle = '#ffea00'; ctx.lineWidth = 2.5;
+      ctx.beginPath(); ctx.arc(activeShip.x, activeShip.y, 5.8, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+      if (isLaunched) {
+        ctx.font = 'bold 10px JetBrains Mono, monospace';
+        if (activeShip.subStage === 'riding_pad') {
+          ctx.fillStyle = '#00e676';
+          ctx.fillText(`⚓ DOCKED Pad #${activeShip.dockedPadIdx + 1} (${activeShip.remDaysInStage}d)`, activeShip.x + 10, activeShip.y + 4);
+        } else if (activeShip.subStage === 'hop_to_ring') {
+          ctx.fillStyle = isRelayMode ? '#b388ff' : '#ffea00';
+          const verb = isRelayMode ? '⚡ Portal' : '★ Pad';
+          ctx.fillText(`→ R${activeShip.targetRingIdx + 1} ${verb} #${activeShip.targetPadIdx + 1}`, activeShip.x + 9, activeShip.y + 4);
+        } else if (activeShip.subStage === 'hop_to_mars') {
+          ctx.fillStyle = '#ffea00';
+          ctx.fillText('★ → Mars Intercept', activeShip.x + 9, activeShip.y + 4);
+        } else {
+          ctx.fillStyle = '#ffea00';
+          ctx.fillText('★ Frogger', activeShip.x + 9, activeShip.y + 4);
+        }
+      }
+    }
+
+    function loop() {
+      stepSimulation();
+      drawSimulation();
+      requestAnimationFrame(loop);
+    }
+
+    initCalendarDropdown();
+    renderRingEditor();
+    resetSim();
+
+    // Optional URL query parameters for instant scenario loading / fast-forward verification
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('mode')) {
+      modeSelect.value = urlParams.get('mode');
+      modeSelect.dispatchEvent(new Event('change'));
+    }
+    if (urlParams.get('phi')) {
+      marsPhaseSlider.value = urlParams.get('phi');
+      resetSim();
+    }
+    if (urlParams.get('autolaunch') && currentPlan) {
+      launchBtn.click();
+      const hohDone = schedule.yyy_hohGround + HOHMANN_FLIGHT_DAYS;
+      const targetDays = urlParams.get('autolaunch') === 'full'
+        ? Math.max(currentPlan.arrivalDay, hohDone)
+        : currentPlan.arrivalDay;
+      for (let s = 0; s < 8000 && simDays < targetDays; s++) {
+        stepSimulation();
+      }
+      stepSimulation();
+      drawSimulation();
+    }
+
+    loop();
+  </script>
+</body>
+</html>
